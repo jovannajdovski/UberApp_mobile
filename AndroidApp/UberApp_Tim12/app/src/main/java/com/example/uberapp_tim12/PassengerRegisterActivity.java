@@ -2,7 +2,10 @@ package com.example.uberapp_tim12;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 public class PassengerRegisterActivity extends AppCompatActivity {
 
@@ -10,6 +13,15 @@ public class PassengerRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_register);
+
+        Button loginButton = findViewById(R.id.registerButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PassengerRegisterActivity.this, PassengerMainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

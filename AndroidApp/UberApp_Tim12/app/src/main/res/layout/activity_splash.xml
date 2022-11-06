@@ -13,5 +13,6 @@
         android:src="@drawable/splash"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="2dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:contentDescription="@string/splash_screen" />
 </androidx.constraintlayout.widget.ConstraintLayout>

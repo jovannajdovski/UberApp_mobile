@@ -11,11 +11,13 @@
         android:id="@+id/inboxButton"
         android:layout_width="143dp"
         android:layout_height="47dp"
-        android:text="INBOX" />
+        android:text="@string/inbox"
+        style="?android:attr/buttonBarButtonStyle" />
 
     <Button
         android:id="@+id/accountButton"
         android:layout_width="143dp"
         android:layout_height="47dp"
-        android:text="ACCOUNT" />
+        android:text="@string/account"
+        style="?android:attr/buttonBarButtonStyle" />
 </LinearLayout>

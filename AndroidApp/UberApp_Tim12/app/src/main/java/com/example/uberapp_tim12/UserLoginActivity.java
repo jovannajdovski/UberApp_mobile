@@ -18,13 +18,13 @@ public class UserLoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UserLoginActivity.this, PassengerMainActivity.class);
+                Intent intent = new Intent(UserLoginActivity.this, DriverMainActivity.class);
                 startActivity(intent);
             }
         });
 
-        Button registerButton = findViewById(R.id.registerButton);
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        Button registerLinkButton = findViewById(R.id.registerLinkButton);
+        registerLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserLoginActivity.this, PassengerRegisterActivity.class);

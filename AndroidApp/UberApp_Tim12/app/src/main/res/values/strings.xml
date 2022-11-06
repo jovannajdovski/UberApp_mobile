@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">UberApp_Tim12</string>
+    <string name="offline">OFFLINE</string>
+    <string name="online">ONLINE</string>
+    <string name="inbox">INBOX</string>
+    <string name="account">ACCOUNT</string>
+    <string name="sign_up">Sign up</string>
+    <string name="full_name">Full Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="street_address">Street Address</string>
+    <string name="set_password">Set Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">REGISTER</string>
+    <string name="splash_screen">SPLASH SCREEN</string>
+    <string name="log_in">Log in</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
 </resources>

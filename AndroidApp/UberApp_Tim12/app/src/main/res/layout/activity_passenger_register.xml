@@ -4,11 +4,119 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
     tools:context=".PassengerRegisterActivity">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="register" />
+        android:layout_marginVertical="10dp"
+        android:text="@string/sign_up"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="bottom"
+        android:labelFor="@+id/editTextTextFullName"
+        android:text="@string/full_name" />
+
+    <EditText
+        android:id="@+id/editTextTextFullName"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="text"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="bottom"
+        android:labelFor="@+id/editTextEmail"
+        android:text="@string/email_address" />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="bottom"
+        android:labelFor="@+id/editTextPhone"
+        android:text="@string/phone_number" />
+
+    <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="bottom"
+        android:labelFor="@+id/editTextAddress"
+        android:text="@string/street_address" />
+
+    <EditText
+        android:id="@+id/editTextAddress"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="text"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="bottom"
+        android:labelFor="@+id/editTextPasswordRegister"
+        android:text="@string/set_password" />
+
+    <EditText
+        android:id="@+id/editTextPasswordRegister"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="bottom"
+        android:labelFor="@+id/editTextPasswordRegisterConfirm"
+        android:text="@string/confirm_password" />
+
+    <EditText
+        android:id="@+id/editTextPasswordRegisterConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"/>
+
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/register" />
 </LinearLayout>
