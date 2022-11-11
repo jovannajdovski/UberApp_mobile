@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class UserLoginActivity extends AppCompatActivity {
 
@@ -15,10 +17,16 @@ public class UserLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_login);
 
         Button loginButton = findViewById(R.id.loginButton);
+        EditText emailEditText=findViewById(R.id.editTextEmail);
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UserLoginActivity.this, DriverMainActivity.class);
+                Intent intent;
+                if(emailEditText.getText().toString().length()>0)
+                    intent = new Intent(UserLoginActivity.this, DriverMainActivity.class);
+                else
+                    intent=new Intent(UserLoginActivity.this,PassengerMainActivity.class);
                 startActivity(intent);
             }
         });

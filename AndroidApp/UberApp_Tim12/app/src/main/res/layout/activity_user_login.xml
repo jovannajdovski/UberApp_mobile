@@ -22,11 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="bottom"
-        android:labelFor="@+id/editTextEmailLogin"
+        android:labelFor="@id/editTextEmail"
         android:text="@string/email_address" />
 
     <EditText
-        android:id="@+id/editTextEmailLogin"
+        android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:autofillHints=""
@@ -38,11 +38,11 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="bottom"
-        android:labelFor="@+id/editTextPasswordLogin"
+        android:labelFor="@id/editTextPassword"
         android:text="@string/password" />
 
     <EditText
-        android:id="@+id/editTextPasswordLogin"
+        android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:autofillHints=""
