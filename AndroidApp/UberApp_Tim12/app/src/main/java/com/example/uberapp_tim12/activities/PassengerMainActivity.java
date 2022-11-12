@@ -50,7 +50,7 @@ public class PassengerMainActivity extends AppCompatActivity {
         navDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         navDrawerList.setAdapter(adapter);
 
-        Toolbar toolbar=findViewById(R.id.passenger_toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();

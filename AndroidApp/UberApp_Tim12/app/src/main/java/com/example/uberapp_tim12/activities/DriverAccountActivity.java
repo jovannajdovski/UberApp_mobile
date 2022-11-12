@@ -15,7 +15,7 @@ public class DriverAccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_account);
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
-        Toolbar toolbar=findViewById(R.id.passenger_toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 

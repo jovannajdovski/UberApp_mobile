@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.DriverMainActivity">
     <include
-        android:id="@+id/passenger_toolbar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/basic_toolbar" />
