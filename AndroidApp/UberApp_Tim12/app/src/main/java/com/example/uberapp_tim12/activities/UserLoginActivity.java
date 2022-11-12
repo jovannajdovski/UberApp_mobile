@@ -1,24 +1,16 @@
-package com.example.uberapp_tim12;
+package com.example.uberapp_tim12.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.annotation.SuppressLint;
+
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import org.jetbrains.annotations.NonNls;
-import android.widget.TextView;
+import com.example.uberapp_tim12.R;
 
 public class UserLoginActivity extends AppCompatActivity {
 

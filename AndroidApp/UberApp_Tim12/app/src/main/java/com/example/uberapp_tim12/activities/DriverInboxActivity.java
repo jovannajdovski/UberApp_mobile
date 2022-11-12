@@ -1,14 +1,16 @@
-package com.example.uberapp_tim12;
+package com.example.uberapp_tim12.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class DriverRideHistoryActivity extends AppCompatActivity {
+import com.example.uberapp_tim12.R;
+
+public class DriverInboxActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_ride_history);
+        setContentView(R.layout.activity_driver_inbox);
     }
 }

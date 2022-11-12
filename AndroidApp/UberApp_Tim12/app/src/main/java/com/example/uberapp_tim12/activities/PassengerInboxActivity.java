@@ -1,20 +1,17 @@
-package com.example.uberapp_tim12;
+package com.example.uberapp_tim12.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 
-public class DriverAccountActivity extends AppCompatActivity {
+import com.example.uberapp_tim12.R;
+
+public class PassengerInboxActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_account);
-
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
-        Toolbar toolbar=findViewById(R.id.passenger_toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_passenger_inbox);
     }
 
     @Override

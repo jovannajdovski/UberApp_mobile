@@ -20,4 +20,12 @@
     <string name="map">map</string>
     <string name="ride_history">   Ride history</string>
     <string name="where_to">&#160; Where to?</string>
+    <string name="title">title</string>
+    <string name="icon">icon</string>
+    <string name="about">about</string>
+    <string name="settings">settings</string>
+    <string name="notifications">notifications</string>
+    <string name="payments">payments</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>

@@ -1,27 +1,29 @@
-package com.example.uberapp_tim12;
+package com.example.uberapp_tim12.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
-public class PassengerRegisterActivity extends AppCompatActivity {
+import com.example.uberapp_tim12.R;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class SplashActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_passenger_register);
-
-        Button loginButton = findViewById(R.id.registerButton);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        setContentView(R.layout.activity_splash);
+        int SPLASH_TIME_OUT = 5000;
+        new Timer().schedule(new TimerTask() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PassengerRegisterActivity.this, PassengerMainActivity.class);
-                startActivity(intent);
+            public void run() {
+                startActivity(new Intent(SplashActivity.this, UserLoginActivity.class));
+                finish(); // da nebi mogao da ode back na splash
             }
-        });
+        }, SPLASH_TIME_OUT);
+
     }
 
     @Override
