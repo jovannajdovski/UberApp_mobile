@@ -15,23 +15,23 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="50dp"
-
         />
+
     <androidx.cardview.widget.CardView
-        android:layout_width="155dp"
-        android:layout_height="155dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="200dp"
+        android:layout_centerHorizontal="true"
         app:cardCornerRadius="250dp"
+        android:layout_gravity="center"
         app:cardBackgroundColor="@color/yellow">
-
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/ic_profile"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/account" />
-
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_profile"
+            android:scaleType="centerCrop"/>
 
     </androidx.cardview.widget.CardView>
+
 </RelativeLayout>
 
