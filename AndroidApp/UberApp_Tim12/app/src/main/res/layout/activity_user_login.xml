@@ -4,64 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     android:orientation="vertical"
     tools:context=".UserLoginActivity">
-
-
-    <TextView
-        android:id="@+id/login"
+    <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
-        android:text="@string/log_in"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        layout="@layout/basic_toolbar" />
 
-    <TextView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="bottom"
-        android:labelFor="@+id/editTextEmailLogin"
-        android:text="@string/email_address" />
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editTextEmailLogin"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:autofillHints=""
-        android:background="@drawable/edit_text_border"
-        android:ems="10"
-        android:inputType="textEmailAddress" />
+        <TextView
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:text="@string/log_in"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="bottom"
-        android:labelFor="@+id/editTextPasswordLogin"
-        android:text="@string/password" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="bottom"
+            android:labelFor="@+id/editTextEmail"
+            android:text="@string/email_address" />
 
-    <EditText
-        android:id="@+id/editTextPasswordLogin"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:autofillHints=""
-        android:background="@drawable/edit_text_border"
-        android:ems="10"
-        android:inputType="textPassword" />
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:autofillHints=""
+            android:background="@drawable/edit_text_border"
+            android:ems="10"
+            android:inputType="textEmailAddress" />
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/login" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="bottom"
+            android:labelFor="@+id/editTextPassword"
+            android:text="@string/password" />
 
-    <Button
-        android:id="@+id/registerLinkButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/register" />
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:autofillHints=""
+            android:background="@drawable/edit_text_border"
+            android:ems="10"
+            android:inputType="textPassword" />
 
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/login" />
+
+        <Button
+            android:id="@+id/registerLinkButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/register" />
+    </LinearLayout>
 </LinearLayout>

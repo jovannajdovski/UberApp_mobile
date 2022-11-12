@@ -5,14 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DriverMainActivity">
+    <include
+        android:id="@+id/driver_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/basic_toolbar" />
+    <ImageView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/map"
+        app:srcCompat="@drawable/map" />
 
-    <ToggleButton
-        android:id="@+id/isOnlineButton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:checked="true"
-        android:textOff="@string/offline"
-        android:textOn="@string/online" />
-
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/yellow"
+        android:contentDescription="@string/inbox"
+        android:src="@drawable/ic_baseline_message_24" />
 </RelativeLayout>
