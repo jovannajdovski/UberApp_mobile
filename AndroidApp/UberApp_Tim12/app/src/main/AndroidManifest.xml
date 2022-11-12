@@ -13,14 +13,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".DriverInboxActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".PassengerRideHistoryActivity"
+            android:name=".DriverAccountActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -34,7 +27,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".DriverAccountActivity"
+            android:name=".DriverInboxActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".PassengerRideHistoryActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

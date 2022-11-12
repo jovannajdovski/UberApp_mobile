@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NonNls;
+import android.widget.TextView;
 
 public class UserLoginActivity extends AppCompatActivity {
 
@@ -34,6 +35,7 @@ public class UserLoginActivity extends AppCompatActivity {
         EditText passwordEditText=findViewById(R.id.editTextPassword);
 
         Button loginButton = findViewById(R.id.loginButton);
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,6 +44,7 @@ public class UserLoginActivity extends AppCompatActivity {
                     intent = new Intent(UserLoginActivity.this, DriverMainActivity.class);
                 else
                     intent = new Intent(UserLoginActivity.this, PassengerMainActivity.class);
+
                 startActivity(intent);
             }
         });
