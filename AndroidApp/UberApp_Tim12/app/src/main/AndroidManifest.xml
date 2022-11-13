@@ -60,6 +60,14 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.PassengerSettingsActivity"
+            android:parentActivityName=".activities.PassengerMainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.PassengerAccountActivity"
             android:parentActivityName=".activities.PassengerMainActivity"
             android:exported="false">

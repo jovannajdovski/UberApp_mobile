@@ -14,6 +14,8 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.tools.UserMockup;
 
 public class DriverMainActivity extends AppCompatActivity {
     SwitchCompat sw;
@@ -60,12 +62,8 @@ public class DriverMainActivity extends AppCompatActivity {
         Intent intent=null;
         if (id == R.id.profile) {
             intent = new Intent(DriverMainActivity.this, DriverAccountActivity.class);
-            intent.putExtra("name","Milos");
-            intent.putExtra("email","Milinkovic");
-            intent.putExtra("gender","Musko");
-            intent.putExtra("birthday","10.10.2001.");
-            intent.putExtra("phone","0638894776");
-
+            User user = UserMockup.getUser();
+            intent.putExtra("user", user);
         }
         startActivity(intent);
 

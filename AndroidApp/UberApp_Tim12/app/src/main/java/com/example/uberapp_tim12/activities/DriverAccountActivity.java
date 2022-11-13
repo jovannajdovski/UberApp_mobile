@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.model.User;
 
 import java.util.Locale;
 
@@ -79,19 +80,20 @@ public class DriverAccountActivity extends AppCompatActivity {
     }
 
     protected void initializeGUI() {
-        Intent intent=getIntent();
-
         profileName = findViewById(R.id.profile_name_text);
         profileSurname = findViewById(R.id.profile_surname_text);
         profileEmail = findViewById(R.id.profile_email_text);
         profileAddress = findViewById(R.id.profile_address_text);
         profilePhone = findViewById(R.id.profile_phone_text);
 
-        profileName.setText(intent.getStringExtra("name"));
-        profileSurname.setText(intent.getStringExtra("gender"));
-        profileEmail.setText(intent.getStringExtra("email"));
-        profileAddress.setText(intent.getStringExtra("birthday"));
-        profilePhone.setText(intent.getStringExtra("phone"));
+        Intent intent = getIntent();
+        User user = intent.getParcelableExtra("user");
+
+        profileName.setText(user.getName());
+        profileSurname.setText(user.getSurname());
+        profileEmail.setText(user.getEmail());
+        profileAddress.setText(user.getAddress());
+        profilePhone.setText(user.getPhoneNumber());
     }
 
     protected void addActionListeners() {
