@@ -134,6 +134,7 @@ public class PassengerMainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
     }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);

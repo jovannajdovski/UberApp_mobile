@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,9 +57,17 @@ public class DriverMainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.profile)
-            Toast.makeText(this,"Profile",Toast.LENGTH_LONG).show();
+        Intent intent=null;
+        if (id == R.id.profile) {
+            intent = new Intent(DriverMainActivity.this, DriverAccountActivity.class);
+            intent.putExtra("name","Milos");
+            intent.putExtra("email","Milinkovic");
+            intent.putExtra("gender","Musko");
+            intent.putExtra("birthday","10.10.2001.");
+            intent.putExtra("phone","0638894776");
 
+        }
+        startActivity(intent);
 
         return super.onOptionsItemSelected(item);
     }
