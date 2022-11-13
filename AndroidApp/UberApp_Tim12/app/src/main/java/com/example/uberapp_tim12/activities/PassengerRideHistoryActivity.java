@@ -1,8 +1,10 @@
-package com.example.uberapp_tim12;
+package com.example.uberapp_tim12.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.uberapp_tim12.R;
 
 public class PassengerRideHistoryActivity extends AppCompatActivity {
 

@@ -1,20 +1,17 @@
-package com.example.uberapp_tim12;
+package com.example.uberapp_tim12.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.ClipData;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.Toast;
-import android.widget.ToggleButton;
+
+import com.example.uberapp_tim12.R;
 
 public class DriverMainActivity extends AppCompatActivity {
     SwitchCompat sw;

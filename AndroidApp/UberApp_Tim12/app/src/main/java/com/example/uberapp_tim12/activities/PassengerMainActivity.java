@@ -1,4 +1,4 @@
-package com.example.uberapp_tim12;
+package com.example.uberapp_tim12.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import com.example.uberapp_tim12.R;
 
 public class PassengerMainActivity extends AppCompatActivity {
 

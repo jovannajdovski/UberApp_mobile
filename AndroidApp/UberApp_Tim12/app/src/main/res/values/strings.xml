@@ -20,4 +20,9 @@
     <string name="map">map</string>
     <string name="ride_history">   Ride history</string>
     <string name="where_to">&#160; Where to?</string>
+    <string name="past_rides">Past rides</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="rating">Rating</string>
+    <string name="ride_plan">Ride plan</string>
 </resources>
