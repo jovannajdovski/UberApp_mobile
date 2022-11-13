@@ -60,9 +60,6 @@ public class PassengerMainActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
         actionBar.setHomeButtonEnabled(true);
 
-
-
-
         navDrawerToggle=new ActionBarDrawerToggle(
                 this,
                 navDrawerLayout,
