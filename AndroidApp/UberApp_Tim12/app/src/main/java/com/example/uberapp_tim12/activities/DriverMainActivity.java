@@ -119,7 +119,10 @@ public class DriverMainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.profile)
             Toast.makeText(this,"Profile",Toast.LENGTH_LONG).show();
-
+        else if (id == R.id.history){
+            Intent intent = new Intent(DriverMainActivity.this,DriverRideHistoryActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -54,25 +54,4 @@ public class DriverRideHistoryFragment extends ListFragment {
         setListAdapter(adapter);
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        menu.clear();
-        //inflater.inflate(R.menu.activity_itemdetail, menu); //TODO: ubaci od Savica
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-//        if(id == R.id.action_refresh){
-//            Toast.makeText(getActivity(), "Refresh App", Toast.LENGTH_SHORT).show();
-//        }
-//        if(id == R.id.action_new){
-//            Toast.makeText(getActivity(), "Create Text", Toast.LENGTH_SHORT).show();          //TODO: od Savica
-//        }
-        return super.onOptionsItemSelected(item);
-    }
 }

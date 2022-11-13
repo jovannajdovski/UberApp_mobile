@@ -3,15 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="20dp"
+    android:background="@color/light_grey"
     tools:context=".activities.RideDetailActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/basic_toolbar" />
 
     <TextView
         android:id="@+id/ride_plan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/toolbar"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
@@ -33,7 +39,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:gravity="center_vertical"
-        android:textColor="#FFEB3B"
+        android:textColor="#E3CC03"
         android:layout_marginTop="10dp"
         android:textStyle="bold"
         android:layout_below="@id/ride_plan"
@@ -59,7 +65,9 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:text="Medium Text"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="20sp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
@@ -126,11 +134,12 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="0dp"
         android:gravity="center_vertical"
         android:padding="5dp"
         android:text="Distance:"
         android:textSize="16sp"
+        android:textColor="#000000"
         android:textStyle="bold" />
 
     <TextView
@@ -145,6 +154,7 @@
         android:layout_marginBottom="20dp"
         android:gravity="center_vertical"
         android:padding="5dp"
+        android:textColor="#000000"
         android:text="Price:"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -156,12 +166,13 @@
         android:layout_below="@id/price"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:gravity="center_vertical"
         android:padding="5dp"
         android:text="Passengers:"
+        android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold" />
 
