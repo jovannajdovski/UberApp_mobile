@@ -1,66 +1,94 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.activities.DriverChatActivity;
+import com.example.uberapp_tim12.activities.DriverInboxActivity;
+import com.example.uberapp_tim12.adapters.ChatListAdapter;
+import com.example.uberapp_tim12.model.ChatItem;
+import com.example.uberapp_tim12.model.Message;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ChatFragment extends Fragment {
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class ChatFragment extends ListFragment {
 
     public ChatFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChatFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChatFragment newInstance(String param1, String param2) {
-        ChatFragment fragment = new ChatFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ArrayList<ChatItem> chatItems=new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        prepareChatList();
+        ChatListAdapter adapter=new ChatListAdapter(getActivity(),chatItems);
+        setListAdapter(adapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_chat, container, false);
     }
+
+    private void prepareChatList()
+    {
+        chatItems.add(new ChatItem("SUPPORT", "", R.drawable.ic_baseline_support, ChatItem.MessageType.SUPPORT));
+        chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
+        chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
+        chatItems.add(new ChatItem("PIZDARIJA", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
+        chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
+        chatItems.add(new ChatItem("PIZDARIJA", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
+        chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
+        chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
+        chatItems.add(new ChatItem("PIZDARIJA", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
+    }
+    private List<Message> prepareMessageList()
+    {
+        List<Message> messages=new ArrayList<>();
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.MYSELF));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.MYSELF));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.OTHERS));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.MYSELF));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.MYSELF));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.OTHERS));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.MYSELF));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.OTHERS));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.OTHERS));
+        messages.add(new Message("AAAAAAAAAAAAAAAAAAAAAAAA", Message.Sender.MYSELF));
+        return messages;
+    }
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Intent intent;
+        intent=new Intent(getActivity(), DriverChatActivity.class);
+        intent.putExtra("user", chatItems.get(position));
+        intent.putExtra("messages", (Serializable) prepareMessageList());
+        startActivity(intent);
+    }
+
 }

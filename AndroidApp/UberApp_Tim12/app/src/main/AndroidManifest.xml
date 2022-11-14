@@ -13,33 +13,49 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".activities.DriverAccountActivity"
-            android:parentActivityName=".activities.DriverMainActivity"
+            android:name=".activities.PassengerChatActivity"
+            android:parentActivityName=".activities.PassengerInboxActivity"
             android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.DriverChatActivity"
+            android:parentActivityName=".activities.DriverInboxActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.DriverAccountActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.DriverRideHistoryActivity"
-            android:parentActivityName=".activities.DriverMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.DriverInboxActivity"
-            android:parentActivityName=".activities.DriverMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.PassengerRideHistoryActivity"
-            android:parentActivityName=".activities.PassengerMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -53,16 +69,16 @@
         </activity>
         <activity
             android:name=".activities.PassengerInboxActivity"
-            android:parentActivityName=".activities.PassengerMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.PassengerAccountActivity"
-            android:parentActivityName=".activities.PassengerMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
