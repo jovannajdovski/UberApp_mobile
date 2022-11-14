@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.content.res.Configuration;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +38,8 @@ import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
 import com.example.uberapp_tim12.model.NavDrawerItem;
 
 import java.util.ArrayList;
+import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.tools.UserMockup;
 
 public class DriverMainActivity extends AppCompatActivity {
     SwitchCompat sw;
@@ -116,10 +120,15 @@ public class DriverMainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.profile)
-            Toast.makeText(this,"Profile",Toast.LENGTH_LONG).show();
+        Intent intent=null;
+        if (id == R.id.profile) {
+            intent = new Intent(DriverMainActivity.this, DriverAccountActivity.class);
+            User user = UserMockup.getUser();
+            intent.putExtra("user", user);
+            startActivity(intent);
+        }
         else if (id == R.id.history){
-            Intent intent = new Intent(DriverMainActivity.this,DriverRideHistoryActivity.class);
+            intent = new Intent(DriverMainActivity.this,DriverRideHistoryActivity.class);
             startActivity(intent);
         }
 
@@ -186,10 +195,11 @@ public class DriverMainActivity extends AppCompatActivity {
             intent.putExtra("tab",1);
             startActivity(intent);
         }else if(position == 1){
-
+            intent = new Intent(DriverMainActivity.this, DriverSettingsActivity.class);
+            User user = UserMockup.getUser();
+            intent.putExtra("user", user);
+            startActivity(intent);
         }else if(position == 2){
-            //..
-        }else if(position == 3){
             //..
         }
 

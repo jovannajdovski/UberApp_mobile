@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/basic_toolbar" />
+
     <ImageView
         android:id="@+id/map"
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
         app:srcCompat="@drawable/map" />
 
     <EditText
+
         android:id="@+id/destination"
         android:layout_width="match_parent"
         android:layout_height="40dp"

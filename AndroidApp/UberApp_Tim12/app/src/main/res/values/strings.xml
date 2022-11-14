@@ -28,7 +28,7 @@
     <string name="title">title</string>
     <string name="icon">icon</string>
     <string name="about">About</string>
-    <string name="settings">Settings</string>
+    <string name="settings">&#160; Settings</string>
     <string name="notifications">Notifications</string>
     <string name="payments">Payments</string>
     <string name="drawer_open">Open navigation drawer</string>
@@ -44,5 +44,14 @@
     <string name="distance">Distance:</string>
     <string name="see_offers_for_this_route">See offers for this route</string>
     <string name="set_as_a_favorite_route">Set as a favorite route</string>
-
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">Email</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="favourite_routes">Favourite routes</string>
+    <string name="report">Report</string>
+    <string name="passenger">Passenger</string>
+    <string name="statistics">Statistics</string>
 </resources>

@@ -33,6 +33,8 @@ import android.widget.RelativeLayout;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
 import com.example.uberapp_tim12.model.NavDrawerItem;
+import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.tools.UserMockup;
 
 import java.util.ArrayList;
 
@@ -104,14 +106,16 @@ public class PassengerMainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        Intent intent;
         if (id == R.id.profile)
         {
-            Intent intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
+            intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
+            User user = UserMockup.getUser();
+            intent.putExtra("user", user);
             startActivity(intent);
         }
         else if (id == R.id.history){
-            Intent intent = new Intent(PassengerMainActivity.this,PassengerRideHistoryActivity.class);
+            intent = new Intent(PassengerMainActivity.this,PassengerRideHistoryActivity.class);
             startActivity(intent);
         }
 
@@ -178,7 +182,10 @@ public class PassengerMainActivity extends AppCompatActivity {
             intent.putExtra("tab",1);
             startActivity(intent);
         }else if(position == 2){
-            //..
+            intent = new Intent(PassengerMainActivity.this, PassengerSettingsActivity.class);
+            User user = UserMockup.getUser();
+            intent.putExtra("user", user);
+            startActivity(intent);
         }else if(position == 3){
             //..
         }
