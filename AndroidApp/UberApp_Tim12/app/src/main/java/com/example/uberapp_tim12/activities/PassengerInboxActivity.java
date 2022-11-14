@@ -26,6 +26,9 @@ public class PassengerInboxActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        actionBar.setIcon(R.drawable.ic_baseline_inbox_24);
+        actionBar.setTitle("Inbox");
+
         TabLayout tabLayout=findViewById(R.id.tabs);
         ViewPager2 viewPager2=findViewById(R.id.view_pager);
 

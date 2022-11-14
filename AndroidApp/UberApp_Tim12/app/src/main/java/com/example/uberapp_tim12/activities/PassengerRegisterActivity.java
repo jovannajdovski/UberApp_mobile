@@ -1,5 +1,6 @@
 package com.example.uberapp_tim12.activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,6 +16,13 @@ public class PassengerRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_register);
+
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setIcon(R.drawable.ic_launcher_foreground);
+        actionBar.setTitle("Registration");
 
         Button loginButton = findViewById(R.id.registerButton);
         loginButton.setOnClickListener(new View.OnClickListener() {

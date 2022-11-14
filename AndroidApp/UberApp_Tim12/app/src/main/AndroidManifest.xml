@@ -12,10 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <activity android:name=".activities.RideDetailForPassengerActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerRideHistoryActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".activities.PassengerChatActivity"
-            android:parentActivityName=".activities.PassengerInboxActivity"
-            android:exported="false">
+            android:parentActivityName=".activities.PassengerInboxActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.RideDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.DriverRideHistoryActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -79,6 +93,7 @@
             android:name=".activities.PassengerAccountActivity"
             android:exported="false"
             android:parentActivityName=".activities.PassengerMainActivity">
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -92,6 +107,7 @@
         </activity>
         <activity
             android:name=".activities.PassengerRegisterActivity"
+            android:parentActivityName=".activities.UserLoginActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

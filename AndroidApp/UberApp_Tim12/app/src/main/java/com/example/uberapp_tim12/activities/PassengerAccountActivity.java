@@ -23,6 +23,8 @@ public class PassengerAccountActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        actionBar.setIcon(R.drawable.ic_profile);
+        actionBar.setTitle("Profile");
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.example.uberapp_tim12.activities;
 
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +12,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
+
 import com.example.uberapp_tim12.adapters.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
 
 public class DriverInboxActivity extends AppCompatActivity {
 
@@ -28,6 +32,9 @@ public class DriverInboxActivity extends AppCompatActivity {
         ActionBar actionBar=getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setIcon(R.drawable.ic_baseline_inbox_24);
+        actionBar.setTitle("Inbox");
 
         TabLayout tabLayout=findViewById(R.id.tabs);
         ViewPager2 viewPager2=findViewById(R.id.view_pager);

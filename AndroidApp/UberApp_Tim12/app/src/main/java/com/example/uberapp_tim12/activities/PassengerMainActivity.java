@@ -1,5 +1,10 @@
 package com.example.uberapp_tim12.activities;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.content.Intent;
+import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +20,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+
+import com.example.uberapp_tim12.R;
+
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -32,12 +43,14 @@ public class PassengerMainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle navDrawerToggle;
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_main);
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
+
         prepareNavigationDrawerList();
 
         navDrawerLayout=findViewById(R.id.drawerLayout);
@@ -56,7 +69,7 @@ public class PassengerMainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setIcon(R.drawable.ic_launcher_foreground);
-        actionBar.setTitle("Home");
+        actionBar.setTitle(R.string.app_name);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
         actionBar.setHomeButtonEnabled(true);
 
@@ -91,14 +104,16 @@ public class PassengerMainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Intent intent=null;
+
         if (id == R.id.profile)
         {
-            intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
-
+            Intent intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
+            startActivity(intent);
         }
-        startActivity(intent);
-
+        else if (id == R.id.history){
+            Intent intent = new Intent(PassengerMainActivity.this,PassengerRideHistoryActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -131,6 +146,7 @@ public class PassengerMainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
     }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);

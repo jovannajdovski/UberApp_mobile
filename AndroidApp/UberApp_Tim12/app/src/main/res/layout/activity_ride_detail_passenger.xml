@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_grey"
+    tools:context=".activities.RideDetailForPassengerActivity">
+
+
+
+    <include
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/basic_toolbar" />
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/footer"
+            android:layout_below="@id/toolbar">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+      >
+
+            <TextView
+                android:id="@+id/ride_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/ride_plan"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ImageView
+                android:id="@+id/star_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/ride_plan"
+                android:layout_margin="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_baseline_star" />
+
+            <TextView
+                android:id="@+id/rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="#E3CC03"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
+                android:layout_below="@id/ride_plan"
+                android:layout_toEndOf="@+id/star_icon"
+                android:text="@string/rate_your_ride"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rate"
+                android:layout_toEndOf="@+id/star_icon"
+                android:padding="5dp"
+                android:text="@string/rating_for_your_expirience" />
+
+            <TextView
+                android:id="@+id/startDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text=""
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ImageView
+                android:id="@+id/icon_map"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/startDate"
+                android:layout_margin="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_baseline_place_24" />
+
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/icon_map"
+                android:layout_below="@id/startDate"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/start_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/start_time"
+                android:layout_below="@id/startDate"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:layout_toEndOf="@+id/icon_map"
+                android:layout_below="@id/start_time"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/end_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:layout_toEndOf="@+id/end_time"
+                android:layout_below="@id/start_place"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/icon_map"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="0dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="@string/distance"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/distance"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:textColor="#000000"
+                android:text="@string/price"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/driver_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/price"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="@string/driver"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/driver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/driver_label">
+
+                <ImageView
+                    android:id="@+id/item_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_profile" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:gravity="center_vertical"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/item_icon"
+                    android:padding="5dp"/>
+
+                <TextView android:id="@+id/phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/name"
+                    android:layout_toEndOf="@+id/item_icon"
+                    android:padding="5dp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/passengers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/driver"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="@string/passengers"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+
+            <ListView
+                android:id="@+id/passenger_list"
+                android:layout_below="@id/passengers"
+                android:layout_alignParentStart="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+        </ScrollView>
+<RelativeLayout
+    android:id="@+id/footer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/offers_for_route"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:backgroundTint="@color/material_dynamic_neutral20"
+            android:padding="5dp"
+            android:text="@string/see_offers_for_this_route"
+            android:textColor="@color/material_dynamic_neutral90" />
+
+        <Button
+            android:id="@+id/favorite_route"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/offers_for_route"
+            android:backgroundTint="@color/ic_launcher_background"
+            android:padding="5dp"
+            android:text="@string/set_as_a_favorite_route" />
+</RelativeLayout>
+
+</RelativeLayout>
