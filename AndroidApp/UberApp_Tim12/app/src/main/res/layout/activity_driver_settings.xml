@@ -36,7 +36,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profile_picture_change"
+        android:id="@+id/profile"
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:layout_below="@id/header"
@@ -108,7 +108,7 @@
         android:id="@+id/profile_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profile_picture_change"
+        android:layout_below="@id/profile"
         android:background="@drawable/edit_text_border"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
