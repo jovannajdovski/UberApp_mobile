@@ -95,6 +95,16 @@ public class DriverMainActivity extends AppCompatActivity {
         {
             selectItemFromDrawer(3);
         }
+        RelativeLayout pictureView=findViewById(R.id.picture_view);
+        pictureView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(DriverMainActivity.this, DriverAccountActivity.class);
+                User user=UserMockup.getUser();
+                intent.putExtra("user",user);
+                startActivity(intent);
+            }
+        });
 
     }
     @Override
@@ -106,6 +116,7 @@ public class DriverMainActivity extends AppCompatActivity {
         MenuItem itemSwitch=menu.findItem(R.id.isOnlineButton);
         itemSwitch.setActionView(R.layout.driver_activity_switch);
         sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
+        sw.setChecked(true);
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

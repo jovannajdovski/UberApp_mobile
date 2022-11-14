@@ -2,11 +2,13 @@ package com.example.uberapp_tim12.activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
 
@@ -16,6 +18,10 @@ public class PassengerRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_register);
+
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         ActionBar actionBar=getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -29,6 +35,15 @@ public class PassengerRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PassengerRegisterActivity.this, PassengerMainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView loginLink = findViewById(R.id.loginLinkButton);
+        loginLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PassengerRegisterActivity.this, UserLoginActivity.class);
                 startActivity(intent);
             }
         });

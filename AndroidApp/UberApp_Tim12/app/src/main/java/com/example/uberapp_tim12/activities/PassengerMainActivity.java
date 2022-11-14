@@ -93,6 +93,16 @@ public class PassengerMainActivity extends AppCompatActivity {
         {
             selectItemFromDrawer(4);
         }
+        RelativeLayout pictureView=findViewById(R.id.picture_view);
+        pictureView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
+                User user=UserMockup.getUser();
+                intent.putExtra("user",user);
+                startActivity(intent);
+            }
+        });
 
     }
     @Override

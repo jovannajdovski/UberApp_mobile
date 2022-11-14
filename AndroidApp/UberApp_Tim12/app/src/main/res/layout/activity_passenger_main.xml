@@ -29,6 +29,7 @@
         android:layout_marginEnd="20dp"
         android:hint="@string/where_to"
         android:background="@drawable/edit_text_border"
+        android:paddingHorizontal="5dp"
         android:inputType="text"
         tools:ignore="LabelFor"
         />

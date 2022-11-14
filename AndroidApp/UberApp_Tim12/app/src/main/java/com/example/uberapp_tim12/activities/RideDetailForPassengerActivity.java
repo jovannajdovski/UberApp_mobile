@@ -88,8 +88,8 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.passenger_list);
 
 
-        View footerView = ((LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_ride_detail, null, false);
-        listView.addFooterView(footerView);
+//        View footerView = ((LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_ride_detail, null, false);
+//        listView.addFooterView(footerView);
 
         listView.setAdapter(adapter);
 
@@ -99,14 +99,14 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         offersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RideDetailForPassengerActivity.this,"There is no offers for this route",Toast.LENGTH_LONG).show();
+                Toast.makeText(RideDetailForPassengerActivity.this,"There is no offers for this route",Toast.LENGTH_SHORT).show();
             }
         });
 
         favRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RideDetailForPassengerActivity.this,"Route marked as favorite",Toast.LENGTH_LONG).show();
+                Toast.makeText(RideDetailForPassengerActivity.this,"Route marked as favorite",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -117,12 +117,19 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         popDialog.setIcon(R.drawable.ic_baseline_star);
         popDialog.setTitle("Rate your drive");
 
-        RatingBar rating = new RatingBar(this);
-        rating.setNumStars(5);
-        rating.setMax(5);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        popDialog.setView(rating);
+//        RatingBar rating = new RatingBar(this);
+//        rating.setNumStars(5);
+//        rating.setMax(5);
+//        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT);
+//        popDialog.setView(rating);
+
+        popDialog.setView(R.layout.rating_dialog);
+        LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        FrameLayout layout= (FrameLayout) vi.inflate(R.layout.rating_dialog, null);
+
+        RatingBar rating = (RatingBar) layout.findViewById(R.id.rating_bar);
 
         popDialog.setPositiveButton("Rate",
                 new DialogInterface.OnClickListener() {
