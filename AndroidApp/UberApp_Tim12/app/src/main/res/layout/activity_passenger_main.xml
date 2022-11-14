@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.DriverMainActivity">
+    tools:context=".activities.PassengerMainActivity">
     <include
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -18,16 +18,16 @@
         app:srcCompat="@drawable/map" />
 
     <EditText
+        android:id="@+id/destination"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_alignTop="@+id/map"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="50dp"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:hint="@string/where_to"
         android:background="@drawable/edit_text_border"
         android:inputType="text"
-        android:translationZ="1dp"
         tools:ignore="LabelFor"
         />
 
@@ -35,20 +35,21 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="end|bottom"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:backgroundTint="@color/yellow"
         android:contentDescription="@string/inbox"
-        android:src="@drawable/ic_baseline_message_24" />
+        android:src="@drawable/ic_baseline_message_24"
+        android:onClick="openInbox"/>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:translationZ="2dp">
+        android:translationZ="2dp"
+        >
 
         <!-- The main content view -->
         <RelativeLayout
@@ -102,4 +103,4 @@
         </RelativeLayout>
 
     </androidx.drawerlayout.widget.DrawerLayout>
-</RelativeLayout>
+</FrameLayout>

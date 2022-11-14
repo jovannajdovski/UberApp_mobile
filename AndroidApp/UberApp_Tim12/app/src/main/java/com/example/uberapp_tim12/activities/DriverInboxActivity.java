@@ -35,12 +35,13 @@ public class DriverInboxActivity extends AppCompatActivity {
         ViewPagerAdapter adapter=new ViewPagerAdapter(this);
         viewPager2.setAdapter(adapter);
 
+        int tabIndex=getIntent().getIntExtra("tab",0);
+        final boolean[] firstTimePageTab = { true };
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition());
-
             }
 
             @Override
@@ -56,7 +57,13 @@ public class DriverInboxActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
+                if(firstTimePageTab[0])
+                {
+                    tabLayout.getTabAt(tabIndex).select();
+                    firstTimePageTab[0]=false;
+                }
+                else
+                    tabLayout.getTabAt(position).select();
             }
         });
     }

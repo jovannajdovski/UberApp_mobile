@@ -40,7 +40,6 @@ public class DriverMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_main);
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
-
         prepareNavigationDrawerList();
 
         navDrawerLayout=findViewById(R.id.drawerLayout);
@@ -79,7 +78,7 @@ public class DriverMainActivity extends AppCompatActivity {
         };
         if(savedInstanceState==null)
         {
-            selectItemFromDrawer(0);
+            selectItemFromDrawer(3);
         }
 
     }
@@ -166,8 +165,11 @@ public class DriverMainActivity extends AppCompatActivity {
         }
     }
     private void selectItemFromDrawer(int position) {
+        Intent intent=null;
         if(position == 0){
-
+            intent=new Intent(DriverMainActivity.this,DriverInboxActivity.class);
+            intent.putExtra("tab",1);
+            startActivity(intent);
         }else if(position == 1){
 
         }else if(position == 2){
@@ -177,12 +179,13 @@ public class DriverMainActivity extends AppCompatActivity {
         }
 
         navDrawerList.setItemChecked(position, true);
-
         navDrawerLayout.closeDrawer(navDrawerPane);
+
     }
     public void openInbox(View view)
     {
         Intent intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
+        intent.putExtra("tab",0);
         startActivity(intent);
     }
 }

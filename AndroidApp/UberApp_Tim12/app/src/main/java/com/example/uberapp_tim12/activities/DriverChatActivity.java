@@ -62,37 +62,6 @@ public class DriverChatActivity extends AppCompatActivity {
         });
     }
 
-    private RelativeLayout createNewMessageLayout(Message message) {
-        RelativeLayout relativeLayout= new RelativeLayout(this);
-        RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        TextView textView=new TextView(this);
-        textView.setText(message.getText());
-        int tenDp=convertDpToPixel(10,DriverChatActivity.this);
-        textView.setPadding(tenDp,tenDp,tenDp,tenDp);
-        textView.setTextSize(tenDp);
-        textView.setMaxWidth(convertDpToPixel(350,DriverChatActivity.this));
-
-        RelativeLayout.LayoutParams textViewParams= new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        textViewParams.setMargins(tenDp,tenDp,tenDp,tenDp);
-
-        if(message.getSender()== Message.Sender.MYSELF) {
-            textView.setBackgroundResource(R.drawable.user_message);
-            layoutParams.addRule(RelativeLayout.ALIGN_RIGHT,R.id.scroll);
-        }
-        else {
-            textView.setBackgroundResource(R.drawable.other_message);
-            layoutParams.addRule(RelativeLayout.ALIGN_LEFT,R.id.messages_stack);
-        }
-        textView.setLayoutParams(textViewParams);
-        relativeLayout.setLayoutParams(layoutParams);
-        relativeLayout.addView(textView);
-        return relativeLayout;
-    }
     private RelativeLayout create(Message message)
     {
         LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -108,8 +77,5 @@ public class DriverChatActivity extends AppCompatActivity {
         }
         textView.setText(message.getText());
         return layout;
-    }
-    private int convertDpToPixel(int dp, Context context){
-        return dp * ((int) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 }

@@ -60,9 +60,6 @@ public class PassengerMainActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
         actionBar.setHomeButtonEnabled(true);
 
-
-
-
         navDrawerToggle=new ActionBarDrawerToggle(
                 this,
                 navDrawerLayout,
@@ -79,7 +76,7 @@ public class PassengerMainActivity extends AppCompatActivity {
         };
         if(savedInstanceState==null)
         {
-            selectItemFromDrawer(0);
+            selectItemFromDrawer(4);
         }
 
     }
@@ -157,10 +154,13 @@ public class PassengerMainActivity extends AppCompatActivity {
         }
     }
     private void selectItemFromDrawer(int position) {
+        Intent intent=null;
         if(position == 0){
 
         }else if(position == 1){
-
+            intent=new Intent(PassengerMainActivity.this,PassengerInboxActivity.class);
+            intent.putExtra("tab",1);
+            startActivity(intent);
         }else if(position == 2){
             //..
         }else if(position == 3){
@@ -170,5 +170,12 @@ public class PassengerMainActivity extends AppCompatActivity {
         navDrawerList.setItemChecked(position, true);
 
         navDrawerLayout.closeDrawer(navDrawerPane);
+
+    }
+    public void openInbox(View view)
+    {
+        Intent intent = new Intent(PassengerMainActivity.this, PassengerInboxActivity.class);
+        intent.putExtra("tab",0);
+        startActivity(intent);
     }
 }

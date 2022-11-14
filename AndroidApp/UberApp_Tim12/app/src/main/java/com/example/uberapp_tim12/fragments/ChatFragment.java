@@ -60,12 +60,12 @@ public class ChatFragment extends ListFragment {
         chatItems.add(new ChatItem("SUPPORT", "", R.drawable.ic_baseline_support, ChatItem.MessageType.SUPPORT));
         chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
         chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
-        chatItems.add(new ChatItem("PIZDARIJA", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
+        chatItems.add(new ChatItem("PANIC", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
         chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
-        chatItems.add(new ChatItem("PIZDARIJA", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
+        chatItems.add(new ChatItem("PANIC", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
         chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
         chatItems.add(new ChatItem("Kralja Aleksandra 7 - Preradoviceva 40", "13.11.2022. 14:00", R.drawable.ic_profile,ChatItem.MessageType.DRIVER));
-        chatItems.add(new ChatItem("PIZDARIJA", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
+        chatItems.add(new ChatItem("PANIC", "13.11.2022. 14:00", R.drawable.ic_baseline_alert,ChatItem.MessageType.PANIC));
     }
     private List<Message> prepareMessageList()
     {
