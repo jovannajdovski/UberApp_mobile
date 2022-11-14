@@ -3,6 +3,7 @@ package com.example.uberapp_tim12.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,16 @@ public class DriverSettingsActivity extends AppCompatActivity {
                 User user = UserMockup.getUser();
                 intent.putExtra("user", user);
                 startActivity(intent);
+            }
+        });
+
+        Button logOutButton = findViewById(R.id.logoutBtn);
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DriverSettingsActivity.this, UserLoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

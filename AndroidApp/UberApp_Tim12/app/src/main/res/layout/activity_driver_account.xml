@@ -323,5 +323,20 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/edit_text_border"
+        android:backgroundTint="@color/yellow"
+        android:text="@string/logout" >
+
+    </Button>
+
 </RelativeLayout>
 

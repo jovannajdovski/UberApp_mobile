@@ -137,6 +137,16 @@ public class PassengerAccountActivity extends AppCompatActivity {
                 createDialog("Phone", profilePhone, ValidationType.phoneNumber);
             }
         });
+
+        Button logOutButton = findViewById(R.id.logoutBtn);
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PassengerAccountActivity.this, UserLoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     protected void createDialog(String title, TextView view, ValidationType validationType) {
