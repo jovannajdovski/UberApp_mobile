@@ -28,4 +28,15 @@
     <string name="payments">payments</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">Email</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="driver">Driver</string>
+    <string name="favourite_routes">Favourite routes</string>
+    <string name="report">Report</string>
+    <string name="passenger">Passenger</string>
+    <string name="statistics">Statistics</string>
 </resources>
