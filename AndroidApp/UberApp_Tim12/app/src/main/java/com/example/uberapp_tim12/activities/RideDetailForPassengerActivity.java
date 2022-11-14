@@ -8,10 +8,13 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -107,17 +110,22 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
 
     public void showRateDialog(TextView view){
         AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
-        RatingBar rating = new RatingBar(this);
-        rating.setMax(5);
 
         popDialog.setIcon(R.drawable.ic_baseline_star);
         popDialog.setTitle("Rate your drive");
+
+        RatingBar rating = new RatingBar(this);
+        rating.setNumStars(5);
+        rating.setMax(5);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         popDialog.setView(rating);
 
         popDialog.setPositiveButton("Rate",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
                         view.setText(String.valueOf(rating.getProgress()));
                         dialogInterface.dismiss();
                     }
