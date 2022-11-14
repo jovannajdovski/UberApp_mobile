@@ -17,6 +17,7 @@
         android:background="@drawable/edit_text_border"
         android:inputType="text"
         tools:ignore="LabelFor"
+        android:paddingHorizontal="5dp"
         />
     <ImageButton
         android:id="@+id/filter_button"

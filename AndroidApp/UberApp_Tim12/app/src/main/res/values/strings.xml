@@ -13,7 +13,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="register">REGISTER</string>
     <string name="splash_screen">SPLASH SCREEN</string>
-    <string name="log_in">Log in</string>
+    <string name="log_in">Login</string>
     <string name="password">Password</string>
     <string name="login">LOGIN</string>
     <string name="profile">Profile</string>
@@ -54,4 +54,8 @@
     <string name="report">Report</string>
     <string name="passenger">Passenger</string>
     <string name="statistics">Statistics</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="keep_me_logged_in">Keep me logged in</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="Log_in">Log in</string>
 </resources>

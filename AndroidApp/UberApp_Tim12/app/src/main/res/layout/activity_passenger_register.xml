@@ -13,9 +13,10 @@
         android:layout_height="wrap_content" />
     <LinearLayout
         android:layout_width="match_parent"
-
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
+        android:layout_marginVertical="30dp"
+        android:layout_marginHorizontal="50dp"
+        android:gravity="center"
         android:orientation="vertical">
     <TextView
         android:id="@+id/textView"
@@ -23,13 +24,15 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:text="@string/sign_up"
-        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:textSize="35sp"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
+        android:layout_marginTop="5dp"
         android:labelFor="@+id/editTextTextFullName"
         android:text="@string/full_name" />
 
@@ -40,12 +43,14 @@
         android:ems="10"
         android:inputType="text"
         android:autofillHints=""
+        android:paddingHorizontal="5dp"
         android:background="@drawable/edit_text_border"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
+        android:layout_marginTop="5dp"
         android:labelFor="@+id/editTextEmail"
         android:text="@string/email_address" />
 
@@ -56,12 +61,14 @@
         android:ems="10"
         android:inputType="textEmailAddress"
         android:autofillHints=""
+        android:paddingHorizontal="5dp"
         android:background="@drawable/edit_text_border"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
+        android:layout_marginTop="5dp"
         android:labelFor="@+id/editTextPhone"
         android:text="@string/phone_number" />
 
@@ -72,12 +79,14 @@
         android:ems="10"
         android:inputType="phone"
         android:autofillHints=""
+        android:paddingHorizontal="5dp"
         android:background="@drawable/edit_text_border"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
+        android:layout_marginTop="5dp"
         android:labelFor="@+id/editTextAddress"
         android:text="@string/street_address" />
 
@@ -88,12 +97,14 @@
         android:ems="10"
         android:inputType="text"
         android:autofillHints=""
+        android:paddingHorizontal="5dp"
         android:background="@drawable/edit_text_border"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
+        android:layout_marginTop="5dp"
         android:labelFor="@+id/editTextPasswordRegister"
         android:text="@string/set_password" />
 
@@ -104,12 +115,14 @@
         android:ems="10"
         android:inputType="textPassword"
         android:autofillHints=""
+        android:paddingHorizontal="5dp"
         android:background="@drawable/edit_text_border"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
+        android:layout_marginTop="5dp"
         android:labelFor="@+id/editTextPasswordRegisterConfirm"
         android:text="@string/confirm_password" />
 
@@ -120,13 +133,42 @@
         android:ems="10"
         android:inputType="textPassword"
         android:autofillHints=""
+        android:paddingHorizontal="5dp"
         android:background="@drawable/edit_text_border"/>
 
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text_border"
+        android:backgroundTint="@color/gray"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         android:text="@string/register" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="20dp">
+            <TextView
+                android:id="@+id/account_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/already_have_an_account"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:id="@+id/loginLinkButton"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Log_in"
+                android:layout_toEndOf="@id/account_text"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp"
+                />
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
