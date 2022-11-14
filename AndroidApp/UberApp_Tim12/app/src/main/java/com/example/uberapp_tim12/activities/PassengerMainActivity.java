@@ -108,14 +108,15 @@ public class PassengerMainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        Intent intent=null;
         if (id == R.id.profile)
         {
-            intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
-
+            Intent intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
+            startActivity(intent);
         }
-        startActivity(intent);
-
+        else if (id == R.id.history){
+            Intent intent = new Intent(PassengerMainActivity.this,PassengerRideHistoryActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }

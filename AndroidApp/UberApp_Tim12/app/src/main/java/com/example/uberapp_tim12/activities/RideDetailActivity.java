@@ -44,7 +44,11 @@ public class RideDetailActivity extends AppCompatActivity {
 
         Ride ride = (Ride)getIntent().getSerializableExtra("ride");
 
-        rate.setText("5.00");
+        if (ride.getRate() != -1){
+            rate.setText(""+ride.getRate());
+        } else {
+            rate.setText("Not rated");
+        }
         date.setText(ride.getStartDate());
         startTime.setText(ride.getStartTime());
         startPlace.setText(ride.getStartPlace());

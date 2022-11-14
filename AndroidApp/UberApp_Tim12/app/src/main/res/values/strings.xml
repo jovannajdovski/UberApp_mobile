@@ -34,5 +34,13 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="chat">Chat</string>
+    <string name="rating_for_your_expirience">Rating for your expirience</string>
+    <string name="rate_your_ride">Rate your ride</string>
+    <string name="passengers">Passengers:</string>
+    <string name="price">Price:</string>
+    <string name="driver">Driver</string>
+    <string name="distance">Distance:</string>
+    <string name="see_offers_for_this_route">See offers for this route</string>
+    <string name="set_as_a_favorite_route">Set as a favorite route</string>
 
 </resources>

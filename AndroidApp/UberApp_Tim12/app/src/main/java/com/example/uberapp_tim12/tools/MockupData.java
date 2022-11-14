@@ -20,19 +20,26 @@ public class MockupData {
         Passenger p3 = new Passenger("Mika", "Mikic", "mika.mikic@gmail.com", "0665555555", "Mikina 1", "mika");
         Passenger p4 = new Passenger("Filip", "Filipovic", "filip.filipovic@gmail.com", "0667654321", "Filipova 1", "filip");
 
+
+        Passenger driver = new Passenger("Majstor","Mile","majstor.mile@gmail.com","066543212","Futoska 2","mile");
         r1.addPassanger(p1);
         r1.addPassanger(p2);
         r1.addPassanger(p3);
+        r1.setDriver(driver);
 
         r2.addPassanger(p4);
         r2.addPassanger(p1);
+        r2.setDriver(driver);
+
+        r3.setDriver(driver);
 
         r4.addPassanger(p2);
+        r4.setDriver(driver);
 
-        rides.add(r1);
-        rides.add(r2);
-        rides.add(r3);
         rides.add(r4);
+        rides.add(r3);
+        rides.add(r2);
+        rides.add(r1);
 
         return rides;
     }

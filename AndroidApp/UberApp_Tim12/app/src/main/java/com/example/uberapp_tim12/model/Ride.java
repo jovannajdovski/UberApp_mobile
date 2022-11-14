@@ -15,9 +15,8 @@ public class Ride implements Serializable {
     private String endPlace;
     private double distance;
     private int price;
-
-    public Ride() {
-    }
+    private double rate;
+    private Passenger driver;
 
     public Ride(String startDate, String startTime, String endDate, String endTime, String messages, double distance, int price, String startPlace, String endPlace) {
         this.passengers = new ArrayList<Passenger>();
@@ -30,6 +29,37 @@ public class Ride implements Serializable {
         this.price = price;
         this.startPlace = startPlace;
         this.endPlace = endPlace;
+        this.rate = -1;
+    }
+
+    public Ride(String startDate, String startTime, String endDate, String endTime, String messages, double distance, int price, String startPlace, String endPlace, double rate) {
+        this.passengers = new ArrayList<Passenger>();
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.endDate = endDate;
+        this.endTime = endTime;
+        this.messages = messages;
+        this.distance = distance;
+        this.price = price;
+        this.startPlace = startPlace;
+        this.endPlace = endPlace;
+        this.rate = rate;
+    }
+
+    public Passenger getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Passenger driver) {
+        this.driver = driver;
+    }
+
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
     }
 
     public String getStartPlace() {
