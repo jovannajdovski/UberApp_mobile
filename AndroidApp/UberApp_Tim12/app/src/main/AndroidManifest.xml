@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
-        <activity android:name=".activities.RideDetailForPassengerActivity"
+        <activity
+            android:name=".activities.RideDetailForPassengerActivity"
             android:exported="false"
             android:parentActivityName=".activities.PassengerRideHistoryActivity">
             <meta-data
@@ -36,8 +37,8 @@
         </activity>
         <activity
             android:name=".activities.DriverChatActivity"
-            android:parentActivityName=".activities.DriverInboxActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.DriverInboxActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -91,16 +92,16 @@
         </activity>
         <activity
             android:name=".activities.PassengerSettingsActivity"
-            android:parentActivityName=".activities.PassengerMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.DriverSettingsActivity"
-            android:parentActivityName=".activities.DriverMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -109,7 +110,6 @@
             android:name=".activities.PassengerAccountActivity"
             android:exported="false"
             android:parentActivityName=".activities.PassengerMainActivity">
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -123,8 +123,8 @@
         </activity>
         <activity
             android:name=".activities.PassengerRegisterActivity"
-            android:parentActivityName=".activities.UserLoginActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.UserLoginActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -149,6 +149,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <receiver android:name=".receivers.SyncMessagesReceiver" />
+        <service android:name=".services.SyncPassengerMessagesService"/>
+        <service android:name=".services.SyncDriverMessagesService" />
+
     </application>
 
 </manifest>

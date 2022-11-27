@@ -3,7 +3,14 @@ package com.example.uberapp_tim12.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -34,6 +41,9 @@ import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
 import com.example.uberapp_tim12.model.NavDrawerItem;
 import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.receivers.SyncMessagesReceiver;
+import com.example.uberapp_tim12.services.SyncDriverMessagesService;
+import com.example.uberapp_tim12.services.SyncPassengerMessagesService;
 import com.example.uberapp_tim12.tools.UserMockup;
 
 import java.util.ArrayList;
@@ -46,10 +56,18 @@ public class PassengerMainActivity extends AppCompatActivity {
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
 
+    private PendingIntent pendingIntent;
+    private AlarmManager manager;
+
+    private SyncMessagesReceiver syncMessagesReceiver;
+    public static String SYNC_PASSENGER_MESSAGES = "SYNC_PASSENGER_MESSAGES";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_main);
+
+        createNotificationChannel();
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
 
@@ -104,7 +122,70 @@ public class PassengerMainActivity extends AppCompatActivity {
             }
         });
 
+        setUpReceiver();
     }
+
+    private void setUpReceiver(){
+        syncMessagesReceiver = new SyncMessagesReceiver();
+
+        Intent alarmIntent = new Intent(this, SyncPassengerMessagesService.class);
+        pendingIntent = PendingIntent.getService(this, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        if (manager != null) {
+            manager.cancel(pendingIntent);
+        }
+
+        if(syncMessagesReceiver != null){
+            unregisterReceiver(syncMessagesReceiver);
+        }
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (manager == null) {
+            setUpReceiver();
+        }
+
+        // 1min
+        int interval = (1*60*1000);
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SYNC_PASSENGER_MESSAGES);
+        registerReceiver(syncMessagesReceiver, filter);
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -130,35 +211,6 @@ public class PassengerMainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
     }
 
     @Override
@@ -210,5 +262,20 @@ public class PassengerMainActivity extends AppCompatActivity {
         Intent intent = new Intent(PassengerMainActivity.this, PassengerInboxActivity.class);
         intent.putExtra("tab",0);
         startActivity(intent);
+    }
+
+    private static String CHANNEL_ID = "Passenger notification channel";
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Passenger notification channel";
+            String description = "Description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

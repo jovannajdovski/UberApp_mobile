@@ -59,4 +59,6 @@
     <string name="already_have_an_account">Already have an account?</string>
     <string name="Log_in">Log in</string>
     <string name="logout">Logout</string>
+    <string name="notification_driver_title">Driver notification</string>
+    <string name="notification_passenger_title">Passenger notification</string>
 </resources>

@@ -13,10 +13,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +46,8 @@ import com.example.uberapp_tim12.model.NavDrawerItem;
 
 import java.util.ArrayList;
 import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.receivers.SyncMessagesReceiver;
+import com.example.uberapp_tim12.services.SyncDriverMessagesService;
 import com.example.uberapp_tim12.tools.UserMockup;
 
 public class DriverMainActivity extends AppCompatActivity {
@@ -49,10 +58,18 @@ public class DriverMainActivity extends AppCompatActivity {
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
 
+    private PendingIntent pendingIntent;
+    private AlarmManager manager;
+
+    private SyncMessagesReceiver syncMessagesReceiver;
+    public static String SYNC_DRIVER_MESSAGES = "SYNC_DRIVER_MESSAGES";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
+
+        createNotificationChannel();
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
         prepareNavigationDrawerList();
@@ -106,7 +123,73 @@ public class DriverMainActivity extends AppCompatActivity {
             }
         });
 
+        setUpReceiver();
     }
+
+    private void setUpReceiver(){
+        syncMessagesReceiver = new SyncMessagesReceiver();
+
+        Intent alarmIntent = new Intent(this, SyncDriverMessagesService.class);
+        pendingIntent = PendingIntent.getService(this, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        if (manager != null) {
+            manager.cancel(pendingIntent);
+        }
+
+        if(syncMessagesReceiver != null){
+            unregisterReceiver(syncMessagesReceiver);
+        }
+
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (manager == null) {
+            setUpReceiver();
+        }
+
+        // 1min
+        int interval = (1*60*1000);
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SYNC_DRIVER_MESSAGES);
+        registerReceiver(syncMessagesReceiver, filter);
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -145,37 +228,6 @@ public class DriverMainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -223,6 +275,21 @@ public class DriverMainActivity extends AppCompatActivity {
         Intent intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
         intent.putExtra("tab",0);
         startActivity(intent);
+    }
+
+    private static String CHANNEL_ID = "Driver notification channel";
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Driver notification channel";
+            String description = "Description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 }
