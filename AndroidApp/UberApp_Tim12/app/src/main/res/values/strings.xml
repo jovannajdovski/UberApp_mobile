@@ -20,4 +20,5 @@
     <string name="map">map</string>
     <string name="ride_history">   Ride history</string>
     <string name="where_to">&#160; Where to?</string>
+    <string name="new_ride">New ride!</string>
 </resources>

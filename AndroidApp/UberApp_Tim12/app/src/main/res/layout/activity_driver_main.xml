@@ -16,7 +16,16 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/map"
         app:srcCompat="@drawable/map" />
-
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:background="@drawable/new_ride_sticker"
+        android:text="@string/new_ride"
+        android:textColor="@color/white"
+        android:layout_toStartOf="@id/fab"
+        android:layout_alignTop="@id/fab"
+        android:layout_marginTop="-13dp"
+        android:textAlignment="center"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
