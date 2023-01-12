@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -32,9 +33,16 @@ import android.widget.RelativeLayout;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
+import com.example.uberapp_tim12.fragments.ConfirmationFragment;
+import com.example.uberapp_tim12.fragments.InviteFriendsFragment;
+import com.example.uberapp_tim12.fragments.MapFragment;
+import com.example.uberapp_tim12.fragments.MoreOptionsFragment;
+import com.example.uberapp_tim12.fragments.OverviewFragment;
+import com.example.uberapp_tim12.fragments.RouteFragment;
 import com.example.uberapp_tim12.model.NavDrawerItem;
 import com.example.uberapp_tim12.model.User;
 import com.example.uberapp_tim12.tools.UserMockup;
+import com.shuhart.stepview.StepView;
 
 import java.util.ArrayList;
 
@@ -45,6 +53,13 @@ public class PassengerMainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle navDrawerToggle;
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
+    private MapFragment mapFragment;
+    private RouteFragment routeFragment;
+    private InviteFriendsFragment inviteFriendsFragment;
+    private MoreOptionsFragment moreOptionsFragment;
+    private ConfirmationFragment confirmationFragment;
+    private OverviewFragment overviewFragment;
+    private FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +68,17 @@ public class PassengerMainActivity extends AppCompatActivity {
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
 
-        prepareNavigationDrawerList();
-
-        navDrawerLayout=findViewById(R.id.drawerLayout);
-        navDrawerList=findViewById(R.id.navList);
-        navDrawerPane=findViewById(R.id.drawerPane);
-
-        NavDrawerListAdapter adapter=new NavDrawerListAdapter(this,navDrawerItems);
-
-        navDrawerLayout.setDrawerShadow(R.drawable.shadow, GravityCompat.START);
-        navDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        navDrawerList.setAdapter(adapter);
+//        prepareNavigationDrawerList();
+//
+//        navDrawerLayout=findViewById(R.id.drawerLayout);
+//        navDrawerList=findViewById(R.id.navList);
+//        navDrawerPane=findViewById(R.id.drawerPane);
+//
+//        NavDrawerListAdapter adapter=new NavDrawerListAdapter(this,navDrawerItems);
+//
+//        navDrawerLayout.setDrawerShadow(R.drawable.shadow, GravityCompat.START);
+//        navDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+//        navDrawerList.setAdapter(adapter);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,36 +90,89 @@ public class PassengerMainActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
         actionBar.setHomeButtonEnabled(true);
 
-        navDrawerToggle=new ActionBarDrawerToggle(
-                this,
-                navDrawerLayout,
-                toolbar,
-                R.string.drawer_open,
-                R.string.drawer_close){
-            public void onDrawerClosed(View view){
-                invalidateOptionsMenu();
-            }
-            public void onDrawerOpened(View drawerView)
-            {
-                invalidateOptionsMenu();
-            }
-        };
-        if(savedInstanceState==null)
-        {
-            selectItemFromDrawer(4);
-        }
-        RelativeLayout pictureView=findViewById(R.id.picture_view);
-        pictureView.setOnClickListener(new View.OnClickListener() {
+//        navDrawerToggle=new ActionBarDrawerToggle(
+//                this,
+//                navDrawerLayout,
+//                toolbar,
+//                R.string.drawer_open,
+//                R.string.drawer_close){
+//            public void onDrawerClosed(View view){
+//                invalidateOptionsMenu();
+//            }
+//            public void onDrawerOpened(View drawerView)
+//            {
+//                invalidateOptionsMenu();
+//            }
+//        };
+//        if(savedInstanceState==null)
+//        {
+//            selectItemFromDrawer(4);
+//        }
+//        RelativeLayout pictureView=findViewById(R.id.picture_view);
+//        pictureView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent=new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
+//                User user=UserMockup.getUser();
+//                intent.putExtra("user",user);
+//                startActivity(intent);
+//            }
+//        });
+
+        StepView stepView=findViewById(R.id.step_view);
+        stepView.getState().animationType(StepView.ANIMATION_ALL)
+                .stepsNumber(6)
+                .animationDuration(300).commit();
+        stepView.setOnStepClickListener(new StepView.OnStepClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
-                User user=UserMockup.getUser();
-                intent.putExtra("user",user);
-                startActivity(intent);
+            public void onStepClick(int step) {
+                int currentStep=stepView.getCurrentStep();
+
+                if(step-currentStep<=1 && step!=5) {
+                    stepView.go(step, true);
+                    changeFragment(step);
+                }
             }
         });
 
+        mapFragment=new MapFragment();
+        routeFragment=new RouteFragment();
+        inviteFriendsFragment=new InviteFriendsFragment();
+        moreOptionsFragment=new MoreOptionsFragment();
+        confirmationFragment=new ConfirmationFragment();
+        overviewFragment=new OverviewFragment();
+        manager=getSupportFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.content_fragment,mapFragment,mapFragment.getTag()).commit();
+
     }
+
+    private void changeFragment(int step) {
+        switch (step)
+        {
+            case 0:
+                manager.beginTransaction().replace(R.id.content_fragment,mapFragment,mapFragment.getTag()).commit();
+                break;
+            case 1:
+                manager.beginTransaction().replace(R.id.content_fragment, routeFragment,routeFragment.getTag()).commit();
+                break;
+            case 2:
+                manager.beginTransaction().replace(R.id.content_fragment,inviteFriendsFragment,inviteFriendsFragment.getTag()).commit();
+                break;
+            case 3:
+                manager.beginTransaction().replace(R.id.content_fragment, moreOptionsFragment,moreOptionsFragment.getTag()).commit();
+                break;
+            case 4:
+                manager.beginTransaction().replace(R.id.content_fragment,confirmationFragment,confirmationFragment.getTag()).commit();
+                break;
+            case 5:
+                manager.beginTransaction().replace(R.id.content_fragment, overviewFragment,overviewFragment.getTag()).commit();
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -161,16 +229,16 @@ public class PassengerMainActivity extends AppCompatActivity {
         super.onRestart();
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        navDrawerToggle.syncState();
-    }
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        navDrawerToggle.onConfigurationChanged(newConfig);
-    }
+//    @Override
+//    protected void onPostCreate(Bundle savedInstanceState) {
+//        super.onPostCreate(savedInstanceState);
+//        navDrawerToggle.syncState();
+//    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        navDrawerToggle.onConfigurationChanged(newConfig);
+//    }
     private void prepareNavigationDrawerList(){
         navDrawerItems.add(new NavDrawerItem(getString(R.string.payments), R.drawable.ic_baseline_payments));
         navDrawerItems.add(new NavDrawerItem(getString(R.string.notifications), R.drawable.ic_baseline_notifications));

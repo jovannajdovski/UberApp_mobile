@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.InviteFriendsFragment">
+
+    <ImageView
+        android:id="@+id/friend_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_friends"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+    <EditText
+        android:id="@+id/friend_email_input"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_below="@id/friend_icon"
+        android:hint="@string/type_email"
+        android:background="@drawable/edit_text_border"
+        android:paddingHorizontal="5dp"
+        android:inputType="text"
+        tools:ignore="LabelFor,TextFields"
+        />
+    <Button
+        android:id="@+id/add_friend_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/friend_email_input"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/green"
+        android:text="Add friend"
+        android:textSize="18sp"/>
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/add_friend_button"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="90dp"
+        android:choiceMode="none"
+        android:background="@color/light_grey"/>
+
+</RelativeLayout>

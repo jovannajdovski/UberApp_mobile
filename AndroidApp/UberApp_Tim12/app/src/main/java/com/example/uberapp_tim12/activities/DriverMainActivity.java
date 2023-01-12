@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -23,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
@@ -35,11 +37,13 @@ import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
+import com.example.uberapp_tim12.fragments.MapFragment;
 import com.example.uberapp_tim12.model.NavDrawerItem;
 
 import java.util.ArrayList;
 import com.example.uberapp_tim12.model.User;
 import com.example.uberapp_tim12.tools.UserMockup;
+import com.shuhart.stepview.StepView;
 
 public class DriverMainActivity extends AppCompatActivity {
     SwitchCompat sw;
@@ -105,6 +109,8 @@ public class DriverMainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
 
     }
     @Override

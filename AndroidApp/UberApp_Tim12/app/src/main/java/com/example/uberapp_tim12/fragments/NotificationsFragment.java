@@ -63,7 +63,11 @@ public class NotificationsFragment extends ListFragment {
     }
     private void prepareNotificationsList()
     {
-        //ako je voznja accepted i trenutno vreme je vece od vremena pocekta voznje, onda se pojavljuje dugme start
+        //ako je ulogovan vozac
+            //ako ima voznja koja je pending moze da se klikne na tu notifikaciju i onda se otvara dialog sa informacijama i dugmadima
+            //ako je voznja accepted i trenutno vreme je vece od vremena pocekta voznje, onda se pojavljuje dugme start
+        //ako je ulogovan putnik
+            //ako ima voznja na koju je pozvan stize mu obavestenje o njoj
         notificationItems.add(new NotificationItem(
                 "Kralja Aleksandra 7 - Preradoviceva 40",
                 "13.11.2022. 14:00",

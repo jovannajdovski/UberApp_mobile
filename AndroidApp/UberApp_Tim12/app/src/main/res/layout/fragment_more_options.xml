@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.MoreOptionsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageView
+        android:id="@+id/pets_icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_pets"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"/>
+    <CheckBox
+        android:id="@+id/pets_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pets_allowed"
+        android:textSize="20sp"
+        android:scaleX="1.20"
+        android:scaleY="1.20"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="20dp"
+        android:layout_toEndOf="@id/pets_icon"
+        android:layout_alignBottom="@id/pets_icon"/>
+    <ImageView
+        android:id="@+id/baby_icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_child"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_below="@id/pets_icon"/>
+    <CheckBox
+        android:id="@+id/baby_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/baby_allowed"
+        android:textSize="20sp"
+        android:scaleX="1.20"
+        android:scaleY="1.20"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="20dp"
+        android:layout_toEndOf="@id/baby_icon"
+        android:layout_alignBottom="@id/baby_icon"/>
+    <ImageView
+        android:id="@+id/vehicle_icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_below="@id/baby_icon"/>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="15dp"
+        android:layout_toEndOf="@id/vehicle_icon"
+        android:layout_alignBottom="@id/vehicle_icon"
+        />
+</RelativeLayout>

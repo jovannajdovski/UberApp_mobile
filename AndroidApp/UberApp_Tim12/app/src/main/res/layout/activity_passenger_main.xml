@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,34 +11,120 @@
         android:layout_height="wrap_content"
         layout="@layout/basic_toolbar" />
 
-    <ImageView
-        android:id="@+id/map"
+    <com.shuhart.stepview.StepView
+        android:id="@+id/step_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/map"
-        app:srcCompat="@drawable/map" />
-
-    <EditText
-
-        android:id="@+id/destination"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="center|top"
+        android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:hint="@string/where_to"
-        android:background="@drawable/edit_text_border"
-        android:paddingHorizontal="5dp"
-        android:inputType="text"
-        tools:ignore="LabelFor"
-        />
+        app:sv_doneCircleColor="@color/yellow"
+        app:sv_doneCircleRadius="12dp"
+        app:sv_doneStepLineColor="@color/yellow"
+        app:sv_doneStepMarkColor="@color/black"
+        app:sv_doneTextColor="@color/black"
+        app:sv_nextStepCircleColor="@color/light_grey"
+        app:sv_nextStepLineColor="@color/black"
+        app:sv_nextTextColor="@color/black"
+        app:sv_selectedCircleColor="@color/yellow"
+        app:sv_selectedCircleRadius="15dp"
+        app:sv_selectedStepNumberColor="@color/black"
+        app:sv_selectedTextColor="@color/black"
+        app:sv_stepLineWidth="2dp"
+        app:sv_stepNumberTextSize="18sp"
+        app:sv_stepPadding="4dp" />
+    <GridLayout
+        android:id="@+id/grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/step_view"
+        android:columnCount="6"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        tools:context=".GridXMLActivity"
+        tools:layout_editor_absoluteX="56dp"
+        tools:layout_editor_absoluteY="0dp">
+ 
+        <TextView
+            android:textSize="12sp"
+            android:textColor="#000"
+            android:text="@string/start"
+            android:fontFamily="sans-serif-light"
+            android:textAlignment="center"
+            android:layout_marginBottom="15dp"
+            android:typeface="monospace"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            tools:ignore="RtlCompat" />
+        <TextView
+            android:textSize="12sp"
+            android:textColor="#000"
+            android:text="@string/route"
+            android:fontFamily="sans-serif-light"
+            android:textAlignment="center"
+            android:layout_marginBottom="15dp"
+            android:typeface="monospace"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            tools:ignore="RtlCompat" />
+        <TextView
+            android:textSize="12sp"
+            android:textColor="#000"
+            android:text="@string/invite"
+            android:fontFamily="sans-serif-light"
+            android:textAlignment="center"
+            android:layout_marginBottom="15dp"
+            android:typeface="monospace"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            tools:ignore="RtlCompat" />
+        <TextView
+            android:textSize="12sp"
+            android:textColor="#000"
+            android:text="@string/more"
+            android:fontFamily="sans-serif-light"
+            android:textAlignment="center"
+            android:layout_marginBottom="15dp"
+            android:typeface="monospace"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            tools:ignore="RtlCompat" />
+        <TextView
+            android:textSize="12sp"
+            android:textColor="#000"
+            android:text="@string/confirm"
+            android:fontFamily="sans-serif-light"
+            android:textAlignment="center"
+            android:layout_marginBottom="15dp"
+            android:typeface="monospace"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            tools:ignore="RtlCompat" />
+        <TextView
+            android:textSize="12sp"
+            android:textColor="#000"
+            android:text="@string/overview"
+            android:fontFamily="sans-serif-light"
+            android:textAlignment="center"
+            android:layout_marginBottom="15dp"
+            android:typeface="monospace"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            tools:ignore="RtlCompat" />
+    </GridLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/grid"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:backgroundTint="@color/yellow"
@@ -46,64 +132,64 @@
         android:src="@drawable/ic_baseline_message_24"
         android:onClick="openInbox"/>
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:translationZ="2dp"
-        >
+<!--    <androidx.drawerlayout.widget.DrawerLayout-->
+<!--        android:id="@+id/drawerLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical"-->
+<!--        android:translationZ="2dp"-->
+<!--        >-->
 
-        <!-- The main content view -->
-        <RelativeLayout
-            android:id="@+id/mainContent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+<!--        &lt;!&ndash; The main content view &ndash;&gt;-->
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/mainContent"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent" />-->
 
-        <!-- The navigation drawer -->
-        <RelativeLayout
-            android:layout_width="220dp"
-            android:layout_height="match_parent"
-            android:id="@+id/drawerPane"
-            android:layout_gravity="start">
-            <View
-                android:id="@+id/profile_view"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/yellow">
-            </View>
-            <RelativeLayout
-                android:id="@+id/picture_view"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignTop="@id/profile_view"
-                android:layout_marginTop="90dp"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/image_border">
-                <ImageView
-                    android:id="@+id/profile_picture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/profile"
-                    app:srcCompat="@drawable/ic_profile"/>
-            </RelativeLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ime Prezime"
-                android:layout_below="@id/picture_view"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                />
-            <ListView
-                android:id="@+id/navList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/profile_view"
-                android:choiceMode="singleChoice"
-                android:background="#ffffffff" />
+<!--        &lt;!&ndash; The navigation drawer &ndash;&gt;-->
+<!--        <RelativeLayout-->
+<!--            android:layout_width="220dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/drawerPane"-->
+<!--            android:layout_gravity="start">-->
+<!--            <View-->
+<!--                android:id="@+id/profile_view"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:background="@color/yellow">-->
+<!--            </View>-->
+<!--            <RelativeLayout-->
+<!--                android:id="@+id/picture_view"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_alignTop="@id/profile_view"-->
+<!--                android:layout_marginTop="90dp"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:background="@drawable/image_border">-->
+<!--                <ImageView-->
+<!--                    android:id="@+id/profile_picture"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:contentDescription="@string/profile"-->
+<!--                    app:srcCompat="@drawable/ic_profile"/>-->
+<!--            </RelativeLayout>-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Ime Prezime"-->
+<!--                android:layout_below="@id/picture_view"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                />-->
+<!--            <ListView-->
+<!--                android:id="@+id/navList"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_below="@id/profile_view"-->
+<!--                android:choiceMode="singleChoice"-->
+<!--                android:background="#ffffffff" />-->
 
-        </RelativeLayout>
+<!--        </RelativeLayout>-->
 
-    </androidx.drawerlayout.widget.DrawerLayout>
-</FrameLayout>
+<!--    </androidx.drawerlayout.widget.DrawerLayout>-->
+</RelativeLayout>

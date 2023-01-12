@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/basic_toolbar" />
+
     <ImageView
         android:id="@+id/map"
         android:layout_width="match_parent"
@@ -17,6 +18,7 @@
         android:contentDescription="@string/map"
         app:srcCompat="@drawable/map" />
     <TextView
+        android:id="@+id/new_ride_text"
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:background="@drawable/new_ride_sticker"
@@ -52,7 +54,10 @@
         <RelativeLayout
             android:id="@+id/mainContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+
+        </RelativeLayout>
 
         <!-- The navigation drawer -->
         <RelativeLayout

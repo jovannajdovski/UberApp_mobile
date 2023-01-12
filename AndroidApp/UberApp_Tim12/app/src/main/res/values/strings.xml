@@ -61,4 +61,15 @@
     <string name="logout">Logout</string>
     <string name="start">Start</string>
     <string name="rejection_reason">&#160; Rejection reason</string>
+    <string name="route">Route</string>
+    <string name="invite">Invite</string>
+    <string name="more">More</string>
+    <string name="confirm">Confirm</string>
+    <string name="overview">Overview</string>
+    <string name="type_email">&#160; Type email</string>
+    <string name="pets_allowed">Pets allowed</string>
+    <string name="baby_allowed">Baby allowed</string>
+    <string name="confirm_your_ride">Confirm your ride</string>
+    <string name="other_passengers">Other passengers</string>
+    <string name="back_to_home">Back to home</string>
 </resources>

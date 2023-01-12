@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:choiceMode="singleChoice"
-            android:background="#ffffffff"
-            android:focusableInTouchMode="false"/>
+            android:background="#ffffffff"/>
     </RelativeLayout>
 
     <View
@@ -74,7 +73,7 @@
             tools:layout_editor_absoluteX="56dp"
             tools:layout_editor_absoluteY="0dp">
             <ImageView
-                android:src="@drawable/ic_baseline_settings"
+                android:src="@drawable/ic_route"
                 android:layout_gravity="fill"
                 android:layout_columnWeight="1"
                 android:layout_marginTop="15dp"
@@ -92,7 +91,7 @@
                 android:layout_columnWeight="1"
                 tools:ignore="RtlCompat" />
             <ImageView
-                android:src="@drawable/ic_baseline_settings"
+                android:src="@drawable/ic_friends"
                 android:layout_gravity="fill"
                 android:layout_columnWeight="1"
                 android:layout_marginTop="15dp"
@@ -110,7 +109,7 @@
                 android:layout_columnWeight="1"
                 tools:ignore="RtlCompat" />
             <ImageView
-                android:src="@drawable/ic_baseline_settings"
+                android:src="@drawable/ic_money"
                 android:layout_gravity="fill"
                 android:layout_columnWeight="1"
                 android:layout_marginTop="15dp"
@@ -128,7 +127,7 @@
                 android:layout_columnWeight="1"
                 tools:ignore="RtlCompat" />
             <ImageView
-                android:src="@drawable/ic_baseline_settings"
+                android:src="@drawable/ic_time"
                 android:layout_gravity="fill"
                 android:layout_columnWeight="1"
                 android:layout_marginTop="15dp"
@@ -174,7 +173,6 @@
             android:text="Reject"
             android:textSize="15sp"/>
         <EditText
-
             android:id="@+id/new_ride_rejection_reason"
             android:layout_width="match_parent"
             android:layout_height="40dp"
