@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_below="@id/toolbar"
-        android:background="@drawable/map_border"
+        android:background="?attr/colorPrimaryContainer"
         android:padding="10dp"
         android:layout_marginBottom="20dp">
 
@@ -333,8 +333,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="40dp"
         android:background="@drawable/edit_text_border"
-        android:backgroundTint="@color/yellow"
-        android:text="@string/logout" >
+        android:text="@string/logout">
 
     </Button>
 
