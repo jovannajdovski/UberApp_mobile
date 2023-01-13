@@ -21,7 +21,7 @@ public class PassengerSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_settings);
 
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -35,6 +35,17 @@ public class PassengerSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PassengerSettingsActivity.this, PassengerAccountActivity.class);
+                User user = UserMockup.getUser();
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
+
+        ConstraintLayout reportLayout = findViewById(R.id.show_reports_passenger);
+        reportLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PassengerSettingsActivity.this, PassengerStatisticActivity.class);
                 User user = UserMockup.getUser();
                 intent.putExtra("user", user);
                 startActivity(intent);
