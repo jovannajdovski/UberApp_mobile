@@ -41,4 +41,10 @@ public class NavDrawerItem implements Parcelable{
             return new NavDrawerItem[size];
         }
     };
+
+    @Override
+    public String toString() {
+
+        return title;
+    }
 }

@@ -41,13 +41,20 @@
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="200dp"
         android:layout_below="@id/add_friend_button"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="90dp"
         android:choiceMode="none"
         android:background="@color/light_grey"/>
-
+    <Button
+        android:id="@+id/next_button_friends"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/next_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        />
 </RelativeLayout>

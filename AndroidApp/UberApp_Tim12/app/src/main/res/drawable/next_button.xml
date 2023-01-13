@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <!-- drawable/circle_card_icon.xml -->
+        <shape android:shape="oval">
+            <solid android:color="@color/green" />
+            <stroke android:width="0.1dp"
+                android:color="#777777" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_next_arrow"
+        android:height="40dp"
+        android:width="40dp"
+        android:top="15dp"
+        android:start="15dp"
+        />
+</layer-list>

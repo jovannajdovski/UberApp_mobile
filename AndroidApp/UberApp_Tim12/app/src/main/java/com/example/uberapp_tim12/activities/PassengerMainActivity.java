@@ -60,7 +60,7 @@ public class PassengerMainActivity extends AppCompatActivity {
     private ConfirmationFragment confirmationFragment;
     private OverviewFragment overviewFragment;
     private FragmentManager manager;
-
+    public StepView stepView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +119,7 @@ public class PassengerMainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        StepView stepView=findViewById(R.id.step_view);
+        stepView=findViewById(R.id.step_view);
         stepView.getState().animationType(StepView.ANIMATION_ALL)
                 .stepsNumber(6)
                 .animationDuration(300).commit();
@@ -128,8 +128,7 @@ public class PassengerMainActivity extends AppCompatActivity {
             public void onStepClick(int step) {
                 int currentStep=stepView.getCurrentStep();
 
-                if(step-currentStep<=1 && step!=5) {
-                    stepView.go(step, true);
+                if(step-currentStep<=1) {
                     changeFragment(step);
                 }
             }
@@ -147,7 +146,8 @@ public class PassengerMainActivity extends AppCompatActivity {
 
     }
 
-    private void changeFragment(int step) {
+    public void changeFragment(int step) {
+        stepView.go(step,true);
         switch (step)
         {
             case 0:

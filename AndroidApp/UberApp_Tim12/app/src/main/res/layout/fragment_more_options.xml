@@ -66,4 +66,13 @@
         android:layout_toEndOf="@id/vehicle_icon"
         android:layout_alignBottom="@id/vehicle_icon"
         />
+    <Button
+        android:id="@+id/next_button_options"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/next_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        />
 </RelativeLayout>

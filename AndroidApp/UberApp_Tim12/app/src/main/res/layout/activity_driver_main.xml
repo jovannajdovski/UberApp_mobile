@@ -47,17 +47,14 @@
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:translationZ="2dp">
+        android:orientation="vertical">
 
         <!-- The main content view -->
         <RelativeLayout
             android:id="@+id/mainContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent" />
 
-
-        </RelativeLayout>
 
         <!-- The navigation drawer -->
         <RelativeLayout
