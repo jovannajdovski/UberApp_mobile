@@ -98,6 +98,14 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.PassengerFavouriteRoutesActivity"
+            android:parentActivityName=".activities.PassengerMainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.PassengerStatisticActivity"
             android:parentActivityName=".activities.PassengerSettingsActivity"
             android:exported="false">

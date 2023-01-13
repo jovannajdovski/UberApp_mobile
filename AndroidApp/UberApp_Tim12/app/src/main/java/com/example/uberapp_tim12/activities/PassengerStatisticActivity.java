@@ -22,7 +22,6 @@ import com.google.android.material.tabs.TabLayout;
 public class PassengerStatisticActivity extends AppCompatActivity {
     BottomNavigationView statisticNavigation;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
