@@ -8,17 +8,32 @@ import com.example.uberapp_tim12.R;
 
 public class FragmentTransition {
 
-    public static void to(Fragment newFragment, FragmentActivity activity)
+    public static void passengerTo(Fragment newFragment, FragmentActivity activity)
     {
-        to(newFragment, activity, true);
+        passengerTo(newFragment, activity, true);
     }
 
-    public static void to(Fragment newFragment, FragmentActivity activity, boolean addToBackstack)
+    public static void passengerTo(Fragment newFragment, FragmentActivity activity, boolean addToBackstack)
     {
         FragmentTransaction transaction = activity.getSupportFragmentManager()
                 .beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.mainContent, newFragment);
+                .replace(R.id.passengerMainContent, newFragment);
+        if(addToBackstack) transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public static void driverTo(Fragment newFragment, FragmentActivity activity)
+    {
+        passengerTo(newFragment, activity, true);
+    }
+
+    public static void driverTo(Fragment newFragment, FragmentActivity activity, boolean addToBackstack)
+    {
+        FragmentTransaction transaction = activity.getSupportFragmentManager()
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.driverMainContent, newFragment);
         if(addToBackstack) transaction.addToBackStack(null);
         transaction.commit();
     }

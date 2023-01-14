@@ -29,6 +29,6 @@ public class PassengerRideHistoryActivity extends AppCompatActivity {
         actionBar.setIcon(R.drawable.ic_baseline_history_24);
         actionBar.setTitle("Ride history");
 
-        FragmentTransition.to(PassengerRideHistoryFragment.newInstance(), this, false);
+        FragmentTransition.passengerTo(PassengerRideHistoryFragment.newInstance(), this, false);
     }
 }

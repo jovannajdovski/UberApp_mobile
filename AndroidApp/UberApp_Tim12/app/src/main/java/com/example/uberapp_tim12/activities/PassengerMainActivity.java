@@ -31,6 +31,16 @@ import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.UserMockup;
 import com.shuhart.stepview.StepView;
+import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
+import com.example.uberapp_tim12.fragments.DrawRouteFragment;
+import com.example.uberapp_tim12.fragments.MapFragment;
+import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
+import com.example.uberapp_tim12.model.NavDrawerItem;
+import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.tools.FragmentTransition;
+import com.example.uberapp_tim12.tools.UserMockup;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -54,29 +64,35 @@ public class PassengerMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_main);
 
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
+
+        FragmentTransition.passengerTo(MapFragment.newInstance(),this,false);
+       // FragmentTransition.passengerTo(DrawRouteFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
+        //FragmentTransition.passengerTo(PassengerCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
+    }
 //        prepareNavigationDrawerList();
 //
 //        navDrawerLayout=findViewById(R.id.drawerLayout);
 //        navDrawerList=findViewById(R.id.navList);
 //        navDrawerPane=findViewById(R.id.drawerPane);
-//
+
 //        NavDrawerListAdapter adapter=new NavDrawerListAdapter(this,navDrawerItems);
 //
 //        navDrawerLayout.setDrawerShadow(R.drawable.shadow, GravityCompat.START);
 //        navDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 //        navDrawerList.setAdapter(adapter);
+//
 
-        Toolbar toolbar=findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(R.drawable.ic_launcher_foreground);
-        actionBar.setTitle(R.string.app_name);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
-        actionBar.setHomeButtonEnabled(true);
-
+//
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setIcon(R.drawable.ic_launcher_foreground);
+//        actionBar.setTitle(R.string.app_name);
+//        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
+//        actionBar.setHomeButtonEnabled(true);
+//
 //        navDrawerToggle=new ActionBarDrawerToggle(
 //                this,
 //                navDrawerLayout,
@@ -105,89 +121,35 @@ public class PassengerMainActivity extends AppCompatActivity {
 //                startActivity(intent);
 //            }
 //        });
+//
+//    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu)
+//    {
+//        MenuInflater inflater=getMenuInflater();
+//        inflater.inflate(R.menu.driver_actionbar,menu);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        Intent intent;
+//        if (id == R.id.profile)
+//        {
+//            intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
+//            User user = UserMockup.getUser();
+//            intent.putExtra("user", user);
+//            startActivity(intent);
+//        }
+//        else if (id == R.id.history){
+//            intent = new Intent(PassengerMainActivity.this,PassengerRideHistoryActivity.class);
+//            startActivity(intent);
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
-        stepView=findViewById(R.id.step_view);
-        stepView.getState().animationType(StepView.ANIMATION_ALL)
-                .stepsNumber(6)
-                .animationDuration(300).commit();
-        stepView.setOnStepClickListener(new StepView.OnStepClickListener() {
-            @Override
-            public void onStepClick(int step) {
-                int currentStep=stepView.getCurrentStep();
-
-                if(step-currentStep<=1) {
-                    changeFragment(step);
-                }
-            }
-        });
-
-        mapFragment=new MapFragment();
-        routeFragment=new RouteFragment();
-        inviteFriendsFragment=new InviteFriendsFragment();
-        moreOptionsFragment=new MoreOptionsFragment();
-        confirmationFragment=new ConfirmationFragment();
-        overviewFragment=new OverviewFragment();
-        manager=getSupportFragmentManager();
-        manager.beginTransaction()
-                .replace(R.id.content_fragment,mapFragment,mapFragment.getTag()).commit();
-
-    }
-
-    public void changeFragment(int step) {
-        stepView.go(step,true);
-        switch (step)
-        {
-            case 0:
-                manager.beginTransaction().replace(R.id.content_fragment,mapFragment,mapFragment.getTag()).commit();
-                break;
-            case 1:
-                manager.beginTransaction().replace(R.id.content_fragment, routeFragment,routeFragment.getTag()).commit();
-                break;
-            case 2:
-                manager.beginTransaction().replace(R.id.content_fragment,inviteFriendsFragment,inviteFriendsFragment.getTag()).commit();
-                break;
-            case 3:
-                manager.beginTransaction().replace(R.id.content_fragment, moreOptionsFragment,moreOptionsFragment.getTag()).commit();
-                break;
-            case 4:
-                manager.beginTransaction().replace(R.id.content_fragment,confirmationFragment,confirmationFragment.getTag()).commit();
-
-                break;
-            case 5:
-                manager.beginTransaction().replace(R.id.content_fragment, overviewFragment,overviewFragment.getTag()).commit();
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.driver_actionbar,menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Intent intent;
-        if (id == R.id.profile)
-        {
-            intent = new Intent(PassengerMainActivity.this, PassengerAccountActivity.class);
-            User user = UserMockup.getUser();
-            intent.putExtra("user", user);
-            startActivity(intent);
-        }
-        else if (id == R.id.history){
-            intent = new Intent(PassengerMainActivity.this,PassengerRideHistoryActivity.class);
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -220,6 +182,8 @@ public class PassengerMainActivity extends AppCompatActivity {
         super.onRestart();
         }
 
+    }
+//
 //    @Override
 //    protected void onPostCreate(Bundle savedInstanceState) {
 //        super.onPostCreate(savedInstanceState);
@@ -230,45 +194,44 @@ public class PassengerMainActivity extends AppCompatActivity {
 //        super.onConfigurationChanged(newConfig);
 //        navDrawerToggle.onConfigurationChanged(newConfig);
 //    }
-    private void prepareNavigationDrawerList(){
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.payments), R.drawable.ic_baseline_payments));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.notifications), R.drawable.ic_baseline_notifications));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.settings), R.drawable.ic_baseline_settings));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.about), R.drawable.ic_baseline_about));
-    }
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItemFromDrawer(position);
-        }
-    }
-    private void selectItemFromDrawer(int position) {
-        Intent intent=null;
-        if(position == 0){
-
-        }else if(position == 1){
-            intent=new Intent(PassengerMainActivity.this,PassengerInboxActivity.class);
-            intent.putExtra("tab",1);
-            startActivity(intent);
-        }else if(position == 2){
+//    private void prepareNavigationDrawerList(){
+//        navDrawerItems.add(new NavDrawerItem(getString(R.string.payments), R.drawable.ic_baseline_payments));
+//        navDrawerItems.add(new NavDrawerItem(getString(R.string.notifications), R.drawable.ic_baseline_notifications));
+//        navDrawerItems.add(new NavDrawerItem(getString(R.string.settings), R.drawable.ic_baseline_settings));
+//        navDrawerItems.add(new NavDrawerItem(getString(R.string.about), R.drawable.ic_baseline_about));
+//    }
+//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+//        @Override
+//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            selectItemFromDrawer(position);
+//        }
+//    }
+//    private void selectItemFromDrawer(int position) {
+//        Intent intent=null;
+//        if(position == 0){
+//
+//        }else if(position == 1){
+//            intent=new Intent(PassengerMainActivity.this,PassengerInboxActivity.class);
+//            intent.putExtra("tab",1);
+//            startActivity(intent);
+//        }else if(position == 2){
 //            intent = new Intent(PassengerMainActivity.this, PassengerSettingsActivity.class);
-            intent = new Intent(PassengerMainActivity.this, PassengerSettingsActivity.class);
-            User user = UserMockup.getUser();
-            intent.putExtra("user", user);
-            startActivity(intent);
-        }else if(position == 3){
-            //..
-        }
-
-        navDrawerList.setItemChecked(position, true);
-
-        navDrawerLayout.closeDrawer(navDrawerPane);
-
-    }
-    public void openInbox(View view)
-    {
-        Intent intent = new Intent(PassengerMainActivity.this, PassengerInboxActivity.class);
-        intent.putExtra("tab",0);
-        startActivity(intent);
-    }
+//            User user = UserMockup.getUser();
+//            intent.putExtra("user", user);
+//            startActivity(intent);
+//        }else if(position == 3){
+//            //..
+//        }
+//
+//        navDrawerList.setItemChecked(position, true);
+//
+//        navDrawerLayout.closeDrawer(navDrawerPane);
+//
+//    }
+//    public void openInbox(View view)
+//    {
+//        Intent intent = new Intent(PassengerMainActivity.this, PassengerInboxActivity.class);
+//        intent.putExtra("tab",0);
+//        startActivity(intent);
+//    }
 }

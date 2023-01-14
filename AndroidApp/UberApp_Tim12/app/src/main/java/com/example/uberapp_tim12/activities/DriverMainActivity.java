@@ -32,7 +32,16 @@ import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 
 import java.util.ArrayList;
 import com.example.uberapp_tim12.model_mock.User;
+import com.example.uberapp_tim12.fragments.DrawRouteFragment;
+import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
+import com.example.uberapp_tim12.fragments.DriverMapFragment;
+import com.example.uberapp_tim12.model.NavDrawerItem;
+
+import java.util.ArrayList;
+import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.UserMockup;
+import com.google.android.gms.maps.model.LatLng;
 
 public class DriverMainActivity extends AppCompatActivity {
     SwitchCompat sw;
@@ -47,99 +56,103 @@ public class DriverMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
 
-        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
-        prepareNavigationDrawerList();
 
-        navDrawerLayout=findViewById(R.id.drawerLayout);
-        navDrawerList=findViewById(R.id.navList);
-        navDrawerPane=findViewById(R.id.drawerPane);
-
-        NavDrawerListAdapter adapter=new NavDrawerListAdapter(this,navDrawerItems);
-
-        navDrawerLayout.setDrawerShadow(R.drawable.shadow, GravityCompat.START);
-        navDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        navDrawerList.setAdapter(adapter);
-
-        Toolbar toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(R.drawable.ic_launcher_foreground);
-        actionBar.setTitle(R.string.app_name);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
-        actionBar.setHomeButtonEnabled(true);
-
-        navDrawerToggle=new ActionBarDrawerToggle(
-                this,
-                navDrawerLayout,
-                toolbar,
-                R.string.drawer_open,
-                R.string.drawer_close){
-            public void onDrawerClosed(View view){
-                invalidateOptionsMenu();
-            }
-            public void onDrawerOpened(View drawerView)
-            {
-                invalidateOptionsMenu();
-            }
-        };
-        if(savedInstanceState==null)
-        {
-            selectItemFromDrawer(3);
-        }
-        RelativeLayout pictureView=findViewById(R.id.picture_view);
-        pictureView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(DriverMainActivity.this, DriverAccountActivity.class);
-                User user=UserMockup.getUser();
-                intent.putExtra("user",user);
-                startActivity(intent);
-            }
-        });
-
-
-
+        FragmentTransition.driverTo(DriverMapFragment.newInstance(),this,false);
+        //FragmentTransition.driverTo(DriverCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.driver_actionbar,menu);
-
-        MenuItem itemSwitch=menu.findItem(R.id.isOnlineButton);
-        itemSwitch.setActionView(R.layout.driver_activity_switch);
-        sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
-        sw.setChecked(true);
-        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                    Toast.makeText(DriverMainActivity.this,"ONLINE",Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(DriverMainActivity.this,"OFFLINE",Toast.LENGTH_SHORT).show();
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Intent intent=null;
-        if (id == R.id.profile) {
-            intent = new Intent(DriverMainActivity.this, DriverAccountActivity.class);
-            User user = UserMockup.getUser();
-            intent.putExtra("user", user);
-            startActivity(intent);
-        }
-        else if (id == R.id.history){
-            intent = new Intent(DriverMainActivity.this,DriverRideHistoryActivity.class);
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//        prepareNavigationDrawerList();
+//
+//        navDrawerLayout=findViewById(R.id.drawerLayout);
+//        navDrawerList=findViewById(R.id.navList);
+//        navDrawerPane=findViewById(R.id.drawerPane);
+//
+//        NavDrawerListAdapter adapter=new NavDrawerListAdapter(this,navDrawerItems);
+//
+//        navDrawerLayout.setDrawerShadow(R.drawable.shadow, GravityCompat.START);
+//        navDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+//        navDrawerList.setAdapter(adapter);
+//
+//
+//
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setIcon(R.drawable.ic_launcher_foreground);
+//        actionBar.setTitle(R.string.app_name);
+//        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
+//        actionBar.setHomeButtonEnabled(true);
+//
+//        navDrawerToggle=new ActionBarDrawerToggle(
+//                this,
+//                navDrawerLayout,
+//                toolbar,
+//                R.string.drawer_open,
+//                R.string.drawer_close){
+//            public void onDrawerClosed(View view){
+//                invalidateOptionsMenu();
+//            }
+//            public void onDrawerOpened(View drawerView)
+//            {
+//                invalidateOptionsMenu();
+//            }
+//        };
+//        if(savedInstanceState==null)
+//        {
+//            selectItemFromDrawer(3);
+//        }
+//        RelativeLayout pictureView=findViewById(R.id.picture_view);
+//        pictureView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent=new Intent(DriverMainActivity.this, DriverAccountActivity.class);
+//                User user=UserMockup.getUser();
+//                intent.putExtra("user",user);
+//                startActivity(intent);
+//            }
+//        });
+//
+//    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu)
+//    {
+//        MenuInflater inflater=getMenuInflater();
+//        inflater.inflate(R.menu.driver_actionbar,menu);
+//
+//        MenuItem itemSwitch=menu.findItem(R.id.isOnlineButton);
+//        itemSwitch.setActionView(R.layout.driver_activity_switch);
+//        sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
+//        sw.setChecked(true);
+//        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked)
+//                    Toast.makeText(DriverMainActivity.this,"ONLINE",Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(DriverMainActivity.this,"OFFLINE",Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        Intent intent=null;
+//        if (id == R.id.profile) {
+//            intent = new Intent(DriverMainActivity.this, DriverAccountActivity.class);
+//            User user = UserMockup.getUser();
+//            intent.putExtra("user", user);
+//            startActivity(intent);
+//        }
+//        else if (id == R.id.history){
+//            intent = new Intent(DriverMainActivity.this,DriverRideHistoryActivity.class);
+//            startActivity(intent);
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     protected void onStart() {
@@ -172,52 +185,52 @@ public class DriverMainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        navDrawerToggle.syncState();
-    }
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        navDrawerToggle.onConfigurationChanged(newConfig);
-    }
-    private void prepareNavigationDrawerList(){
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.notifications), R.drawable.ic_baseline_notifications));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.settings), R.drawable.ic_baseline_settings));
-        navDrawerItems.add(new NavDrawerItem(getString(R.string.about), R.drawable.ic_baseline_about));
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItemFromDrawer(position);
-        }
-    }
-    private void selectItemFromDrawer(int position) {
-        Intent intent=null;
-        if(position == 0){
-            intent=new Intent(DriverMainActivity.this,DriverInboxActivity.class);
-            intent.putExtra("tab",1);
-            startActivity(intent);
-        }else if(position == 1){
-            intent = new Intent(DriverMainActivity.this, DriverSettingsActivity.class);
-            User user = UserMockup.getUser();
-            intent.putExtra("user", user);
-            startActivity(intent);
-        }else if(position == 2){
-            //..
-        }
-
-        navDrawerList.setItemChecked(position, true);
-        navDrawerLayout.closeDrawer(navDrawerPane);
-
-    }
-    public void openInbox(View view)
-    {
-        Intent intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
-        intent.putExtra("tab",0);
-        startActivity(intent);
-    }
+//    @Override
+//    protected void onPostCreate(Bundle savedInstanceState) {
+//        super.onPostCreate(savedInstanceState);
+//        navDrawerToggle.syncState();
+//    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        navDrawerToggle.onConfigurationChanged(newConfig);
+//    }
+//    private void prepareNavigationDrawerList(){
+//        navDrawerItems.add(new NavDrawerItem(getString(R.string.notifications), R.drawable.ic_baseline_notifications));
+//        navDrawerItems.add(new NavDrawerItem(getString(R.string.settings), R.drawable.ic_baseline_settings));
+//        navDrawerItems.add(new NavDrawerItem(getString(R.string.about), R.drawable.ic_baseline_about));
+//    }
+//
+//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+//        @Override
+//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            selectItemFromDrawer(position);
+//        }
+//    }
+//    private void selectItemFromDrawer(int position) {
+//        Intent intent=null;
+//        if(position == 0){
+//            intent=new Intent(DriverMainActivity.this,DriverInboxActivity.class);
+//            intent.putExtra("tab",1);
+//            startActivity(intent);
+//        }else if(position == 1){
+//            intent = new Intent(DriverMainActivity.this, DriverSettingsActivity.class);
+//            User user = UserMockup.getUser();
+//            intent.putExtra("user", user);
+//            startActivity(intent);
+//        }else if(position == 2){
+//            //..
+//        }
+//
+//        navDrawerList.setItemChecked(position, true);
+//        navDrawerLayout.closeDrawer(navDrawerPane);
+//
+//    }
+//    public void openInbox(View view)
+//    {
+//        Intent intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
+//        intent.putExtra("tab",0);
+//        startActivity(intent);
+//    }
 
 }

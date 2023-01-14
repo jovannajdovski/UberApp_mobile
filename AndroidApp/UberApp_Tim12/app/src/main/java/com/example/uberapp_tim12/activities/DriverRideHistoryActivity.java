@@ -27,7 +27,7 @@ public class DriverRideHistoryActivity extends AppCompatActivity {
 
         actionBar.setIcon(R.drawable.ic_baseline_history_24);
         actionBar.setTitle("Ride history");
-        FragmentTransition.to(DriverRideHistoryFragment.newInstance(), this, false);
+        FragmentTransition.driverTo(DriverRideHistoryFragment.newInstance(), this, false);
     }
 
 
