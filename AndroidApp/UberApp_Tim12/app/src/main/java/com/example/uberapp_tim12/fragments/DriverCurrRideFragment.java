@@ -1,9 +1,11 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,6 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.BuildConfig;
@@ -32,6 +37,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -126,6 +134,15 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         mAdapter = new CustomAdapter(mDataset);
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
+
+        Button panicButton = (Button) view.findViewById(R.id.panic_button);
+
+        panicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPanicDialog();
+            }
+        });
 
         return view;
     }
@@ -255,5 +272,45 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
     public boolean onMarkerClick(@NonNull Marker marker) {
         Toast.makeText(getActivity(), marker.getTitle(), Toast.LENGTH_SHORT).show();
         return false;
+    }
+
+    private void showPanicDialog(){
+        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(getActivity());
+        alert.setTitle("Panic");
+        alert.setMessage("Enter reason for panic (optional)");
+
+        final TextInputEditText input = new TextInputEditText(getActivity());
+        final TextInputLayout inputLayout = new TextInputLayout(getActivity());
+
+        LinearLayout.LayoutParams editTextParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+
+        editTextParams.setMargins(100,0,100,0);
+        LinearLayout.LayoutParams textInputLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        textInputLayoutParams.setMargins(100,0,100,0);
+
+        inputLayout.setLayoutParams(textInputLayoutParams);
+        inputLayout.addView(input, editTextParams);
+        inputLayout.setHint("Reason");
+        alert.setView(inputLayout);
+
+        alert.setPositiveButton("PANIC", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
+                Log.d("Panic", "Panic message : " + value);
+                return;
+            }
+        });
+
+        alert.setNeutralButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+        alert.show();
     }
 }
