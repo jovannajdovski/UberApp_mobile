@@ -220,19 +220,10 @@ public class PassengerStatisticRideDistanceFragment extends Fragment {
         lineGraph.setScaleEnabled(false);
         lineGraph.setPinchZoom(false);
         lineGraph.setDrawGridBackground(false);
-//        lineGraph.setExtraLeftOffset(15);
-//        lineGraph.setExtraRightOffset(15);
-
-        //to hide background lines
-        lineGraph.getXAxis().setDrawGridLines(false);
-        lineGraph.getXAxis().setAxisLineColor(Color.GRAY);
-        lineGraph.getXAxis().setAxisLineWidth(1);
 
 
         lineGraph.getAxisLeft().setDrawGridLines(true);
-        lineGraph.getAxisLeft().setGridColor(Color.GRAY);
-        lineGraph.getAxisLeft().setAxisLineColor(Color.GRAY);
-        lineGraph.getAxisLeft().setAxisLineWidth(1);
+        lineGraph.getAxisLeft().setAxisLineColor(Color.BLACK);
         lineGraph.getAxisLeft().setTextColor(Color.rgb(92, 92, 92));
         lineGraph.getAxisLeft().setTextSize(12);
 
@@ -240,19 +231,13 @@ public class PassengerStatisticRideDistanceFragment extends Fragment {
         lineGraph.getAxisRight().setDrawGridLines(false);
         lineGraph.getAxisRight().setDrawLabels(false);
 
-        //to hide right Y and top X border
-//        YAxis rightYAxis = lineGraph.getAxisRight();
-//        rightYAxis.setEnabled(false);
-//        YAxis leftYAxis = lineGraph.getAxisLeft();
-//        leftYAxis.setEnabled(false);
-
         XAxis xAxis = lineGraph.getXAxis();
+        xAxis.setAxisLineColor(Color.BLACK);
         xAxis.setGranularity(1f);
-        xAxis.setCenterAxisLabels(true);
         xAxis.setEnabled(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(Color.rgb(92, 92, 92));
         xAxis.setTextSize(12);
-
+        xAxis.setDrawGridLines(false);
     }
 }

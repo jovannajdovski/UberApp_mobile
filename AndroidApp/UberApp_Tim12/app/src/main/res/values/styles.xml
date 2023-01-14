@@ -29,6 +29,14 @@
         <item name="cardBackgroundColor">#61bd28</item>
     </style>
 
+    <style name="redShadowMatCard" parent="shadowMatCard">
+        <item name="cardBackgroundColor">#d60f00</item>
+    </style>
+
+    <style name="yellowShadowMatCard" parent="shadowMatCard">
+        <item name="cardBackgroundColor">#ff7821</item>
+    </style>
+
     <style name="yellowBottomNavigation" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="backgroundTint">@color/white</item>
     </style>
