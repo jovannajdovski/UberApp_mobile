@@ -1,6 +1,6 @@
 package com.example.uberapp_tim12.tools;
 
-import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.model_mock.User;
 
 public class UserMockup {
     public static User getUser() {

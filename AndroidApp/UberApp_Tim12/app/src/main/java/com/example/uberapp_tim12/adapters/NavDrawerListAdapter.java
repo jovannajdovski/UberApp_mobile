@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.NavDrawerItem;
+import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 
 import java.util.ArrayList;
 

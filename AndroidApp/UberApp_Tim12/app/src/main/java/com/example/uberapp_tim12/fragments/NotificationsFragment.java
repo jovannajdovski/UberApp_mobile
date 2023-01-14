@@ -1,20 +1,30 @@
 package com.example.uberapp_tim12.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.ListFragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.NotificationsListAdapter;
-import com.example.uberapp_tim12.model.NotificationItem;
+import com.example.uberapp_tim12.dto.RidesListDTO;
+import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.model_mock.Message;
+import com.example.uberapp_tim12.model_mock.NotificationItem;
+import com.example.uberapp_tim12.service.RideService;
 
 import java.util.ArrayList;
 
@@ -25,11 +35,14 @@ public class NotificationsFragment extends ListFragment {
     }
 
     private ArrayList<NotificationItem> notificationItems=new ArrayList<>();
-
+    private View view;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prepareNotificationsList();
+        Intent intent=new Intent(getActivity(), RideService.class);
+        intent.putExtra("endpoint", "getPendingRidesForDriver");
+        getActivity().startService(intent);
         NotificationsListAdapter adapter=new NotificationsListAdapter(getActivity(),notificationItems);
         setListAdapter(adapter);
 
@@ -40,26 +53,36 @@ public class NotificationsFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.fragment_notifications, container, false);
-        RelativeLayout listView= (RelativeLayout) view.findViewById(R.id.list_view);
-        View blackBackground=view.findViewById(R.id.black_background);
-        RelativeLayout newRideView=(RelativeLayout) view.findViewById(R.id.new_ride_view);
-        boolean newRide=true; //dobijace se od drugde
-        if(newRide)
-        {
-            newRideView.setVisibility(View.VISIBLE);
-            blackBackground.setVisibility(View.VISIBLE);
-            //listView.setVisibility(View.GONE);
-        }
-        else{
-            newRideView.setVisibility(View.GONE);
-            blackBackground.setVisibility(View.GONE);
-        }
+        view = inflater.inflate(R.layout.fragment_notifications, container, false);
         return view;
     }
+
+    public BroadcastReceiver bReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSSSSSSSS","lalalalaalla");
+            RidesListDTO ridesListDTO=intent.getParcelableExtra("pendingRidesDTO");
+            Log.d("PASSSSSSSSS",ridesListDTO.toString());
+            FrameLayout frameLayout=view.findViewById(R.id.acceptance_ride_layout);
+
+            for(int i=ridesListDTO.getTotalCount()-1; i>=0;i--)
+            {
+                frameLayout.addView(createAcceptanceRideDialog(ridesListDTO.getRides().get(i)));
+            }
+        }
+    };
+
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-//        v.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.black));
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("pendingRides"));
     }
     private void prepareNotificationsList()
     {
@@ -103,5 +126,26 @@ public class NotificationsFragment extends ListFragment {
                 "Reminder",
                 "Your ride is in 5 minutes",
                 "13:55"));
+    }
+    private RelativeLayout createAcceptanceRideDialog(Ride ride)
+    {
+        View blackBackground=view.findViewById(R.id.black_background);
+        blackBackground.setVisibility(View.VISIBLE);
+
+        LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        RelativeLayout layout=(RelativeLayout) vi.inflate(R.layout.acceptance_ride_layout,null);
+        TextView departure=layout.findViewById(R.id.new_ride_departure);
+        TextView destination=layout.findViewById(R.id.new_ride_destination);
+        TextView cost=layout.findViewById(R.id.new_ride_cost);
+        TextView time=layout.findViewById(R.id.new_ride_time);
+        departure.setText(ride.getLocations().iterator().next().getDeparture().getAddress());
+        destination.setText(ride.getLocations().iterator().next().getDestination().getAddress());
+        cost.setText(String.valueOf(ride.getTotalCost()));
+        String dateTime=ride.getStartTime();
+        time.setText(dateTime.substring(dateTime.indexOf('T')+1,dateTime.indexOf('T')+6));
+
+
+
+        return layout;
     }
 }

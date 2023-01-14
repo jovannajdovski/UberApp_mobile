@@ -10,10 +10,9 @@ import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.PassengerAdapter;
-import com.example.uberapp_tim12.model.Passenger;
-import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.model_mock.Passenger;
+import com.example.uberapp_tim12.model_mock.Ride;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RideDetailActivity extends AppCompatActivity {

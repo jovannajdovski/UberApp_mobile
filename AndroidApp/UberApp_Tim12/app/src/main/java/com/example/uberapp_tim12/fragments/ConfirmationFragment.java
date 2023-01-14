@@ -63,8 +63,7 @@ public class ConfirmationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent=new Intent(getActivity(), RideService.class);
-        intent.putExtra("pas", "pas");
-        getActivity().startService(intent);
+        //getActivity().startService(intent);
 
         activity=(PassengerMainActivity) getActivity();
         if (getArguments() != null) {

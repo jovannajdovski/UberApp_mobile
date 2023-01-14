@@ -1,15 +1,7 @@
-package com.example.uberapp_tim12.model;
+package com.example.uberapp_tim12.model_mock;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.example.uberapp_tim12.R;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Formatter;
 
 public class ChatItem implements Parcelable {
     private String route;

@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.UserMockup;
 
 public class DriverSettingsActivity extends AppCompatActivity {

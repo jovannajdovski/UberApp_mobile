@@ -15,8 +15,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.ChatItem;
-import com.example.uberapp_tim12.model.Message;
+import com.example.uberapp_tim12.model_mock.ChatItem;
+import com.example.uberapp_tim12.model_mock.Message;
 
 import java.util.List;
 

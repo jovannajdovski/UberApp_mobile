@@ -1,7 +1,4 @@
-package com.example.uberapp_tim12.model;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package com.example.uberapp_tim12.model_mock;
 
 import java.io.Serializable;
 

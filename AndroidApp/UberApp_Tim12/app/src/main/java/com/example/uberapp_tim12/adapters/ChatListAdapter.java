@@ -10,8 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.ChatItem;
-import com.example.uberapp_tim12.model.NavDrawerItem;
+import com.example.uberapp_tim12.model_mock.ChatItem;
 
 import java.util.ArrayList;
 

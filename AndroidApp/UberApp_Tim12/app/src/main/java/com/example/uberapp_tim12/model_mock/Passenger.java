@@ -1,4 +1,4 @@
-package com.example.uberapp_tim12.model;
+package com.example.uberapp_tim12.model_mock;
 
 import androidx.annotation.NonNull;
 

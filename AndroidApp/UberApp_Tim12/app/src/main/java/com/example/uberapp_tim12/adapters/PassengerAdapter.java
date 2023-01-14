@@ -7,11 +7,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.Passenger;
-import com.example.uberapp_tim12.model.Ride;
-import com.example.uberapp_tim12.tools.MockupData;
+import com.example.uberapp_tim12.model_mock.Passenger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PassengerAdapter extends BaseAdapter {

@@ -1,7 +1,7 @@
 package com.example.uberapp_tim12.tools;
 
-import com.example.uberapp_tim12.model.Passenger;
-import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.model_mock.Passenger;
+import com.example.uberapp_tim12.model_mock.Ride;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.uberapp_tim12.model;
+package com.example.uberapp_tim12.model_mock;
 
 import android.os.Parcel;
 import android.os.Parcelable;

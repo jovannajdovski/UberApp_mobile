@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.model_mock.Ride;
 import com.example.uberapp_tim12.tools.MockupData;
 
 public class RideAdapter extends BaseAdapter {

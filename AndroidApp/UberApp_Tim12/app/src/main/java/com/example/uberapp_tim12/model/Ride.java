@@ -1,101 +1,56 @@
 package com.example.uberapp_tim12.model;
 
+import com.example.uberapp_tim12.dto.PathDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Ride implements Serializable {
-    private List<Passenger> passengers;
-    private String startDate;
+    private Integer id;
+
     private String startTime;
-    private String endDate;
+
     private String endTime;
-    private String messages;
-    private String startPlace;
-    private String endPlace;
-    private double distance;
-    private int price;
-    private double rate;
-    private Passenger driver;
+//    private LocalDateTime startTime;
 
-    public Ride(String startDate, String startTime, String endDate, String endTime, String messages, double distance, int price, String startPlace, String endPlace) {
-        this.passengers = new ArrayList<Passenger>();
-        this.startDate = startDate;
-        this.startTime = startTime;
-        this.endDate = endDate;
-        this.endTime = endTime;
-        this.messages = messages;
-        this.distance = distance;
-        this.price = price;
-        this.startPlace = startPlace;
-        this.endPlace = endPlace;
-        this.rate = -1;
+//    private LocalDateTime endTime;
+
+    private Double totalCost;
+
+    //private String driver;
+    private UserRideDTO driver;
+
+    //private Set<String> passengers=new HashSet<>();
+    private Set<UserRideDTO> passengers = new HashSet<>();
+
+    private Double estimatedTimeInMinutes;
+
+    private String vehicleType;
+    //private VehicleCategory vehicleType;
+
+    private boolean babyTransport;
+
+    private boolean petTransport;
+
+    private String rejection;
+//    private RideRejectionDTO rejection;
+
+    private Set<PathDTO> locations = new HashSet<>();
+
+    private String status;
+//    private RideStatus status;
+
+    private String scheduledTime;
+
+    public Integer getId() {
+        return id;
     }
 
-    public Ride(String startDate, String startTime, String endDate, String endTime, String messages, double distance, int price, String startPlace, String endPlace, double rate) {
-        this.passengers = new ArrayList<Passenger>();
-        this.startDate = startDate;
-        this.startTime = startTime;
-        this.endDate = endDate;
-        this.endTime = endTime;
-        this.messages = messages;
-        this.distance = distance;
-        this.price = price;
-        this.startPlace = startPlace;
-        this.endPlace = endPlace;
-        this.rate = rate;
-    }
-
-    public Passenger getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Passenger driver) {
-        this.driver = driver;
-    }
-
-    public double getRate() {
-        return rate;
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
-    }
-
-    public String getStartPlace() {
-        return startPlace;
-    }
-
-    public void setStartPlace(String startPlace) {
-        this.startPlace = startPlace;
-    }
-
-    public String getEndPlace() {
-        return endPlace;
-    }
-
-    public void setEndPlace(String endPlace) {
-        this.endPlace = endPlace;
-    }
-
-    public List<Passenger> getPassangers() {
-        return passengers;
-    }
-
-    public void setPassangers(List<Passenger> passengers) {
-        this.passengers = passengers;
-    }
-
-    public void addPassanger(Passenger passanger) {
-        this.passengers.add(passanger);
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getStartTime() {
@@ -106,14 +61,6 @@ public class Ride implements Serializable {
         this.startTime = startTime;
     }
 
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
     public String getEndTime() {
         return endTime;
     }
@@ -122,27 +69,91 @@ public class Ride implements Serializable {
         this.endTime = endTime;
     }
 
-    public String getMessages() {
-        return messages;
+    public Double getTotalCost() {
+        return totalCost;
     }
 
-    public void setMessages(String messages) {
-        this.messages = messages;
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
     }
 
-    public double getDistance() {
-        return distance;
+    public UserRideDTO getDriver() {
+        return driver;
     }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
+    public void setDriver(UserRideDTO driver) {
+        this.driver = driver;
     }
 
-    public int getPrice() {
-        return price;
+    public Set<UserRideDTO> getPassengers() {
+        return passengers;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setPassengers(Set<UserRideDTO> passengers) {
+        this.passengers = passengers;
+    }
+
+    public Double getEstimatedTimeInMinutes() {
+        return estimatedTimeInMinutes;
+    }
+
+    public void setEstimatedTimeInMinutes(Double estimatedTimeInMinutes) {
+        this.estimatedTimeInMinutes = estimatedTimeInMinutes;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public boolean isBabyTransport() {
+        return babyTransport;
+    }
+
+    public void setBabyTransport(boolean babyTransport) {
+        this.babyTransport = babyTransport;
+    }
+
+    public boolean isPetTransport() {
+        return petTransport;
+    }
+
+    public void setPetTransport(boolean petTransport) {
+        this.petTransport = petTransport;
+    }
+
+    public String getRejection() {
+        return rejection;
+    }
+
+    public void setRejection(String rejection) {
+        this.rejection = rejection;
+    }
+
+    public Set<PathDTO> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(Set<PathDTO> locations) {
+        this.locations = locations;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getScheduledTime() {
+        return scheduledTime;
+    }
+
+    public void setScheduledTime(String scheduledTime) {
+        this.scheduledTime = scheduledTime;
     }
 }

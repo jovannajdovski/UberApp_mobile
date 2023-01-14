@@ -35,92 +35,81 @@
         android:text="@string/title"
         android:layout_marginBottom="15dp"
         android:layout_below="@id/new_ride_departure"/>
-    <GridLayout
+    <RelativeLayout
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/new_ride_destination"
-        android:columnCount="4"
-        android:orientation="horizontal"
-        android:rowCount="1"
-        android:layout_marginTop="0dp"
+        android:background="@drawable/green_background"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="20dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        tools:context=".GridXMLActivity"
-        tools:layout_editor_absoluteX="56dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:layout_marginEnd="30dp">
 
         <ImageView
-            android:src="@drawable/ic_launcher_foreground"
+            android:id="@+id/cost_icon"
+            android:src="@drawable/ic_money_white"
             android:layout_height="30dp"
-            android:layout_gravity="fill"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_width="30dp"/>
         <TextView
-            android:id="@+id/vehicle_type"
-            android:textSize="18sp"
-            android:textColor="#000"
-            android:text="Volskwagen passat"
-            android:textAlignment="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="start|center_vertical"
-            android:layout_columnWeight="1"
-            tools:ignore="RtlCompat" />
+            android:id="@+id/cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:text="1500"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/cost_icon"/>
         <ImageView
-            android:src="@drawable/ic_time"
+            android:id="@+id/time_icon"
+            android:src="@drawable/ic_time_white"
             android:layout_height="30dp"
-            android:layout_gravity="fill"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_width="30dp"
+            android:layout_toEndOf="@id/cost"
+            android:layout_marginStart="50dp"/>
         <TextView
-            android:id="@+id/new_ride_time"
-            android:textSize="18sp"
-            android:textColor="#000"
-            android:text="@string/title"
-            android:textAlignment="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="start|center_vertical"
-            android:layout_columnWeight="1"
-            tools:ignore="RtlCompat" />
-    </GridLayout>
-    <LinearLayout
-        android:id="@+id/driver_layout"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal"
-        android:layout_below="@id/grid"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:background="@color/light_yellow">
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:text="22:45"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/time_icon"/>
         <TextView
             android:id="@+id/driver_label"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/white"
             android:text="@string/driver"
-            android:textSize="20sp"
-            android:textColor="@color/black"/>
+            android:textAlignment="center"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/cost_icon"/>
         <ImageView
-            android:id="@+id/driver_picture"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/profile_picture"
+            android:src="@drawable/ic_profile"
+            android:layout_height="30dp"
+            android:layout_width="30dp"
             android:layout_marginStart="30dp"
-            android:src="@drawable/ic_profile"/>
+            android:layout_toEndOf="@id/driver_label"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/cost_icon"/>
         <TextView
+            android:id="@+id/driver"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="30dp"
-            android:gravity="center"
-            android:text="Pera peric"
+            android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:textColor="@color/black" />
-    </LinearLayout>
+            android:textColor="@color/white"
+            android:text="Pera Peric"
+            android:textAlignment="center"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@id/profile_picture"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/cost_icon"/>
+    </RelativeLayout>
+
 
     <TextView
         android:id="@+id/friends_title"
@@ -129,7 +118,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/driver_layout"
+        android:layout_below="@id/grid"
         android:text="@string/other_passengers"
         android:textSize="20sp"
         android:textColor="@color/black"/>

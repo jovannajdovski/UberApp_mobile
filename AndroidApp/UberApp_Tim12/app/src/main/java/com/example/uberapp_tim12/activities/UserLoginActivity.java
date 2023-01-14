@@ -40,10 +40,10 @@ public class UserLoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent;
-                if(emailEditText.getText().toString().equals("driver"))
-                    intent = new Intent(UserLoginActivity.this, DriverMainActivity.class);
-                else
+                if(emailEditText.getText().toString().equals("passenger"))
                     intent = new Intent(UserLoginActivity.this, PassengerMainActivity.class);
+                else
+                    intent = new Intent(UserLoginActivity.this, DriverMainActivity.class);
 
                 startActivity(intent);
             }

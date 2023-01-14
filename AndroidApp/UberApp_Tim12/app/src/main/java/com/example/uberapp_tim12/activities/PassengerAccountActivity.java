@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.model_mock.User;
 
 import java.util.Locale;
 

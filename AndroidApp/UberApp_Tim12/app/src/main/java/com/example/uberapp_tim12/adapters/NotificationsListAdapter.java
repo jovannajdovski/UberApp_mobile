@@ -6,15 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model.ChatItem;
-import com.example.uberapp_tim12.model.NotificationItem;
+import com.example.uberapp_tim12.model_mock.NotificationItem;
 
 import java.util.ArrayList;
 

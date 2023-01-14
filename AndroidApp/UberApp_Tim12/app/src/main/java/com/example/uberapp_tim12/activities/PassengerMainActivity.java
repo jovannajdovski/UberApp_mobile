@@ -3,18 +3,13 @@ package com.example.uberapp_tim12.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,9 +27,8 @@ import com.example.uberapp_tim12.fragments.MapFragment;
 import com.example.uberapp_tim12.fragments.MoreOptionsFragment;
 import com.example.uberapp_tim12.fragments.OverviewFragment;
 import com.example.uberapp_tim12.fragments.RouteFragment;
-import com.example.uberapp_tim12.model.NavDrawerItem;
-import com.example.uberapp_tim12.model.User;
-import com.example.uberapp_tim12.service.RideService;
+import com.example.uberapp_tim12.model_mock.NavDrawerItem;
+import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.UserMockup;
 import com.shuhart.stepview.StepView;
 
