@@ -1,9 +1,15 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +17,7 @@ import android.widget.Button;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.PassengerMainActivity;
+import com.example.uberapp_tim12.service.RideService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +62,10 @@ public class ConfirmationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent=new Intent(getActivity(), RideService.class);
+        intent.putExtra("pas", "pas");
+        getActivity().startService(intent);
+
         activity=(PassengerMainActivity) getActivity();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -74,5 +85,25 @@ public class ConfirmationFragment extends Fragment {
             }
         });
         return view;
+    }
+    public BroadcastReceiver bReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String dobijeno=intent.getStringExtra("pas");
+            Log.d("PASSSss", dobijeno);
+        }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("ihor"));
     }
 }

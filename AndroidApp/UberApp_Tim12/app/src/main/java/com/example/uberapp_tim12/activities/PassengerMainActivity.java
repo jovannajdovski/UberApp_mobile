@@ -3,27 +3,22 @@ package com.example.uberapp_tim12.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
 
@@ -31,8 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
 import com.example.uberapp_tim12.fragments.ConfirmationFragment;
 import com.example.uberapp_tim12.fragments.InviteFriendsFragment;
 import com.example.uberapp_tim12.fragments.MapFragment;
@@ -41,6 +34,7 @@ import com.example.uberapp_tim12.fragments.OverviewFragment;
 import com.example.uberapp_tim12.fragments.RouteFragment;
 import com.example.uberapp_tim12.model.NavDrawerItem;
 import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.service.RideService;
 import com.example.uberapp_tim12.tools.UserMockup;
 import com.shuhart.stepview.StepView;
 
@@ -67,7 +61,6 @@ public class PassengerMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_passenger_main);
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
-
 //        prepareNavigationDrawerList();
 //
 //        navDrawerLayout=findViewById(R.id.drawerLayout);
@@ -164,6 +157,7 @@ public class PassengerMainActivity extends AppCompatActivity {
                 break;
             case 4:
                 manager.beginTransaction().replace(R.id.content_fragment,confirmationFragment,confirmationFragment.getTag()).commit();
+
                 break;
             case 5:
                 manager.beginTransaction().replace(R.id.content_fragment, overviewFragment,overviewFragment.getTag()).commit();
@@ -172,6 +166,7 @@ public class PassengerMainActivity extends AppCompatActivity {
                 break;
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -217,17 +212,19 @@ public class PassengerMainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(bReceiver);
     }
 
     @Override
     protected void onResume() {
+        //LocalBroadcastManager.getInstance(this).registerReceiver(bReceiver, new IntentFilter("ihor"));
         super.onResume();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-    }
+        }
 
 //    @Override
 //    protected void onPostCreate(Bundle savedInstanceState) {
