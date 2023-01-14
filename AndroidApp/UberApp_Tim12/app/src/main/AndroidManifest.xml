@@ -11,8 +11,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme"
         tools:targetApi="31">
         <service
             android:name=".service.RideService"/>
@@ -104,9 +104,34 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.PassengerFavouriteRoutesActivity"
+            android:parentActivityName=".activities.PassengerMainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.PassengerReportActivity"
+            android:parentActivityName=".activities.PassengerSettingsActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <activity
             android:name=".activities.DriverSettingsActivity"
             android:exported="false"
             android:parentActivityName=".activities.DriverMainActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.DriverStatisticsActivity"
+            android:parentActivityName=".activities.DriverStatisticsActivity"
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

@@ -41,6 +41,17 @@ public class DriverSettingsActivity extends AppCompatActivity {
             }
         });
 
+        ConstraintLayout statisticLayout = findViewById(R.id.driver_statistic);
+        statisticLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DriverSettingsActivity.this, DriverStatisticsActivity.class);
+                User user = UserMockup.getUser();
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
+
         Button logOutButton = findViewById(R.id.logoutBtn);
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -251,6 +251,7 @@ public class PassengerMainActivity extends AppCompatActivity {
             intent.putExtra("tab",1);
             startActivity(intent);
         }else if(position == 2){
+//            intent = new Intent(PassengerMainActivity.this, PassengerSettingsActivity.class);
             intent = new Intent(PassengerMainActivity.this, PassengerSettingsActivity.class);
             User user = UserMockup.getUser();
             intent.putExtra("user", user);
