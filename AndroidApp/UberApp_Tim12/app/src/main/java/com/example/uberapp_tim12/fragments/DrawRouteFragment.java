@@ -89,7 +89,7 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup vg, Bundle data) {
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.fragment_map, vg, false);
+        View view = inflater.inflate(R.layout.fragment_draw_route, vg, false);
 
         return view;
     }
@@ -99,7 +99,7 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 //        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.style_1_json));
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.style_2_json));
+//        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.style_2_json));
 
         mMap.addMarker(new MarkerOptions().position(start).title("Start point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
         mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));

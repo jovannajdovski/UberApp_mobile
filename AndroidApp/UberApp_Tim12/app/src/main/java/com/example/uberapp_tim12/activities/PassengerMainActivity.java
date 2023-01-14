@@ -59,7 +59,8 @@ public class PassengerMainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
 
-        FragmentTransition.to(DrawRouteFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
+        FragmentTransition.to(MapFragment.newInstance(),this,false);
+  //      FragmentTransition.to(DrawRouteFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
     }
 //        prepareNavigationDrawerList();
 //
