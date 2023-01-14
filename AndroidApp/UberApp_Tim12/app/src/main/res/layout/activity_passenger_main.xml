@@ -17,7 +17,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/mainContent"
+        android:id="@+id/passengerMainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

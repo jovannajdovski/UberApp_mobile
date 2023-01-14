@@ -5,7 +5,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,7 +35,9 @@ import android.widget.Toast;
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.dialogs.LocationDialog;
+import com.example.uberapp_tim12.model.VehicleForMarker;
 import com.example.uberapp_tim12.tools.FragmentTransition;
+import com.example.uberapp_tim12.tools.MockupVehicles;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,6 +46,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -56,8 +61,11 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 
 public class MapFragment extends Fragment implements LocationListener, OnMapReadyCallback {
@@ -69,6 +77,8 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private SupportMapFragment mMapFragment;
     private AlertDialog dialog;
     private Marker home;
+    private Marker startMarker;
+    private Marker endMarker;
     private GoogleMap map;
     private int hour;
     private int minute;
@@ -153,52 +163,11 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
             @Override
             public void onClick(View view) {
                 if (startPoint != null && endPoint != null) {
-                    FragmentTransition.to(DrawRouteFragment.newInstance(startPoint, endPoint), getActivity(), false);
+                    FragmentTransition.passengerTo(DrawRouteFragment.newInstance(startPoint, endPoint), getActivity(), false);
                 }
             }
         });
 
-        if (!Places.isInitialized()) {
-            Places.initialize(getActivity().getApplicationContext(), BuildConfig.MAPS_API_KEY);
-        }
-        PlacesClient placesClient = Places.createClient(getActivity());
-
-        autocompleteStart =
-                (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_start);
-
-        autocompleteEnd =
-                (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_end);
-
-        setUpAutocompleteFragment(autocompleteStart);
-        setUpAutocompleteFragment(autocompleteEnd);
-
-        autocompleteStart.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                startPoint = place.getLatLng();
-                startAddress = place.getName();
-                Log.i("PlaceTAG", "Place: " + place.getName() + ", " + place.getId());
-            }
-
-            @Override
-            public void onError(Status status) {
-                Log.i("PlaceTAG", "An error occurred: " + status);
-            }
-        });
-
-        autocompleteEnd.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                endAddress = place.getName();
-                endPoint = place.getLatLng();
-                Log.i("PlaceTAG", "Place: " + place.getName() + ", " + place.getId());
-            }
-
-            @Override
-            public void onError(Status status) {
-                Log.i("PlaceTAG", "An error occurred: " + status);
-            }
-        });
 
         return view;
     }
@@ -216,9 +185,9 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
     @Override
     public void onLocationChanged(Location location) {
-        if (map != null) {
-            addMarker(location);
-        }
+//        if (map != null) {
+//            addMarker(location);
+//        }
     }
 
     @Override
@@ -364,19 +333,61 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
             }
         }
 
+        // add and manage autocomplete fields and events about them
+        setAutocomplete();
+
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                map.addMarker(new MarkerOptions()
-                        .title("YOUR_POSITON")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker))
-                        .position(latLng));
-                home.setFlat(true);
+                if (startMarker==null){
+                    Geocoder geo = new Geocoder(getActivity(), Locale.getDefault());
+                    List<Address> address = null;
+                    try {
+                        address = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    } catch (IOException e) {
+                        Log.i("No marker","No marker");
+                    }
+                    if (address.size() > 0) {
+                        startAddress = address.get(0).getAddressLine(0);
+                        autocompleteStart.setText(startAddress);
+                        startPoint = latLng;
+                        startMarker = map.addMarker(new MarkerOptions()
+                                .title("START_POSITON")
+                                .snippet(startAddress)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker))
+                                .draggable(true)
+                                .position(latLng));
+                    }
+
+                } else {
+                    if (endMarker == null) {
+                        Geocoder geo = new Geocoder(getActivity(), Locale.getDefault());
+                        List<Address> address = null;
+                        try {
+                            address = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                        } catch (IOException e) {
+                            Log.i("No marker", "No marker");
+                        }
+                        if (address.size() > 0) {
+                            endAddress = address.get(0).getAddressLine(0);
+                            autocompleteEnd.setText(endAddress);
+                            endPoint = latLng;
+                            endMarker = map.addMarker(new MarkerOptions()
+                                    .title("DESTINATION")
+                                    .snippet(endAddress)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker))
+                                    .draggable(true)
+                                    .position(latLng));
+                        }
+
+                    }
+                }
 
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLng).zoom(14).build();
 
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
             }
         });
 
@@ -397,25 +408,142 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
-                Toast.makeText(getActivity(), "Drag started", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Drag started", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onMarkerDrag(Marker marker) {
-                Toast.makeText(getActivity(), "Dragging", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(getActivity(), "Dragging", Toast.LENGTH_SHORT).show();
                 map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
             }
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
-                Toast.makeText(getActivity(), "Drag ended", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(getActivity(), "Drag ended", Toast.LENGTH_SHORT).show();
+                LatLng latLng = marker.getPosition();
+                Geocoder geo = new Geocoder(getActivity(), Locale.getDefault());
+                List<Address> address = null;
+                try {
+                    address = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                } catch (IOException e) {
+                    Log.i("No marker", "No marker");
+                }
+                if (address.size() > 0) {
+                    if (marker.getTitle().equals("DESTINATION")){
+                        endAddress = address.get(0).getAddressLine(0);
+                        autocompleteEnd.setText(endAddress);
+                        endPoint = latLng;
+                        marker.setSnippet(endAddress);
+                    } else {
+                        startAddress = address.get(0).getAddressLine(0);
+                        autocompleteStart.setText(startAddress);
+                        startPoint = latLng;
+                        marker.setSnippet(startAddress);
+                    }
+
+                }
             }
         });
 
-        if (location != null) {
-            addMarker(location);
-        }
+        addVehicleMarkers();
 
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(45.2396, 19.8227)).zoom(13).build();
+
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+//        if (location != null) {
+//            addMarker(location);
+//        }
+
+
+    }
+
+    private void setAutocomplete() {
+        if (!Places.isInitialized()) {
+            Places.initialize(getActivity().getApplicationContext(), BuildConfig.MAPS_API_KEY);
+        }
+        PlacesClient placesClient = Places.createClient(getActivity());
+
+        autocompleteStart =
+                (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_start);
+
+        autocompleteEnd =
+                (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_end);
+
+        setUpAutocompleteFragment(autocompleteStart);
+        setUpAutocompleteFragment(autocompleteEnd);
+
+        autocompleteStart.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                startPoint = place.getLatLng();
+                startAddress = place.getName();
+                if (startMarker == null){
+                    startMarker = map.addMarker(new MarkerOptions()
+                            .title("START_POSITON")
+                            .snippet(startAddress)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker))
+                            .draggable(true)
+                            .position(place.getLatLng()));
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(place.getLatLng()).zoom(14).build();
+
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                } else {
+                    startMarker.setSnippet(startAddress);
+                    startMarker.setPosition(place.getLatLng());
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(place.getLatLng()).zoom(14).build();
+
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+
+                Log.i("PlaceTAG", "Place: " + place.getName() + ", " + place.getId()+"," +place.getLatLng());
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.i("PlaceTAG", "An error occurred: " + status);
+            }
+        });
+
+        autocompleteEnd.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                endAddress = place.getName();
+                endPoint = place.getLatLng();
+                if (endMarker == null){
+                    endMarker = map.addMarker(new MarkerOptions()
+                            .title("DESTINATION")
+                            .snippet(endAddress)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker))
+                            .draggable(true)
+                            .position(place.getLatLng()));
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(place.getLatLng()).zoom(14).build();
+
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                } else {
+                    endMarker.setSnippet(endAddress);
+                    endMarker.setPosition(place.getLatLng());
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(place.getLatLng()).zoom(14).build();
+
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+                Log.i("PlaceTAG", "Place: " + place.getName() + ", " + place.getId());
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.i("PlaceTAG", "An error occurred: " + status);
+            }
+        });
     }
 
     private void addMarker(Location location) {
@@ -429,12 +557,41 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                 .title("YOUR_POSITON")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
                 .position(loc));
-        home.setFlat(true);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(loc).zoom(14).build();
 
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+
+    private void addVehicleMarkers() {
+        List<VehicleForMarker> vehicles = MockupVehicles.getVehicles();
+        for (VehicleForMarker vehicle : vehicles){
+            if (vehicle.isActive()){
+                addReservedVehicle(vehicle);
+            } else {
+                addFreeVehicle(vehicle);
+            }
+        }
+    }
+
+    private void addFreeVehicle(VehicleForMarker vehicle) {
+        Marker marker = map.addMarker(new MarkerOptions()
+                .title("Model: "+vehicle.getModel())
+                .snippet("Address: "+vehicle.getAddress())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin))
+                .draggable(false)
+                .position(new LatLng(vehicle.getLatitude(),vehicle.getLongitude())));
+    }
+
+    private void addReservedVehicle(VehicleForMarker vehicle) {
+        Marker marker = map.addMarker(new MarkerOptions()
+                .title("Model: "+vehicle.getModel())
+                .snippet("Address: "+vehicle.getAddress())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin))
+                .draggable(false)
+                .position(new LatLng(vehicle.getLatitude(),vehicle.getLongitude())));
     }
 
 

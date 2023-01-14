@@ -34,6 +34,7 @@ import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
 import com.example.uberapp_tim12.fragments.DrawRouteFragment;
 import com.example.uberapp_tim12.fragments.MapFragment;
+import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 import com.example.uberapp_tim12.model.NavDrawerItem;
 import com.example.uberapp_tim12.model.User;
 import com.example.uberapp_tim12.tools.FragmentTransition;
@@ -59,8 +60,9 @@ public class PassengerMainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
 
-        FragmentTransition.to(MapFragment.newInstance(),this,false);
-  //      FragmentTransition.to(DrawRouteFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
+        FragmentTransition.passengerTo(MapFragment.newInstance(),this,false);
+       // FragmentTransition.passengerTo(DrawRouteFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
+        //FragmentTransition.passengerTo(PassengerCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
     }
 //        prepareNavigationDrawerList();
 //
