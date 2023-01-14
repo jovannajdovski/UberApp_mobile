@@ -31,26 +31,40 @@
                 >
 
                 <TextView
+                    android:id="@+id/chart_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Price chart"
+                    android:text="Money spent chart"
                     android:textSize="24sp"
                     android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/selected_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="@id/chart_header"
+                    app:layout_constraintTop_toBottomOf="@id/chart_header"
+                    android:text="Pick a date"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/gray"
                     >
                 </TextView>
 
                 <Button
+                    style="?attr/materialIconButtonFilledTonalStyle"
                     android:id="@+id/menu_button_ride"
-                    android:layout_width="wrap_content"
+                    android:layout_width="40dp"
                     android:layout_height="40dp"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Day"
+                    app:icon="@drawable/ic_baseline_edit_calendar_24"
+                    app:iconGravity="textStart"
+                    android:backgroundTint="#dad6da"
                     />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.github.mikephil.charting.charts.LineChart
@@ -106,9 +120,10 @@
                 </ImageView>
 
                 <TextView
+                    android:id="@+id/cost_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="800 $"
+                    android:text="0 $"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -154,9 +169,10 @@
                 </ImageView>
 
                 <TextView
+                    android:id="@+id/average_cost_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="250 $"
+                    android:text="0 $"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"

@@ -31,24 +31,40 @@
                 >
 
                 <TextView
+                    android:id="@+id/chart_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Distance chart"
+                    android:text="Rides count chart"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     >
                 </TextView>
 
-                <Button
-                    android:id="@+id/menu_button_ride"
+                <TextView
+                    android:id="@+id/selected_date"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="@id/chart_header"
+                    app:layout_constraintTop_toBottomOf="@id/chart_header"
+                    android:text="Pick a date"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/gray"
+                    >
+                </TextView>
+
+                <Button
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    android:id="@+id/menu_button_ride"
+                    android:layout_width="40dp"
                     android:layout_height="40dp"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Day"
+                    app:icon="@drawable/ic_baseline_edit_calendar_24"
+                    app:iconGravity="textStart"
+                    android:backgroundTint="#dad6da"
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -67,7 +83,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+
         >
 
         <com.google.android.material.card.MaterialCardView
@@ -79,7 +95,7 @@
             android:layout_width="160sp"
             android:layout_height="150dp"
 
-            style="@style/blueShadowMatCard"
+            style="@style/orangeShadowMatCard"
             >
 
             <LinearLayout
@@ -91,7 +107,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total distance:"
+                    android:text="Total count:"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_marginBottom="20dp"/>
@@ -106,12 +122,13 @@
                 </ImageView>
 
                 <TextView
+                    android:id="@+id/ride_count_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10000 km"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:text="0 rides"
                     />
 
 
@@ -127,7 +144,7 @@
             android:layout_width="160sp"
             android:layout_height="150dp"
 
-            style="@style/blueShadowMatCard"
+            style="@style/orangeShadowMatCard"
             >
 
             <LinearLayout
@@ -139,7 +156,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Average distance:"
+                    android:text="Average count:"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_marginBottom="20dp"/>
@@ -147,19 +164,20 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_card_travel_24"
+                    android:src="@drawable/ic_baseline_numbers_24"
                     android:scaleType="fitStart"
                     >
 
                 </ImageView>
 
                 <TextView
+                    android:id="@+id/ride_average_count_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10000 km"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:text="0 rides"
                     />
 
 

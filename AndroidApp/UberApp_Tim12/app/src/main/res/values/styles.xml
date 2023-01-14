@@ -33,7 +33,7 @@
         <item name="cardBackgroundColor">#d60f00</item>
     </style>
 
-    <style name="yellowShadowMatCard" parent="shadowMatCard">
+    <style name="orangeShadowMatCard" parent="shadowMatCard">
         <item name="cardBackgroundColor">#ff7821</item>
     </style>
 

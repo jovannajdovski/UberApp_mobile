@@ -103,7 +103,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profile_name"
+        android:id="@+id/favourite_routes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/profile"
@@ -141,7 +141,7 @@
         android:id="@+id/show_reports_passenger"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profile_name"
+        android:layout_below="@id/favourite_routes"
         android:background="@drawable/edit_text_border"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

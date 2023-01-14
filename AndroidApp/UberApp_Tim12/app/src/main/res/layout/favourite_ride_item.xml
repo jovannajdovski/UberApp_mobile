@@ -38,20 +38,6 @@
                     android:layout_marginTop="6dp"
                     />
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    app:layout_constraintTop_toTopOf="@id/favourite_title"-->
-<!--                    app:layout_constraintBottom_toBottomOf="@id/favourite_title"-->
-<!--                    app:layout_constraintRight_toRightOf="parent"-->
-<!--                    android:text="Sunday, Mar 15"-->
-<!--                    android:textSize="10sp"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:textColor="@color/gray"-->
-<!--                    >-->
-
-<!--                </TextView>-->
-
                 <Button
                     style="?attr/materialIconButtonFilledTonalStyle"
                     android:id="@+id/favourite_route_options"

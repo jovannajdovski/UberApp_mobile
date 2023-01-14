@@ -1,8 +1,6 @@
 package com.example.uberapp_tim12.adapters;
 
-import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;

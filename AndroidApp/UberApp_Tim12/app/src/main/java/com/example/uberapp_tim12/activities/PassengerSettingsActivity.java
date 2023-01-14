@@ -41,11 +41,22 @@ public class PassengerSettingsActivity extends AppCompatActivity {
             }
         });
 
+        ConstraintLayout favouriteRoutesLayout = findViewById(R.id.favourite_routes);
+        favouriteRoutesLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PassengerSettingsActivity.this, PassengerFavouriteRoutesActivity.class);
+                User user = UserMockup.getUser();
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
+
         ConstraintLayout reportLayout = findViewById(R.id.show_reports_passenger);
         reportLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PassengerSettingsActivity.this, PassengerStatisticActivity.class);
+                Intent intent = new Intent(PassengerSettingsActivity.this, PassengerReportActivity.class);
                 User user = UserMockup.getUser();
                 intent.putExtra("user", user);
                 startActivity(intent);

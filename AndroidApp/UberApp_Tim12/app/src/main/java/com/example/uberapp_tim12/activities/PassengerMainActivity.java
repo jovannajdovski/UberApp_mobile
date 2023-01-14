@@ -193,7 +193,7 @@ public class PassengerMainActivity extends AppCompatActivity {
             startActivity(intent);
         }else if(position == 2){
 //            intent = new Intent(PassengerMainActivity.this, PassengerSettingsActivity.class);
-            intent = new Intent(PassengerMainActivity.this, PassengerFavouriteRoutesActivity.class);
+            intent = new Intent(PassengerMainActivity.this, PassengerSettingsActivity.class);
             User user = UserMockup.getUser();
             intent.putExtra("user", user);
             startActivity(intent);

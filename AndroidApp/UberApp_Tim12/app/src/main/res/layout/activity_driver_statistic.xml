@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".activities.PassengerStatisticActivity"
+    tools:context=".activities.PassengerReportActivity"
     android:background="#F8F7FE"
     >
 
@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         style="@style/shadowMatCard"
         app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/white"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -106,7 +107,7 @@
                 android:layout_width="160sp"
                 android:layout_height="150dp"
 
-                style="@style/yellowShadowMatCard"
+                style="@style/orangeShadowMatCard"
                 android:layout_margin="20dp"
                 >
 
