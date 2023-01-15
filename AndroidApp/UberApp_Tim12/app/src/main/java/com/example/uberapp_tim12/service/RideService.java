@@ -8,9 +8,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.uberapp_tim12.Constant;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
+import com.example.uberapp_tim12.model.Ride;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -35,22 +38,18 @@ public class RideService extends Service {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                final DriverDetailsDTO[] driverDetailsDTO = new DriverDetailsDTO[1];
-                final RidesListDTO[] ridesListDTOS=new RidesListDTO[1];
                 Log.d("PASSS", "Metoda ".concat(method));
                 if(method.equals("getPendingRidesForDriver"))
                 {
-                    Log.d("PASSS", "ista metoda");
-                    Call<RidesListDTO> call = ControllerUtils.rideController.getPendingRidesForDriver(3, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6b2tpQGVtYWlsLmNvbSIsImp0aSI6IjMiLCJyb2xlIjoiUk9MRV9EUklWRVIiLCJpYXQiOjE2NzM3MTgxMDMsImV4cCI6MTY3MzgwNDUwM30.id8Qf364-g0BAS83oDhRQz0EBxleyV6IRLxn7ZBQp9Q");
+                    final RidesListDTO[] ridesListDTOS=new RidesListDTO[1];
+                    Call<RidesListDTO> call = ControllerUtils.rideController.getPendingRidesForDriver(3, Constant.jwt);
                     call.enqueue(new Callback<RidesListDTO>() {
                         @Override
                         public void onResponse(Call<RidesListDTO> call, Response<RidesListDTO> response) {
                             if (response.code() == 200){
-                                Log.d("PASSS", "200");
+                                Log.d("REZZ", "usao");
                                 ridesListDTOS[0]=response.body();
-                                Log.d("PASSS", ridesListDTOS[0].getTotalCount().toString());
                                 Intent ints = new Intent ("pendingRides");
-                                Log.d("PASSS", ridesListDTOS[0].getTotalCount().toString());
                                 ints.putExtra("pendingRidesDTO", ridesListDTOS[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                             }else{
@@ -64,8 +63,57 @@ public class RideService extends Service {
                         }
                     });
                 }
+                else if(method.equals("acceptRide")){
+                    final Ride[] ride = new Ride[1];
+                    Integer rideId=intent.getIntExtra("rideId",-1);
+                    Call<Ride> call = ControllerUtils.rideController.acceptRide(rideId, Constant.jwt);
+                    call.enqueue(new Callback<Ride>() {
+                        @Override
+                        public void onResponse(Call<Ride> call, Response<Ride> response) {
+                            if (response.code() == 200){
+                                ride[0] =response.body();
+                                Intent ints = new Intent ("acceptRide");
+                                ints.putExtra("ride", ride[0]);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }else{
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Ride> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }
+                else if(method.equals("rejectRide")){
+                    final Ride[] ride = new Ride[1];
+                    ReasonDTO reasonDTO=intent.getParcelableExtra("reasonDTO");
+                    Integer rideId=intent.getIntExtra("rideId",-1);
+                    Call<Ride> call = ControllerUtils.rideController.rejectRide(rideId, reasonDTO, Constant.jwt);
+                    call.enqueue(new Callback<Ride>() {
+                        @Override
+                        public void onResponse(Call<Ride> call, Response<Ride> response) {
+                            if (response.code() == 200){
+                                ride[0] =response.body();
+                                Log.d("PASSS",ride[0].toString());
+                                Intent ints = new Intent ("rejectRide");
+                                ints.putExtra("ride", ride[0]);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }else{
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Ride> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }
                 else if(method.equals("getDriverDetails")){
-                    Call<DriverDetailsDTO> call = ControllerUtils.rideController.getDriverDetails(4, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyb2tpQGVtYWlsLmNvbSIsImp0aSI6IjYiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTY3MzcwMjc5NSwiZXhwIjoxNjczNzg5MTk1fQ.LK0gdiNRMCswl6w5Wks99DR5k39FRlUwDk34PBdsIc8");
+                    final DriverDetailsDTO[] driverDetailsDTO = new DriverDetailsDTO[1];
+                    Call<DriverDetailsDTO> call = ControllerUtils.rideController.getDriverDetails(4, Constant.jwt);
                     call.enqueue(new Callback<DriverDetailsDTO>() {
                         @Override
                         public void onResponse(Call<DriverDetailsDTO> call, Response<DriverDetailsDTO> response) {

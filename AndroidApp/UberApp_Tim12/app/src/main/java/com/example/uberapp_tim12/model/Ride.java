@@ -1,6 +1,9 @@
 package com.example.uberapp_tim12.model;
 
+import android.os.Parcelable;
+
 import com.example.uberapp_tim12.dto.PathDTO;
+import com.example.uberapp_tim12.dto.RideRejectionDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
 
 import java.io.Serializable;
@@ -8,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Ride implements Serializable {
+public class Ride implements Serializable{
     private Integer id;
 
     private String startTime;
@@ -35,8 +38,7 @@ public class Ride implements Serializable {
 
     private boolean petTransport;
 
-    private String rejection;
-//    private RideRejectionDTO rejection;
+    private RideRejectionDTO rejection;
 
     private Set<PathDTO> locations = new HashSet<>();
 
@@ -125,11 +127,11 @@ public class Ride implements Serializable {
         this.petTransport = petTransport;
     }
 
-    public String getRejection() {
+    public RideRejectionDTO getRejection() {
         return rejection;
     }
 
-    public void setRejection(String rejection) {
+    public void setRejection(RideRejectionDTO rejection) {
         this.rejection = rejection;
     }
 

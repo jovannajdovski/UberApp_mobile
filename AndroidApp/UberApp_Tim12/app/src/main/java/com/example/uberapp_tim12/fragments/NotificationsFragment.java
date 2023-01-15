@@ -10,16 +10,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.NotificationsListAdapter;
+import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.Message;
@@ -27,6 +32,10 @@ import com.example.uberapp_tim12.model_mock.NotificationItem;
 import com.example.uberapp_tim12.service.RideService;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class NotificationsFragment extends ListFragment {
 
@@ -34,8 +43,15 @@ public class NotificationsFragment extends ListFragment {
 
     }
 
+    List<Button> acceptButtons=new ArrayList<>();
+    List<Button> rejectButtons=new ArrayList<>();
+    List<RelativeLayout> layouts= new ArrayList<>();
+    Integer remainedPendingRides;
+
+
     private ArrayList<NotificationItem> notificationItems=new ArrayList<>();
     private View view;
+    private View blackBackground;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,35 +70,26 @@ public class NotificationsFragment extends ListFragment {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         view = inflater.inflate(R.layout.fragment_notifications, container, false);
+        blackBackground=view.findViewById(R.id.black_background);
         return view;
     }
 
-    public BroadcastReceiver bReceiver = new BroadcastReceiver(){
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("PASSSSSSSSS","lalalalaalla");
-            RidesListDTO ridesListDTO=intent.getParcelableExtra("pendingRidesDTO");
-            Log.d("PASSSSSSSSS",ridesListDTO.toString());
-            FrameLayout frameLayout=view.findViewById(R.id.acceptance_ride_layout);
-
-            for(int i=ridesListDTO.getTotalCount()-1; i>=0;i--)
-            {
-                frameLayout.addView(createAcceptanceRideDialog(ridesListDTO.getRides().get(i)));
-            }
-        }
-    };
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(pendingRidesReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(acceptRideReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(rejectRideReceiver);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("pendingRides"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(acceptRideReceiver, new IntentFilter("acceptRide"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(rejectRideReceiver, new IntentFilter("rejectRide"));
     }
     private void prepareNotificationsList()
     {
@@ -148,4 +155,95 @@ public class NotificationsFragment extends ListFragment {
 
         return layout;
     }
+    private void setListeners(RelativeLayout layout, Ride ride)
+    {
+        Intent intent=new Intent(getActivity(), RideService.class);
+
+        Button acceptButton=layout.findViewById(R.id.new_ride_accept_button);
+        Button rejectButton=layout.findViewById(R.id.new_ride_reject_button);
+
+        EditText rejectReason=layout.findViewById(R.id.new_ride_rejection_reason);
+
+        acceptButtons.add(acceptButton);
+        rejectButtons.add(rejectButton);
+        Log.d("PASSS", "nasao dugmad");
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButtons.remove(0);
+                rejectButtons.remove(0);
+                Log.d("PASSS", "acceptClick");
+                intent.putExtra("rideId", ride.getId());
+                intent.putExtra("endpoint", "acceptRide");
+                getActivity().startService(intent);
+            }
+        });
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButtons.remove(0);
+                rejectButtons.remove(0);
+                Log.d("PASSS", "rejectClick");
+                ReasonDTO reasonDTO=new ReasonDTO(rejectReason.getText().toString());
+                intent.putExtra("reasonDTO", reasonDTO);
+                intent.putExtra("rideId", ride.getId());
+                intent.putExtra("endpoint", "rejectRide");
+                getActivity().startService(intent);
+            }
+        });
+    }
+
+    public BroadcastReceiver pendingRidesReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSSSSSSSS","lalalalaalla");
+            RidesListDTO ridesListDTO=intent.getParcelableExtra("pendingRidesDTO");
+            Log.d("PASSSSSSSSS",ridesListDTO.toString());
+            FrameLayout frameLayout=view.findViewById(R.id.acceptance_ride_layout);
+            remainedPendingRides=ridesListDTO.getTotalCount();
+            RelativeLayout layout;
+            Ride ride;
+            for(int i=ridesListDTO.getTotalCount()-1; i>=0;i--)
+            {
+                ride=ridesListDTO.getRides().get(i);
+                layout=createAcceptanceRideDialog(ride);
+                layouts.add(layout);
+                frameLayout.addView(layout);
+                Log.d("PASSS","Pseci");
+                setListeners(layout, ride);
+            }
+        }
+    };
+    public BroadcastReceiver acceptRideReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSS", "ACCEPTED");
+            Ride ride= (Ride) intent.getSerializableExtra("ride");
+            Log.d("PASSSid", String.valueOf(ride.getId()));
+            Log.d("PASSS layout", String.valueOf(layouts.size()));
+            RelativeLayout layout1=layouts.remove(0);
+            Log.d("PASSS layout", String.valueOf(layout1));
+            layout1.setVisibility(View.GONE);
+            if(layouts.size()==0)
+                blackBackground.setVisibility(View.GONE);
+        }
+    };
+    public BroadcastReceiver rejectRideReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSS", "REJECTED");
+            Ride ride= (Ride) intent.getSerializableExtra("ride");
+            Log.d("PASSSid", String.valueOf(ride.getId()));
+            Log.d("PASSS layout", String.valueOf(layouts.size()));
+            RelativeLayout layout1=layouts.remove(0);
+            Log.d("PASSS layout", String.valueOf(layout1));
+            layout1.setVisibility(View.GONE);
+            if(layouts.size()==0)
+                blackBackground.setVisibility(View.GONE);
+
+        }
+    };
 }
