@@ -1,6 +1,10 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -8,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,11 +24,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.CustomAdapter;
+import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.PanicDTO;
+import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
+import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
+import com.example.uberapp_tim12.service.CurrentRideService;
+import com.example.uberapp_tim12.service.DriverService;
+import com.example.uberapp_tim12.service.PanicService;
+import com.example.uberapp_tim12.service.PassengerService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,11 +64,15 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 
-public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener{
+public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
@@ -63,42 +82,131 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
     private CameraUpdate cu;
 
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
+
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
     protected LayoutManagerType mCurrentLayoutManagerType;
 
     protected RecyclerView mRecyclerView;
     protected CustomAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected String[] mDataset;
-    private static final int DATASET_COUNT = 10;
+    private List<PassengerDetailsDTO> passengers;
+    private int DATASET_COUNT;
 
-    public DriverCurrRideFragment(LatLng start, LatLng end) {
-        this.start = start;
-        this.end = end;
+    private View view;
+    private boolean routeDraw;
+    private int rideId;
+    private TextView timer;
+    private Timer timerReal;
+
+    public DriverCurrRideFragment() {
     }
 
+    public static DriverCurrRideFragment newInstance() {
 
-    public static DriverCurrRideFragment newInstance(LatLng start, LatLng end) {
-
-        DriverCurrRideFragment mpf = new DriverCurrRideFragment(start, end);
+        DriverCurrRideFragment mpf = new DriverCurrRideFragment();
 
         return mpf;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        
         super.onCreate(savedInstanceState);
-        initPassengers();
+
+        routeDraw = false;
+
+        Intent intentRide = new Intent(getActivity(), CurrentRideService.class);
+        intentRide.putExtra("endpoint", "getActiveRideForDriver");
+        getActivity().startService(intentRide);
+
     }
 
-    private void initPassengers() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "Passenger #" + i;
+    public BroadcastReceiver bReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            RideFullDTO activeRide = (RideFullDTO) intent.getSerializableExtra("activeRideDTO");
+
+            start = new LatLng(activeRide.getLocations().iterator().next().getDeparture().getLatitude(),
+                    activeRide.getLocations().iterator().next().getDeparture().getLongitude());
+            end = new LatLng(activeRide.getLocations().iterator().next().getDestination().getLatitude(),
+                    activeRide.getLocations().iterator().next().getDestination().getLongitude());
+
+            rideId = activeRide.getId();
+            String startAddress = activeRide.getLocations().iterator().next().getDeparture().getAddress();
+            String endAddress = activeRide.getLocations().iterator().next().getDestination().getAddress();
+
+            NumberFormat nf = NumberFormat.getInstance();
+            nf.setMaximumFractionDigits(2);
+
+            String estimatedTime = nf.format(activeRide.getEstimatedTimeInMinutes()) + "min";
+            String totalCost = nf.format(activeRide.getTotalCost()) + " RSD";
+
+            List<Integer> passengersId = new ArrayList<>();
+            for (UserRideDTO passenger : activeRide.getPassengers()) {
+                passengersId.add(passenger.getId());
+            }
+            DATASET_COUNT = passengersId.size();
+
+            TextView estimatedTimeLbl = view.findViewById(R.id.estimated_time_value);
+            TextView totalCostLbl = view.findViewById(R.id.total_cost_value);
+            TextView routeLbl = view.findViewById(R.id.route);
+
+            routeLbl.setText(startAddress + " - " + endAddress);
+            totalCostLbl.setText(totalCost);
+            estimatedTimeLbl.setText(estimatedTime);
+
+            passengers = new ArrayList<>();
+            for (Integer passengerId : passengersId) {
+                Intent intentDriver = new Intent(getActivity(), PassengerService.class);
+                intentDriver.putExtra("endpoint", "getPassengerDetails");
+                intentDriver.putExtra("passengerId", passengerId);
+                getActivity().startService(intentDriver);
+            }
+
+            if (!routeDraw) {
+                drawRoute();
+            }
         }
+    };
+
+    public BroadcastReceiver passengerReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            PassengerDetailsDTO passenger = (PassengerDetailsDTO) intent.getSerializableExtra("passengerDetailsDTO");
+
+            passengers.add(passenger);
+
+            if (passengers.size() == DATASET_COUNT) {
+                initPassengers();
+            }
+
+        }
+
+    };
+
+    public BroadcastReceiver panicReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            PanicDTO panicDTO = (PanicDTO) intent.getSerializableExtra("panicDTO");
+
+        }
+    };
+
+    private void initPassengers() {
+        mDataset = new String[passengers.size()];
+        for (int i = 0; i < passengers.size(); i++) {
+            mDataset[i] = passengers.get(i).getName() + " " + passengers.get(i).getSurname();
+        }
+        mAdapter = new CustomAdapter(mDataset);
+        // Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -111,12 +219,24 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
         // can get location before map
         mMapFragment.getMapAsync(this);
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("activeRideDriver"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(passengerReceiver, new IntentFilter("passengerDetails"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(panicReceiver, new IntentFilter("panicRideDetails"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(passengerReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(panicReceiver);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup vg, Bundle data) {
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.fragment_driver_curr_ride, vg, false);
+        view = inflater.inflate(R.layout.fragment_driver_curr_ride, vg, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 
@@ -131,10 +251,6 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new CustomAdapter(mDataset);
-        // Set CustomAdapter as the adapter for RecyclerView.
-        mRecyclerView.setAdapter(mAdapter);
-
         Button panicButton = (Button) view.findViewById(R.id.panic_button);
 
         panicButton.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +259,9 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
                 showPanicDialog();
             }
         });
+
+        timer = (TextView) view.findViewById(R.id.timer_value);
+        setTimer();
 
         return view;
     }
@@ -174,12 +293,23 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
+    public void updateDistance(String distance) {
+        TextView distanceLbl = view.findViewById(R.id.distance_value);
+        distanceLbl.setText(distance);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 //        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.style_1_json));
 //        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.style_2_json));
 
+        if (start != null && end != null) {
+            drawRoute();
+        }
+    }
+
+    public void drawRoute() {
         mMap.addMarker(new MarkerOptions().position(start).title("Start point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
         mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
 
@@ -199,14 +329,15 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
             if (res.routes != null && res.routes.length > 0) {
                 DirectionsRoute route = res.routes[0];
 
-                if (route.legs !=null) {
-                    for(int i=0; i<route.legs.length; i++) {
+                if (route.legs != null) {
+                    for (int i = 0; i < route.legs.length; i++) {
                         DirectionsLeg leg = route.legs[i];
+                        updateDistance(leg.distance.toString());
                         if (leg.steps != null) {
-                            for (int j=0; j<leg.steps.length;j++){
+                            for (int j = 0; j < leg.steps.length; j++) {
                                 DirectionsStep step = leg.steps[j];
-                                if (step.steps != null && step.steps.length >0) {
-                                    for (int k=0; k<step.steps.length;k++){
+                                if (step.steps != null && step.steps.length > 0) {
+                                    for (int k = 0; k < step.steps.length; k++) {
                                         DirectionsStep step1 = step.steps[k];
                                         EncodedPolyline points1 = step1.polyline;
                                         if (points1 != null) {
@@ -232,7 +363,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
                     }
                 }
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             Log.e("Map direction", ex.getLocalizedMessage());
         }
 
@@ -261,6 +392,8 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         mMap.getUiSettings().setMapToolbarEnabled(true);
         mMap.setOnPolylineClickListener(this);
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 6));
+
+        routeDraw = true;
     }
 
     @Override
@@ -274,7 +407,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         return false;
     }
 
-    private void showPanicDialog(){
+    private void showPanicDialog() {
         MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(getActivity());
         alert.setTitle("Panic");
         alert.setMessage("Enter reason for panic (optional)");
@@ -286,11 +419,11 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
 
-        editTextParams.setMargins(100,0,100,0);
+        editTextParams.setMargins(100, 0, 100, 0);
         LinearLayout.LayoutParams textInputLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        textInputLayoutParams.setMargins(100,0,100,0);
+        textInputLayoutParams.setMargins(100, 0, 100, 0);
 
         inputLayout.setLayoutParams(textInputLayoutParams);
         inputLayout.addView(input, editTextParams);
@@ -301,7 +434,12 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = input.getText().toString();
                 Log.d("Panic", "Panic message : " + value);
-                return;
+
+                Intent intentPanic = new Intent(getActivity(), PanicService.class);
+                intentPanic.putExtra("endpoint", "panicRide");
+                intentPanic.putExtra("idRide", rideId);
+                intentPanic.putExtra("reason", value);
+                getActivity().startService(intentPanic);
             }
         });
 
@@ -313,4 +451,30 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
                 });
         alert.show();
     }
+
+    public void setTimer() {
+        timerReal = new Timer();
+        TimerTask task = new TimerUpdateTask();
+
+        timerReal.schedule(task, 1000, 1000);
+
+    }
+
+    private class TimerUpdateTask extends TimerTask {
+        int tick = 0;
+
+        public void run() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    timer.setText("" + String.format("%02d:%02d",
+                            TimeUnit.SECONDS.toMinutes(tick),
+                            TimeUnit.SECONDS.toSeconds(tick) - TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(tick))));
+                }
+            });
+            tick++;
+        }
+
+    }
 }
+

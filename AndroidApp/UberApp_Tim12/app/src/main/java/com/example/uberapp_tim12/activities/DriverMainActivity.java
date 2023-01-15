@@ -17,9 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
 import com.example.uberapp_tim12.fragments.DriverMapFragment;
+import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.FragmentTransition;
@@ -39,6 +42,7 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
     private ActionBarDrawerToggle navDrawerToggle;
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
+    private FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,7 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         navDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        manager=getSupportFragmentManager();
         FragmentTransition.driverTo(DriverMapFragment.newInstance(),this,false);
         //FragmentTransition.driverTo(DriverCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
     }
@@ -206,9 +211,9 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                 startActivity(intent);
                 break;
             case "Current ride":
-                intent = new Intent(DriverMainActivity.this, DriverSettingsActivity.class);
-                intent.putExtra("tab",0);
-                startActivity(intent);
+                DriverCurrRideFragment driverCurrRideFragment = new DriverCurrRideFragment();
+                manager.beginTransaction().replace(R.id.driverMainContent, driverCurrRideFragment,driverCurrRideFragment.getTag()).commit();
+                drawerLayout.close();
                 break;
         }
 

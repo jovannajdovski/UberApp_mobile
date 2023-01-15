@@ -22,6 +22,14 @@
         tools:targetApi="31">
         <service
             android:name=".service.RideService"/>
+        <service
+            android:name=".service.CurrentRideService"/>
+        <service
+            android:name=".service.DriverService"/>
+        <service
+            android:name=".service.PassengerService"/>
+        <service
+            android:name=".service.PanicService"/>
 
         <activity
             android:name=".activities.RideDetailForPassengerActivity"

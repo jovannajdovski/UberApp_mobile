@@ -24,11 +24,13 @@ import com.example.uberapp_tim12.fragments.InviteFriendsFragment;
 import com.example.uberapp_tim12.fragments.MapFragment;
 import com.example.uberapp_tim12.fragments.MoreOptionsFragment;
 import com.example.uberapp_tim12.fragments.OverviewFragment;
+import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 import com.example.uberapp_tim12.fragments.RouteFragment;
 import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.UserMockup;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationView;
 import com.shuhart.stepview.StepView;
 
@@ -50,7 +52,6 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
     private OverviewFragment overviewFragment;
     private FragmentManager manager;
     public StepView stepView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,9 +237,9 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
                 startActivity(intent);
                 break;
             case "Current ride":
-                intent = new Intent(PassengerMainActivity.this, PassengerInboxActivity.class);
-                intent.putExtra("tab",0);
-                startActivity(intent);
+                PassengerCurrRideFragment passengerCurrRideFragment = new PassengerCurrRideFragment();
+                manager.beginTransaction().replace(R.id.passengerMainContent, passengerCurrRideFragment,passengerCurrRideFragment.getTag()).commit();
+                drawerLayout.close();
                 break;
         }
 
