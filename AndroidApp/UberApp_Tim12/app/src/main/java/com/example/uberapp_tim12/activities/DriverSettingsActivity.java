@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.UserMockup;
+import com.google.android.material.card.MaterialCardView;
 
 public class DriverSettingsActivity extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class DriverSettingsActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("");
 
-        ConstraintLayout profileLayout = findViewById(R.id.profile);
+        MaterialCardView profileLayout = findViewById(R.id.edit_profile);
         profileLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +42,7 @@ public class DriverSettingsActivity extends AppCompatActivity {
             }
         });
 
-        ConstraintLayout statisticLayout = findViewById(R.id.driver_statistic);
+        MaterialCardView statisticLayout = findViewById(R.id.statistics);
         statisticLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +53,7 @@ public class DriverSettingsActivity extends AppCompatActivity {
             }
         });
 
-        ConstraintLayout reportLayout = findViewById(R.id.report);
+        MaterialCardView reportLayout = findViewById(R.id.report);
         reportLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

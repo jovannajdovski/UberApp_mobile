@@ -9,31 +9,34 @@
 
     <style name="shadowMatCard" parent="Widget.Material3.CardView.Outlined">
         <item name="strokeWidth">0dp</item>
-        <item name="cardElevation">2dp</item>
+        <item name="cardElevation">3dp</item>
+    </style>
+
+    <style name="shadowMatCardMargined" parent="shadowMatCard">
         <item name="android:layout_margin">8dp</item>
     </style>
 
-    <style name="whiteShadowMatCard" parent="shadowMatCard">
+    <style name="whiteShadowMatCard" parent="shadowMatCardMargined">
         <item name="cardBackgroundColor">@color/white</item>
     </style>
 
-    <style name="blueShadowMatCard" parent="shadowMatCard">
+    <style name="blueShadowMatCard" parent="shadowMatCardMargined">
         <item name="cardBackgroundColor">#38BAF7</item>
     </style>
 
-    <style name="purpleShadowMatCard" parent="shadowMatCard">
+    <style name="purpleShadowMatCard" parent="shadowMatCardMargined">
         <item name="cardBackgroundColor">#EABB1B</item>
     </style>
 
-    <style name="greenShadowMatCard" parent="shadowMatCard">
+    <style name="greenShadowMatCard" parent="shadowMatCardMargined">
         <item name="cardBackgroundColor">#61bd28</item>
     </style>
 
-    <style name="redShadowMatCard" parent="shadowMatCard">
+    <style name="redShadowMatCard" parent="shadowMatCardMargined">
         <item name="cardBackgroundColor">#d60f00</item>
     </style>
 
-    <style name="orangeShadowMatCard" parent="shadowMatCard">
+    <style name="orangeShadowMatCard" parent="shadowMatCardMargined">
         <item name="cardBackgroundColor">#ff7821</item>
     </style>
 

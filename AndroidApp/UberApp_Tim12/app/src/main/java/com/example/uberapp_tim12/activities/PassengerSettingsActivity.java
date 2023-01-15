@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.UserMockup;
+import com.google.android.material.card.MaterialCardView;
 
 public class PassengerSettingsActivity extends AppCompatActivity {
 
@@ -28,9 +29,9 @@ public class PassengerSettingsActivity extends AppCompatActivity {
         ActionBar actionBar=getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("");
+        actionBar.setTitle("Settings");
 
-        ConstraintLayout profileLayout = findViewById(R.id.profile);
+        MaterialCardView profileLayout = findViewById(R.id.edit_profile);
         profileLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +42,7 @@ public class PassengerSettingsActivity extends AppCompatActivity {
             }
         });
 
-        ConstraintLayout favouriteRoutesLayout = findViewById(R.id.favourite_routes);
+        MaterialCardView favouriteRoutesLayout = findViewById(R.id.favourite_routes);
         favouriteRoutesLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +53,7 @@ public class PassengerSettingsActivity extends AppCompatActivity {
             }
         });
 
-        ConstraintLayout reportLayout = findViewById(R.id.show_reports_passenger);
+        MaterialCardView reportLayout = findViewById(R.id.report);
         reportLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

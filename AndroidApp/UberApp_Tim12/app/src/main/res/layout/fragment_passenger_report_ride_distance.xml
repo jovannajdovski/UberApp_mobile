@@ -14,7 +14,7 @@
         android:layout_weight="1"
         app:contentPadding="20dp"
         app:cardBackgroundColor="@color/white"
-        style="@style/shadowMatCard"
+        style="@style/shadowMatCardMargined"
         >
 
         <LinearLayout
