@@ -29,7 +29,7 @@ public class DriverSettingsActivity extends AppCompatActivity {
         ActionBar actionBar=getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("");
+        actionBar.setTitle("Settings");
 
         MaterialCardView profileLayout = findViewById(R.id.edit_profile);
         profileLayout.setOnClickListener(new View.OnClickListener() {
