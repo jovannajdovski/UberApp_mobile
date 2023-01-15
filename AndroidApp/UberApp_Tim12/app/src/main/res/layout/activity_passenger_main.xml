@@ -30,9 +30,10 @@
             </com.google.android.material.appbar.AppBarLayout>
 
             <RelativeLayout
+                android:id="@+id/passengerCurrRideContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="70dp"
+                android:layout_marginTop="65dp"
                 >
 
                 <com.shuhart.stepview.StepView

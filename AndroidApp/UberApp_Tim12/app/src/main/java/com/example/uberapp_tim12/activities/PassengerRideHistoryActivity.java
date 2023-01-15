@@ -3,6 +3,7 @@ package com.example.uberapp_tim12.activities;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import com.example.uberapp_tim12.tools.FragmentTransition;
 
 public class PassengerRideHistoryActivity extends AppCompatActivity {
 
+    private FragmentManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +31,9 @@ public class PassengerRideHistoryActivity extends AppCompatActivity {
         actionBar.setIcon(R.drawable.ic_baseline_history_24);
         actionBar.setTitle("Ride history");
 
-        FragmentTransition.passengerTo(PassengerRideHistoryFragment.newInstance(), this, false);
+        manager = getSupportFragmentManager();
+
+        PassengerRideHistoryFragment passengerRideHistoryFragment = new PassengerRideHistoryFragment();
+        manager.beginTransaction().replace(R.id.mainContent, passengerRideHistoryFragment,passengerRideHistoryFragment.getTag()).commit();
     }
 }

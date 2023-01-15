@@ -52,8 +52,18 @@ public class CurrentRideService extends Service {
                                 Intent ints = new Intent ("activeRideDriver");
                                 Log.d("PASSS", currentRideDriverDTO[0].toString());
                                 ints.putExtra("activeRideDTO", currentRideDriverDTO[0]);
+                                ints.putExtra("found", "true");
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
-                            }else{
+                            } else if (response.code() == 404){
+                                Intent ints = new Intent ("activeRideDriver");
+                                ints.putExtra("found", "false");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            } else if (response.code() == 401){
+                                Intent ints = new Intent ("activeRideDriver");
+                                ints.putExtra("found", "false");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }
+                            else{
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
                             }
                         }
@@ -77,10 +87,19 @@ public class CurrentRideService extends Service {
                                 currentRidePassengerDTO[0]=response.body();
                                 Log.d("PASSS", currentRidePassengerDTO[0].toString());
                                 Intent ints = new Intent ("activeRidePassenger");
+                                ints.putExtra("found", "true");
                                 Log.d("PASSS", currentRidePassengerDTO[0].toString());
                                 ints.putExtra("activeRideDTO", currentRidePassengerDTO[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
-                            }else{
+                            } else if (response.code() == 404){
+                                Intent ints = new Intent ("activeRidePassenger");
+                                ints.putExtra("found", "false");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            } else if (response.code() == 401){
+                                Intent ints = new Intent ("activeRidePassenger");
+                                ints.putExtra("found", "false");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            } else{
                                 Log.d("PASSS","Meesage recieved: "+response.code());
                             }
                         }
