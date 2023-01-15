@@ -26,10 +26,9 @@
         android:id="@+id/bottom_statistic_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/bottom_report_navigation_passenger_menu"
+        app:menu="@menu/bottom_report_navigation_driver_menu"
         android:theme="@style/YellowBottomNavTheme"
         style="@style/yellowBottomNavigation"
         />
 
 </LinearLayout>
-
