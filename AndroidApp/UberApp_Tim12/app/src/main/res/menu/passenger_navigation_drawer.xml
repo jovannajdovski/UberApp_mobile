@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+    android:id="@+id/main_item"
+    android:title="Pera Peric">
+        <menu>
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_baseline_settings"
+                android:title="Settings"
+                android:checkable="true"/>
+            <item
+                android:id="@+id/notification"
+                android:icon="@drawable/ic_baseline_notifications"
+                android:title="Notification"
+                android:checkable="true"/>
+            <item
+                android:id="@+id/about"
+                android:icon="@drawable/ic_baseline_about"
+                android:title="About"
+                android:checkable="true"/>
+        </menu>
+    </item>
+</menu>

@@ -5,173 +5,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.DriverMainActivity">
-    <include
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/basic_toolbar" />
-
-    <ImageView
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/map"
-        app:srcCompat="@drawable/map" />
-    <TextView
-        android:id="@+id/new_ride_text"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:background="@drawable/new_ride_sticker"
-        android:text="@string/new_ride"
-        android:textColor="@color/white"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="75dp"
-        android:layout_marginEnd="75dp"
-        android:layout_marginTop="-13dp"
-        android:textSize="20sp"
-        android:textAlignment="center"
-        tools:ignore="RtlCompat" />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
-        android:backgroundTint="@color/yellow"
-        android:contentDescription="@string/inbox"
-        android:src="@drawable/ic_baseline_message_24"
-        android:onClick="openInbox"/>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-    <RelativeLayout
-        android:id="@+id/driverMainContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        >
 
-<!--    <ImageView-->
-<!--        android:id="@+id/map"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:contentDescription="@string/map"-->
-<!--        app:srcCompat="@drawable/map" />-->
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end|bottom"-->
-<!--        android:layout_marginEnd="30dp"-->
-<!--        android:layout_marginBottom="30dp"-->
-<!--        android:backgroundTint="@color/yellow"-->
-<!--        android:contentDescription="@string/inbox"-->
-<!--        android:src="@drawable/ic_baseline_message_24"-->
-<!--        android:onClick="openInbox"/>-->
-
-<!--    <androidx.drawerlayout.widget.DrawerLayout-->
-<!--        android:id="@+id/drawerLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:orientation="vertical"-->
-<!--        android:translationZ="2dp">-->
-
-
-        <!-- The navigation drawer -->
-        <RelativeLayout
-            android:layout_width="220dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/drawerPane"
-            android:layout_gravity="start">
-            <View
-                android:id="@+id/profile_view"
+            >
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/yellow">
-            </View>
-            <RelativeLayout
-                android:id="@+id/picture_view"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignTop="@id/profile_view"
-                android:layout_marginTop="90dp"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/image_border">
-                <ImageView
-                    android:id="@+id/profile_picture"
+                android:layout_height="match_parent">
+
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/basic_toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/profile"
-                    app:srcCompat="@drawable/ic_profile"/>
-            </RelativeLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ime Prezime"
-                android:layout_below="@id/picture_view"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                />
-            <ListView
-                android:id="@+id/navList"
+                    android:layout_height="wrap_content"
+                    />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+<!--                <TextView-->
+<!--                    android:id="@+id/new_ride_text"-->
+<!--                    android:layout_width="120dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@drawable/new_ride_sticker"-->
+<!--                    android:text="@string/new_ride"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:layout_gravity="end|bottom"-->
+<!--                    android:layout_marginBottom="75dp"-->
+<!--                    android:layout_marginEnd="75dp"-->
+<!--                    android:layout_marginTop="-13dp"-->
+<!--                    android:textSize="20sp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    tools:ignore="RtlCompat" />-->
+
+            <RelativeLayout
+                android:id="@+id/driverMainContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/profile_view"
-                android:choiceMode="singleChoice"
-                android:background="#ffffffff" />
-<!--        &lt;!&ndash; The main content view &ndash;&gt;-->
-<!--        <RelativeLayout-->
-<!--            android:id="@+id/mainContent"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent" />-->
+                android:layout_marginTop="65dp"/>
 
-<!--        &lt;!&ndash; The navigation drawer &ndash;&gt;-->
-<!--        <RelativeLayout-->
-<!--            android:layout_width="220dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:id="@+id/drawerPane"-->
-<!--            android:layout_gravity="start">-->
-<!--            <View-->
-<!--                android:id="@+id/profile_view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:background="@color/yellow">-->
-<!--            </View>-->
-<!--            <RelativeLayout-->
-<!--                android:id="@+id/picture_view"-->
-<!--                android:layout_width="50dp"-->
-<!--                android:layout_height="50dp"-->
-<!--                android:layout_alignTop="@id/profile_view"-->
-<!--                android:layout_marginTop="90dp"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:background="@drawable/image_border">-->
-<!--                <ImageView-->
-<!--                    android:id="@+id/profile_picture"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:contentDescription="@string/profile"-->
-<!--                    app:srcCompat="@drawable/ic_profile"/>-->
-<!--            </RelativeLayout>-->
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Ime Prezime"-->
-<!--                android:layout_below="@id/picture_view"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                />-->
-<!--            <ListView-->
-<!--                android:id="@+id/navList"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_below="@id/profile_view"-->
-<!--                android:choiceMode="singleChoice"-->
-<!--                android:background="#ffffffff" />-->
 
-<!--        </RelativeLayout>-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--    </androidx.drawerlayout.widget.DrawerLayout>-->
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:menu="@menu/passenger_navigation_drawer"
+            android:layout_gravity="start"
+            />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

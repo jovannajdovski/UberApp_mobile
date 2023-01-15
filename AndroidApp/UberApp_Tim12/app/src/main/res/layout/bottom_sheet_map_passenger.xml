@@ -11,12 +11,14 @@
     app:behavior_peekHeight="30dp"
 
     android:weightSum="1"
-    app:layout_behavior="@string/bottom_sheet_behavior">
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    >
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/drag_handle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
     <TextView
         style="@style/TextAppearance.AppCompat.Headline"
@@ -130,7 +132,7 @@
         android:id="@+id/time_field_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:startIconDrawable="@drawable/ic_baseline_access_time_24"
+        app:startIconDrawable="@drawable/ic_time"
         app:startIconContentDescription="Clock icon"
         app:boxBackgroundColor="@color/white"
         android:layout_marginTop="20dp"

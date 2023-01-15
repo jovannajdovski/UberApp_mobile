@@ -1,51 +1,40 @@
 package com.example.uberapp_tim12.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
-import android.content.res.Configuration;
-
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import android.widget.CompoundButton;
-import android.widget.Toast;
-
-import com.example.uberapp_tim12.R;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import com.example.uberapp_tim12.adapters.NavDrawerListAdapter;
-import com.example.uberapp_tim12.model_mock.NavDrawerItem;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import java.util.ArrayList;
-import com.example.uberapp_tim12.model_mock.User;
-import com.example.uberapp_tim12.fragments.DrawRouteFragment;
-import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
+import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.fragments.DriverMapFragment;
-import com.example.uberapp_tim12.model.NavDrawerItem;
-
-import java.util.ArrayList;
-import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.model_mock.NavDrawerItem;
+import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.UserMockup;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.navigation.NavigationView;
 
-public class DriverMainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class DriverMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     SwitchCompat sw;
-    private DrawerLayout navDrawerLayout;
+
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
     private ListView navDrawerList;
     private ActionBarDrawerToggle navDrawerToggle;
     private RelativeLayout navDrawerPane;
@@ -56,10 +45,23 @@ public class DriverMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_main);
 
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.nav_view);
+
+        navDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close){
+        };
+        drawerLayout.addDrawerListener(navDrawerToggle);
+        navDrawerToggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
         FragmentTransition.driverTo(DriverMapFragment.newInstance(),this,false);
         //FragmentTransition.driverTo(DriverCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
@@ -115,44 +117,49 @@ public class DriverMainActivity extends AppCompatActivity {
 //        });
 //
 //    }
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu)
-//    {
-//        MenuInflater inflater=getMenuInflater();
-//        inflater.inflate(R.menu.driver_actionbar,menu);
-//
-//        MenuItem itemSwitch=menu.findItem(R.id.isOnlineButton);
-//        itemSwitch.setActionView(R.layout.driver_activity_switch);
-//        sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
-//        sw.setChecked(true);
-//        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if(isChecked)
-//                    Toast.makeText(DriverMainActivity.this,"ONLINE",Toast.LENGTH_SHORT).show();
-//                else
-//                    Toast.makeText(DriverMainActivity.this,"OFFLINE",Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        Intent intent=null;
-//        if (id == R.id.profile) {
-//            intent = new Intent(DriverMainActivity.this, DriverAccountActivity.class);
-//            User user = UserMockup.getUser();
-//            intent.putExtra("user", user);
-//            startActivity(intent);
-//        }
-//        else if (id == R.id.history){
-//            intent = new Intent(DriverMainActivity.this,DriverRideHistoryActivity.class);
-//            startActivity(intent);
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.driver_actionbar,menu);
+
+        MenuItem itemSwitch=menu.findItem(R.id.isOnlineButton);
+        itemSwitch.setActionView(R.layout.driver_activity_switch);
+        sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
+        sw.setChecked(true);
+        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    Toast.makeText(DriverMainActivity.this,"ONLINE",Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DriverMainActivity.this,"OFFLINE",Toast.LENGTH_SHORT).show();
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Intent intent=null;
+        if (id == R.id.profile) {
+            intent = new Intent(DriverMainActivity.this, DriverAccountActivity.class);
+            User user = UserMockup.getUser();
+            intent.putExtra("user", user);
+            startActivity(intent);
+        }
+        else if (id == R.id.history){
+            intent = new Intent(DriverMainActivity.this,DriverRideHistoryActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.message){
+            intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
+            intent.putExtra("tab",0);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onStart() {
@@ -182,6 +189,35 @@ public class DriverMainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        switch (item.getTitle().toString()) {
+            case "Settings":
+                intent = new Intent(DriverMainActivity.this, DriverSettingsActivity.class);
+                intent.putExtra("tab",0);
+                startActivity(intent);
+                break;
+            case "Notification":
+                intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
+                intent.putExtra("tab",0);
+                startActivity(intent);
+                break;
+            case "Current ride":
+                intent = new Intent(DriverMainActivity.this, DriverSettingsActivity.class);
+                intent.putExtra("tab",0);
+                startActivity(intent);
+                break;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 
 
@@ -226,11 +262,4 @@ public class DriverMainActivity extends AppCompatActivity {
 //        navDrawerLayout.closeDrawer(navDrawerPane);
 //
 //    }
-//    public void openInbox(View view)
-//    {
-//        Intent intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
-//        intent.putExtra("tab",0);
-//        startActivity(intent);
-//    }
-
 }
