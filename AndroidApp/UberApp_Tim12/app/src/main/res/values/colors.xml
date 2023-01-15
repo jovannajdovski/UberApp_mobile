@@ -77,4 +77,18 @@
     <color name="md_theme_dark_surfaceTint">#E1C700</color>
     <color name="md_theme_dark_outlineVariant">#4A4739</color>
     <color name="md_theme_dark_scrim">#000000</color>
+
+    <!--My palette-->
+
+    <!--Gray-->
+    <color name="gray_900">#212934</color>
+    <color name="gray_800">#404B5A</color>
+    <color name="gray_700">#6E7A8A</color>
+    <color name="gray_600">#929FB1</color>
+    <color name="gray_500">#AEBECD</color>
+    <color name="gray_400">#CCD4DB</color>
+    <color name="gray_300">#D5DDE5</color>
+    <color name="gray_200">#E1E7EC</color>
+    <color name="gray_100">#F8F9FA</color>
+
 </resources>

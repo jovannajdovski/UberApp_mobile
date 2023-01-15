@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.fragments.DriverReportRideCountFragment;
 import com.example.uberapp_tim12.fragments.DriverReportRideDistanceFragment;
+import com.example.uberapp_tim12.fragments.PassengerLeaveAReviewFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
