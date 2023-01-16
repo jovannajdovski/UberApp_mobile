@@ -58,6 +58,7 @@ public class NotificationsFragment extends ListFragment {
         prepareNotificationsList();
         Intent intent=new Intent(getActivity(), RideService.class);
         intent.putExtra("endpoint", "getPendingRidesForDriver");
+        Log.d("PASSSSSS", "STARTSERVICE\t\tPASSS");
         getActivity().startService(intent);
         NotificationsListAdapter adapter=new NotificationsListAdapter(getActivity(),notificationItems);
         setListAdapter(adapter);
@@ -72,7 +73,7 @@ public class NotificationsFragment extends ListFragment {
         view = inflater.inflate(R.layout.fragment_notifications, container, false);
         blackBackground=view.findViewById(R.id.black_background);
 
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
+//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
         return view;
     }
 
@@ -89,7 +90,8 @@ public class NotificationsFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
+        Log.d("PASSSSSS", "RESUME\t\tPASSS");
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(acceptRideReceiver, new IntentFilter("acceptRide"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(rejectRideReceiver, new IntentFilter("rejectRide"));
     }

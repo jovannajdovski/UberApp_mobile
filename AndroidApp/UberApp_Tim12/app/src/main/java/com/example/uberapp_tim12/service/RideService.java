@@ -118,7 +118,6 @@ public class RideService extends Service {
                     final RideFullDTO[] ride = new RideFullDTO[1];
                     CreateRideDTO createRideDTO= (CreateRideDTO) intent.getSerializableExtra("ride");
                     Log.d("PASSS", createRideDTO.getScheduledTime().toString());
-                    Log.d("PASSS", createRideDTO.getVehicleType().toString());
                     Call<RideFullDTO> call = ControllerUtils.rideController.createRide(createRideDTO, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<RideFullDTO>() {
                         Intent ints = new Intent ("createRide");

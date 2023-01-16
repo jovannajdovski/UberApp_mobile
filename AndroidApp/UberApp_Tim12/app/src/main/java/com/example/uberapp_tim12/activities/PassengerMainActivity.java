@@ -265,7 +265,7 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
                 break;
             case "Notification":
                 intent = new Intent(PassengerMainActivity.this, PassengerInboxActivity.class);
-                intent.putExtra("tab",0);
+                intent.putExtra("tab",1);
                 startActivity(intent);
                 break;
             case "Current ride":

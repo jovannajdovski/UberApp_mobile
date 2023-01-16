@@ -7,6 +7,6 @@ public class RideRejectionDTO implements Serializable {
 
     private String reason;
 
-    private LocalDateTime timeOfRejection;
+    private String timeOfRejection;
 
 }

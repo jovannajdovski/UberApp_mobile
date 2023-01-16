@@ -232,7 +232,7 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                 break;
             case "Notification":
                 intent = new Intent(DriverMainActivity.this, DriverInboxActivity.class);
-                intent.putExtra("tab",0);
+                intent.putExtra("tab",1);
                 startActivity(intent);
                 break;
             case "Current ride":
