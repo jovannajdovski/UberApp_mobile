@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +83,9 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 
     private TextView timer;
     private Timer timerReal;
+
+    private List<LatLng> path;
+    private Marker rideMarker;
 
     public PassengerCurrRideFragment() {
     }
@@ -236,7 +240,7 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
         mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
 
         //Define list to get all latlng for the route
-        List<LatLng> path = new ArrayList();
+        path = new ArrayList();
 
         //Execute Directions API request
         GeoApiContext context = new GeoApiContext.Builder()
@@ -316,6 +320,31 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 6));
 
         routeDraw = true;
+
+        simulateRide();
+    }
+
+    public void simulateRide(){
+        rideMarker = mMap.addMarker(new MarkerOptions().position(start).title("My vehicle").icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin)));
+
+        int interval = 200;
+
+        new CountDownTimer((long) path.size() *interval, interval) {
+            int tick = 0;
+
+            public void onTick(long millisUntilFinished) {
+                rideMarker.setPosition(path.get(tick));
+                tick++;
+            }
+
+            public void onFinish() {
+                Toast.makeText(getActivity(), "You are at your destination", Toast.LENGTH_SHORT).show();
+                rideMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin));
+                timerReal.cancel();
+                timerReal.purge();
+            }
+
+        }.start();
     }
 
     @Override
@@ -397,5 +426,12 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
             tick++;
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timerReal.cancel();
+        timerReal.purge();
     }
 }
