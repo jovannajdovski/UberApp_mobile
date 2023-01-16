@@ -32,4 +32,10 @@ public class LocationDTO implements Serializable {
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
+
+    public LocationDTO(String address,Double latitude, Double longitude) {
+        this.address=address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

@@ -34,7 +34,12 @@ import android.widget.Toast;
 
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.activities.PassengerMainActivity;
 import com.example.uberapp_tim12.dialogs.LocationDialog;
+import com.example.uberapp_tim12.dto.CreateRideDTO;
+import com.example.uberapp_tim12.dto.LocationDTO;
+import com.example.uberapp_tim12.dto.PathDTO;
+import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model.VehicleForMarker;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.MockupVehicles;
@@ -62,10 +67,14 @@ import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 
 public class MapFragment extends Fragment implements LocationListener, OnMapReadyCallback {
@@ -86,10 +95,21 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private LatLng endPoint;
     private String startAddress;
     private String endAddress;
+    Calendar calendar = Calendar.getInstance();
+    int currHour = calendar.get(Calendar.HOUR_OF_DAY);
+    int currMin = calendar.get(Calendar.MINUTE);
+
+    MaterialTimePicker picker = new MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_12H)
+            .setHour(currHour)
+            .setMinute(currMin)
+            .setTitleText("Select ride start time")
+            .build();
 
     private AutocompleteSupportFragment autocompleteStart;
     private AutocompleteSupportFragment autocompleteEnd;
 
+    private PassengerMainActivity activity;
     public static MapFragment newInstance() {
         MapFragment mpf = new MapFragment();
         return mpf;
@@ -101,6 +121,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         hour=-1;
         minute=-1;
+        activity= (PassengerMainActivity) getActivity();
     }
 
     @Override
@@ -135,15 +156,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
             @Override
             public void onClick(View view) {
                 Log.i("fds", "sdffs");
-                Calendar calendar = Calendar.getInstance();
-                int currHour = calendar.get(Calendar.HOUR_OF_DAY);
-                int currMin = calendar.get(Calendar.MINUTE);
-                MaterialTimePicker picker = new MaterialTimePicker.Builder()
-                        .setTimeFormat(TimeFormat.CLOCK_12H)
-                        .setHour(currHour)
-                        .setMinute(currMin)
-                        .setTitleText("Select ride start time")
-                        .build();
+
 
                 picker.showNow(getParentFragmentManager(), "Time");
 
@@ -163,13 +176,31 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
             @Override
             public void onClick(View view) {
                 if (startPoint != null && endPoint != null) {
-                    FragmentTransition.passengerTo(DrawRouteFragment.newInstance(startPoint, endPoint), getActivity(), false);
+                    LocalDateTime scheduledTime=LocalDateTime.now();
+                    if(true) {
+                        //pitaj babu
+                    }
+                    CreateRideDTO ride=setRide(startPoint, endPoint,scheduledTime);
+                    //FragmentTransition.passengerTo(DrawRouteFragment.newInstance(ride), getActivity(), false);
+                    activity.changeFragment(1,ride,null);
                 }
             }
         });
 
 
         return view;
+    }
+
+    private CreateRideDTO setRide(LatLng startPoint, LatLng endPoint, LocalDateTime scheduledTime) {
+        CreateRideDTO ride=new CreateRideDTO();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSS");
+        ride.setScheduledTime(scheduledTime.format(formatter));
+        Set<PathDTO> pathDTOSet=new HashSet<>();
+        LocationDTO start=new LocationDTO(startAddress,startPoint.latitude,startPoint.longitude);
+        LocationDTO end=new LocationDTO(endAddress, endPoint.latitude,endPoint.longitude);
+        pathDTOSet.add(new PathDTO(start, end));
+        ride.setLocations(pathDTOSet);
+        return ride;
     }
 
     private void setUpAutocompleteFragment(AutocompleteSupportFragment autocompleteSupportFragment){

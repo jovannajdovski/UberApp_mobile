@@ -16,17 +16,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
-        style="@style/TextAppearance.AppCompat.Headline"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Ride information"
         android:layout_marginTop="-30dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/quantum_grey800"
-        android:textStyle="bold" />
+        android:layout_marginBottom="10dp">
 
+        <TextView
+            android:id="@+id/info_label"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="Ride information"
+            android:textColor="@color/quantum_grey800"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/to_invite_friends_buton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/info_label"
+            android:background="@drawable/next_button"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,7 +62,6 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
             android:textStyle="bold"
-            android:text="Danila Kisa 32 - Bulevar Oslobedjenja 55"
             android:textColor="@color/gray" />
 
     </LinearLayout>
@@ -66,7 +78,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:contentDescription="Time icon"
-            android:src="@drawable/ic_baseline_access_time_24" />
+            android:src="@drawable/ic_time" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,50 +99,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="30min"
                 android:textStyle="bold"
                 android:textColor="@color/quantum_grey800" />
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
 
-        <ImageView
-            android:id="@+id/money_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:contentDescription="Money icon"
-            android:src="@drawable/ic_baseline_attach_money_24" />
+<!--        <ImageView-->
+<!--            android:id="@+id/money_icon"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:contentDescription="Money icon"-->
+<!--            android:src="@drawable/ic_baseline_attach_money_24" />-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/total_cost_label"
-                android:textSize="15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
-                android:text="Total cost"
-                android:textColor="@color/gray" />
-            <TextView
-                android:id="@+id/total_cost_value"
-                style="@style/TextAppearance.AppCompat.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="1200 RSD"
-                android:textStyle="bold"
-                android:textColor="@color/quantum_grey800" />
-        </LinearLayout>
-    </LinearLayout>
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
+<!--            <TextView-->
+<!--                android:id="@+id/total_cost_label"-->
+<!--                android:textSize="15dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                android:text="Total cost"-->
+<!--                android:textColor="@color/gray" />-->
+<!--            <TextView-->
+<!--                android:id="@+id/total_cost_value"-->
+<!--                style="@style/TextAppearance.AppCompat.Medium"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/quantum_grey800" />-->
+<!--        </LinearLayout>-->
+<!--    </LinearLayout>-->
 
 
     <LinearLayout
@@ -166,7 +176,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="3.5 km"
                 android:textStyle="bold"
                 android:textColor="@color/quantum_grey800" />
         </LinearLayout>

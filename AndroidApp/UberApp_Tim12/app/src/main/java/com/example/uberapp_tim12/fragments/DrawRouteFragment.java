@@ -17,10 +17,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.activities.PassengerMainActivity;
+import com.example.uberapp_tim12.dto.CreateRideDTO;
+import com.example.uberapp_tim12.dto.LocationDTO;
+import com.example.uberapp_tim12.model.Ride;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -52,26 +58,32 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
 
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
-
+    private PassengerMainActivity activity;
     private LatLng start;
     private LatLng end;
+    private CreateRideDTO ride;
     private CameraUpdate cu;
-
-    public DrawRouteFragment(LatLng start, LatLng end) {
+    TextView routeView, timeView, distanceView;
+    public DrawRouteFragment(LatLng start, LatLng end, CreateRideDTO ride) {
         this.start = start;
         this.end = end;
+        this.ride=ride;
     }
 
 
-    public static DrawRouteFragment newInstance(LatLng start, LatLng end) {
-
-        DrawRouteFragment mpf = new DrawRouteFragment(start, end);
+    public static DrawRouteFragment newInstance(CreateRideDTO ride) {
+        LocationDTO startPoint=ride.getLocations().iterator().next().getDeparture();
+        LocationDTO endPoint=ride.getLocations().iterator().next().getDestination();
+        LatLng start=new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
+        LatLng end=new LatLng(endPoint.getLatitude(),endPoint.getLongitude());
+        DrawRouteFragment mpf = new DrawRouteFragment(start, end,ride);
 
         return mpf;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity= (PassengerMainActivity) getActivity();
     }
 
     @Override
@@ -90,7 +102,17 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
     public View onCreateView(LayoutInflater inflater, ViewGroup vg, Bundle data) {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_draw_route, vg, false);
-
+        Button button=view.findViewById(R.id.to_invite_friends_buton);
+        routeView=view.findViewById(R.id.route);
+        timeView=view.findViewById(R.id.estimated_time_value);
+        distanceView=view.findViewById(R.id.distance_value);
+        routeView.setText(ride.getLocations().iterator().next().getDeparture().getAddress().concat(" - ").concat(ride.getLocations().iterator().next().getDestination().getAddress()));
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.changeFragment(2,ride,null);
+            }
+        });
         return view;
     }
 
@@ -114,12 +136,14 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
         DirectionsApiRequest req = DirectionsApi.getDirections(context, start.latitude + "," + start.longitude,
                 end.latitude + "," + end.longitude);
 
+
         try {
             DirectionsResult res = req.await();
             //Loop through legs and steps to get encoded polylines of each step
             if (res.routes != null && res.routes.length > 0) {
                 DirectionsRoute route = res.routes[0];
-
+                timeView.setText(String.valueOf(Math.round(route.legs[0].duration.inSeconds/60.0)).concat(" min"));
+                distanceView.setText(String.valueOf(Math.round(route.legs[0].distance.inMeters/10.0)/100.0).concat(" km"));
                 if (route.legs !=null) {
                     for(int i=0; i<route.legs.length; i++) {
                         DirectionsLeg leg = route.legs[i];

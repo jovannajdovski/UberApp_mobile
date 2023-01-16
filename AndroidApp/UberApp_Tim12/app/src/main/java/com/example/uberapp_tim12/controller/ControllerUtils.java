@@ -31,5 +31,5 @@ public class ControllerUtils {
 
     public static RideController rideController = retrofit.create(RideController.class);
     public static DriverController driverController=retrofit.create(DriverController.class);
-
+    public static PassengerController passengerController=retrofit.create(PassengerController.class);
 }

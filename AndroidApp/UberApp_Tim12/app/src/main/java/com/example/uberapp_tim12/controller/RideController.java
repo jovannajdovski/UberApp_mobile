@@ -1,7 +1,9 @@
 package com.example.uberapp_tim12.controller;
 
+import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
+import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 
@@ -27,4 +29,6 @@ public interface RideController {
     @PUT("ride/{id}/cancel")
     Call<Ride> rejectRide(@Path("id") Integer rideId, @Body ReasonDTO reasonDTO, @Header("Authorization") String token);
 
+    @POST("ride")
+    Call<RideFullDTO> createRide(@Body CreateRideDTO createRideDTO, @Header("Authorization") String jwt);
 }

@@ -22,4 +22,9 @@ public class PathDTO implements Serializable {
     public void setDestination(LocationDTO destination) {
         this.destination = destination;
     }
+
+    public PathDTO(LocationDTO departure, LocationDTO destination) {
+        this.departure = departure;
+        this.destination = destination;
+    }
 }

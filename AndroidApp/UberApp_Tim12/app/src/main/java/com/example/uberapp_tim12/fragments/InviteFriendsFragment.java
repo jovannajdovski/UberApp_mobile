@@ -1,16 +1,45 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.PassengerMainActivity;
+import com.example.uberapp_tim12.adapters.CustomAdapter;
+import com.example.uberapp_tim12.dto.CreateRideDTO;
+import com.example.uberapp_tim12.dto.LocationDTO;
+import com.example.uberapp_tim12.dto.PassengerDTO;
+import com.example.uberapp_tim12.dto.RidesListDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
+import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.service.PassengerService;
+import com.example.uberapp_tim12.service.RideService;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,59 +47,147 @@ import com.example.uberapp_tim12.activities.PassengerMainActivity;
  * create an instance of this fragment.
  */
 public class InviteFriendsFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private PassengerMainActivity activity;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private CreateRideDTO ride;
+    private View view;
+    private Set<UserRideDTO> passengers=new HashSet<>();
+    public InviteFriendsFragment(CreateRideDTO ride) {
+        this.ride=ride;
+    }
+
+    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
+    private enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
+    }
+    protected InviteFriendsFragment.LayoutManagerType mCurrentLayoutManagerType;
+
+    protected RecyclerView mRecyclerView;
+    protected CustomAdapter mAdapter;
+    protected RecyclerView.LayoutManager mLayoutManager;
+    protected List<String> dataSet=new ArrayList<>();
+
+    public static InviteFriendsFragment newInstance(CreateRideDTO ride) {
+
+        InviteFriendsFragment fragment = new InviteFriendsFragment(ride);
+        return fragment;
+    }
 
     public InviteFriendsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment InviteFriendsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static InviteFriendsFragment newInstance(String param1, String param2) {
-        InviteFriendsFragment fragment = new InviteFriendsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity=(PassengerMainActivity) getActivity();
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_invite_friends, container, false);
-        Button back=(Button) view.findViewById(R.id.next_button_friends);
-        back.setOnClickListener(new View.OnClickListener() {
+        view=inflater.inflate(R.layout.fragment_invite_friends, container, false);
+        Button next=(Button) view.findViewById(R.id.to_more_options);
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.changeFragment(3);
+                passengers.add(new UserRideDTO(1,"miki@email.com"));
+                ride.setPassengers(passengers);
+                activity.changeFragment(3,ride, dataSet);
             }
         });
+        Button addFriend=view.findViewById(R.id.add_friend_button);
+        EditText friendEmail=view.findViewById(R.id.friend_email_input);
+        addFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), PassengerService.class);
+                intent.putExtra("email",String.valueOf(friendEmail.getText()));
+                intent.putExtra("endpoint", "getPassengerByEmail");
+                getActivity().startService(intent);
+            }
+        });
+
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mCurrentLayoutManagerType = InviteFriendsFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+
+        if (savedInstanceState != null) {
+            // Restore saved layout manager type.
+            mCurrentLayoutManagerType = (InviteFriendsFragment.LayoutManagerType) savedInstanceState
+                    .getSerializable(KEY_LAYOUT_MANAGER);
+        }
+        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+
+
+
         return view;
     }
+    public void setRecyclerViewLayoutManager(InviteFriendsFragment.LayoutManagerType layoutManagerType) {
+        int scrollPosition = 0;
+
+        // If a layout manager has already been set, get current scroll position.
+        if (mRecyclerView.getLayoutManager() != null) {
+            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                    .findFirstCompletelyVisibleItemPosition();
+        }
+
+        switch (layoutManagerType) {
+            case GRID_LAYOUT_MANAGER:
+                mLayoutManager = new GridLayoutManager(getActivity(), 2);
+                mCurrentLayoutManagerType = InviteFriendsFragment.LayoutManagerType.GRID_LAYOUT_MANAGER;
+                break;
+            case LINEAR_LAYOUT_MANAGER:
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mCurrentLayoutManagerType = InviteFriendsFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                break;
+            default:
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mCurrentLayoutManagerType = InviteFriendsFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        }
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.scrollToPosition(scrollPosition);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(userByEmailReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(userByEmailReceiver, new IntentFilter("userByEmail"));
+    }
+
+    public BroadcastReceiver userByEmailReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSSSSSSSS","lalalalaalla");
+            PassengerDTO passengerDTO=intent.getParcelableExtra("passengerDTO");
+            if(passengerDTO==null)
+            {
+                String responseMessage=intent.getStringExtra("responseMessage");
+                Toast.makeText(getActivity(),responseMessage,Toast.LENGTH_SHORT).show();
+            }
+            else{
+                dataSet.add(passengerDTO.getName().concat(" ").concat(passengerDTO.getSurname()));
+
+                String[] dataSetArray = new String[dataSet.size()];
+                dataSet.toArray(dataSetArray);
+                mAdapter = new CustomAdapter(dataSetArray);
+                mRecyclerView.setAdapter(mAdapter);
+                passengers.add(new UserRideDTO(passengerDTO.getId(),passengerDTO.getEmail()));
+            }
+        }
+    };
 }

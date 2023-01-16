@@ -8,16 +8,29 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.PassengerMainActivity;
+import com.example.uberapp_tim12.adapters.CustomAdapter;
+import com.example.uberapp_tim12.dto.CreateRideDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.service.RideService;
+
+import org.w3c.dom.Text;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,83 +39,144 @@ import com.example.uberapp_tim12.service.RideService;
  */
 public class ConfirmationFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private PassengerMainActivity activity;
+    private CreateRideDTO ride;
+    private List<String> passengers;
+
+    public ConfirmationFragment(CreateRideDTO ride, List<String> passengers) {
+        this.ride = ride;
+        this.passengers = passengers;
+    }
+
+    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
+
+    private enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
+    }
+
+    protected ConfirmationFragment.LayoutManagerType mCurrentLayoutManagerType;
+
+    protected RecyclerView mRecyclerView;
+    protected CustomAdapter mAdapter;
+    protected RecyclerView.LayoutManager mLayoutManager;
+
+    public static ConfirmationFragment newInstance(CreateRideDTO ride, List<String> passengers) {
+
+        ConfirmationFragment fragment = new ConfirmationFragment(ride, passengers);
+        return fragment;
+    }
 
     public ConfirmationFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ConfirmationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ConfirmationFragment newInstance(String param1, String param2) {
-        ConfirmationFragment fragment = new ConfirmationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent=new Intent(getActivity(), RideService.class);
+        //Intent intent=new Intent(getActivity(), RideService.class);
         //getActivity().startService(intent);
-
-        activity=(PassengerMainActivity) getActivity();
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        //isprobavanje servisa
+        activity = (PassengerMainActivity) getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_confirmation, container, false);
-        Button confirm=(Button) view.findViewById(R.id.confirm_button);
+        View view = inflater.inflate(R.layout.fragment_confirmation, container, false);
+        Button confirm = (Button) view.findViewById(R.id.confirm_button);
+        TextView new_ride_departure = view.findViewById(R.id.new_ride_departure);
+        TextView new_ride_destination = view.findViewById(R.id.new_ride_destination);
+        TextView new_ride_child = view.findViewById(R.id.new_ride_child);
+        TextView new_ride_pets = view.findViewById(R.id.new_ride_pets);
+        TextView new_ride_type = view.findViewById(R.id.vehicle_type);
+        TextView new_ride_time = view.findViewById(R.id.new_ride_time);
+
+        new_ride_departure.setText(ride.getLocations().iterator().next().getDeparture().getAddress());
+        new_ride_destination.setText(ride.getLocations().iterator().next().getDestination().getAddress());
+        new_ride_child.setText(String.valueOf(ride.isBabyTransport()));
+        new_ride_pets.setText(String.valueOf(ride.isPetTransport()));
+        new_ride_type.setText(String.valueOf(ride.getVehicleType()));
+        String dateTime=ride.getScheduledTime();
+        new_ride_time.setText(dateTime.substring(dateTime.indexOf('T')+1,dateTime.indexOf('T')+6));
+
+
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.changeFragment(5);
+                activity.changeFragment(5, ride, passengers);
             }
         });
+
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mCurrentLayoutManagerType = ConfirmationFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+
+        if (savedInstanceState != null) {
+            // Restore saved layout manager type.
+            mCurrentLayoutManagerType = (ConfirmationFragment.LayoutManagerType) savedInstanceState
+                    .getSerializable(KEY_LAYOUT_MANAGER);
+        }
+        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+        String[] dataSetArray = new String[passengers.size()];
+        passengers.toArray(dataSetArray);
+        mAdapter = new CustomAdapter(dataSetArray);
+        mRecyclerView.setAdapter(mAdapter);
+
+
         return view;
     }
-    public BroadcastReceiver bReceiver = new BroadcastReceiver(){
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String dobijeno=intent.getStringExtra("pas");
-            Log.d("PASSSss", dobijeno);
+    public void setRecyclerViewLayoutManager(ConfirmationFragment.LayoutManagerType layoutManagerType) {
+        int scrollPosition = 0;
+
+        // If a layout manager has already been set, get current scroll position.
+        if (mRecyclerView.getLayoutManager() != null) {
+            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                    .findFirstCompletelyVisibleItemPosition();
         }
-    };
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
-    }
+        switch (layoutManagerType) {
+            case GRID_LAYOUT_MANAGER:
+                mLayoutManager = new GridLayoutManager(getActivity(), 2);
+                mCurrentLayoutManagerType = ConfirmationFragment.LayoutManagerType.GRID_LAYOUT_MANAGER;
+                break;
+            case LINEAR_LAYOUT_MANAGER:
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mCurrentLayoutManagerType = ConfirmationFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                break;
+            default:
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mCurrentLayoutManagerType = ConfirmationFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("ihor"));
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.scrollToPosition(scrollPosition);
     }
 }
+//    public BroadcastReceiver bReceiver = new BroadcastReceiver(){
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String dobijeno=intent.getStringExtra("pas");
+//            Log.d("PASSSss", dobijeno);
+//        }
+//    };
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("ihor"));
+//    }
+//}

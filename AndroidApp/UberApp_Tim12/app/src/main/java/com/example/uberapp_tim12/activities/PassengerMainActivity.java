@@ -6,25 +6,24 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.fragments.ConfirmationFragment;
+import com.example.uberapp_tim12.fragments.DrawRouteFragment;
 import com.example.uberapp_tim12.fragments.InviteFriendsFragment;
 import com.example.uberapp_tim12.fragments.MapFragment;
 import com.example.uberapp_tim12.fragments.MoreOptionsFragment;
 import com.example.uberapp_tim12.fragments.OverviewFragment;
-import com.example.uberapp_tim12.fragments.RouteFragment;
+import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.tools.FragmentTransition;
@@ -33,6 +32,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.shuhart.stepview.StepView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PassengerMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
@@ -43,14 +43,15 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
     private MapFragment mapFragment;
-    private RouteFragment routeFragment;
+    private DrawRouteFragment drawRouteFragment;
     private InviteFriendsFragment inviteFriendsFragment;
     private MoreOptionsFragment moreOptionsFragment;
     private ConfirmationFragment confirmationFragment;
     private OverviewFragment overviewFragment;
     private FragmentManager manager;
     public StepView stepView;
-
+    private CreateRideDTO ride;
+    private List<String> passengers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +76,8 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
             public void onStepClick(int step) {
                 int currentStep=stepView.getCurrentStep();
 
-                if(step-currentStep<=1) {
-                    changeFragment(step);
+                if(step<currentStep && currentStep!=5) {
+                    changeFragment(step,ride, passengers);
                 }
             }
         });
@@ -107,18 +108,15 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
 
 
         mapFragment=new MapFragment();
-        routeFragment=new RouteFragment();
-        inviteFriendsFragment=new InviteFriendsFragment();
-        moreOptionsFragment=new MoreOptionsFragment();
-        confirmationFragment=new ConfirmationFragment();
-        overviewFragment=new OverviewFragment();
         manager=getSupportFragmentManager();
         manager.beginTransaction()
                 .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
 
     }
 
-    public void changeFragment(int step) {
+    public void changeFragment(int step, CreateRideDTO ride, List<String> passengers) {
+        this.ride=ride;
+        this.passengers=passengers;
         stepView.go(step,true);
         switch (step)
         {
@@ -126,18 +124,23 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
                 manager.beginTransaction().replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
                 break;
             case 1:
-                manager.beginTransaction().replace(R.id.passengerMainContent, routeFragment,routeFragment.getTag()).commit();
+                drawRouteFragment=DrawRouteFragment.newInstance(ride);
+                manager.beginTransaction().replace(R.id.passengerMainContent, drawRouteFragment,drawRouteFragment.getTag()).commit();
                 break;
             case 2:
+                inviteFriendsFragment=InviteFriendsFragment.newInstance(ride);
                 manager.beginTransaction().replace(R.id.passengerMainContent,inviteFriendsFragment,inviteFriendsFragment.getTag()).commit();
                 break;
             case 3:
+                moreOptionsFragment=MoreOptionsFragment.newInstance(ride, passengers);
                 manager.beginTransaction().replace(R.id.passengerMainContent, moreOptionsFragment,moreOptionsFragment.getTag()).commit();
                 break;
             case 4:
+                confirmationFragment=ConfirmationFragment.newInstance(ride, passengers);
                 manager.beginTransaction().replace(R.id.passengerMainContent,confirmationFragment,confirmationFragment.getTag()).commit();
                 break;
             case 5:
+                overviewFragment=OverviewFragment.newInstance(ride, passengers);
                 manager.beginTransaction().replace(R.id.passengerMainContent, overviewFragment,overviewFragment.getTag()).commit();
                 break;
             default:

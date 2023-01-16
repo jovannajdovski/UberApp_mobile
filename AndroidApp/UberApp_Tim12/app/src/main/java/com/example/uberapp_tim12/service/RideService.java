@@ -10,8 +10,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.Constant;
 import com.example.uberapp_tim12.controller.ControllerUtils;
+import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
+import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.google.gson.Gson;
@@ -111,6 +113,36 @@ public class RideService extends Service {
                         }
                     });
                 }
+                else if(method.equals("createRide")){
+                    final RideFullDTO[] ride = new RideFullDTO[1];
+                    CreateRideDTO createRideDTO= (CreateRideDTO) intent.getSerializableExtra("ride");
+                    Log.d("PASSS", createRideDTO.getScheduledTime().toString());
+                    Log.d("PASSS", createRideDTO.getVehicleType().toString());
+                    Call<RideFullDTO> call = ControllerUtils.rideController.createRide(createRideDTO, Constant.jwt);
+                    call.enqueue(new Callback<RideFullDTO>() {
+                        Intent ints = new Intent ("createRide");
+
+                        @Override
+                        public void onResponse(Call<RideFullDTO> call, Response<RideFullDTO> response) {
+                            if (response.code() == 200){
+                                ride[0] =response.body();
+                                ints.putExtra("ride", ride[0]);
+                                }
+                            else{
+                                ints.putExtra("responseMessage", response.message());
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<RideFullDTO> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }
                 else if(method.equals("getDriverDetails")){
                     final DriverDetailsDTO[] driverDetailsDTO = new DriverDetailsDTO[1];
                     Call<DriverDetailsDTO> call = ControllerUtils.rideController.getDriverDetails(4, Constant.jwt);
@@ -123,7 +155,9 @@ public class RideService extends Service {
                             Gson gson = new Gson();
                             driverDetailsDTO[0] = gson.fromJson(responseJson, DriverDetailsDTO.class);*/
                                 Log.d("REZZZ",driverDetailsDTO[0].toString());
-                                sendToReceiver();
+                                Intent ints = new Intent ("ihor");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+
                             }else{
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
                             }
@@ -143,11 +177,6 @@ public class RideService extends Service {
 
         stopSelf();
         return START_NOT_STICKY;
-    }
-
-    private void sendToReceiver (){
-        Intent intent = new Intent ("ihor"); //put the same message as in the filter you used in the activity when registering the receiver
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
     @Nullable
     @Override
