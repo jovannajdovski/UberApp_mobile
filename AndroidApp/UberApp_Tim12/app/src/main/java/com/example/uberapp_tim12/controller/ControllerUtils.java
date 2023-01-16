@@ -8,7 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ControllerUtils {
-    public static final String SERVICE_API_PATH = "http://192.168.0.12:8080/api/";
+    public static final String SERVICE_API_PATH = "http://192.168.0.113:8080/api/";
 
     public static OkHttpClient test(){
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -32,4 +32,6 @@ public class ControllerUtils {
     public static RideController rideController = retrofit.create(RideController.class);
     public static DriverController driverController=retrofit.create(DriverController.class);
     public static PassengerController passengerController=retrofit.create(PassengerController.class);
+
+    public static PanicController panicController = retrofit.create(PanicController.class);
 }

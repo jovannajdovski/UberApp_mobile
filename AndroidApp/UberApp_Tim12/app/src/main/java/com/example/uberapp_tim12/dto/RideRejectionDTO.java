@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class RideRejectionDTO implements Serializable {
+
     private String reason;
 
     private LocalDateTime timeOfRejection;
+
 }

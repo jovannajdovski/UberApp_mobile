@@ -1,6 +1,9 @@
 package com.example.uberapp_tim12.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +20,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.dto.PanicDTO;
+import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
 import com.example.uberapp_tim12.fragments.DriverMapFragment;
+import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
+import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.UserMockup;
 import com.google.android.material.navigation.NavigationView;
@@ -39,6 +48,7 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
     private ActionBarDrawerToggle navDrawerToggle;
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
+    private FragmentManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +73,7 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         navDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        manager=getSupportFragmentManager();
         FragmentTransition.driverTo(DriverMapFragment.newInstance(),this,false);
         //FragmentTransition.driverTo(DriverCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
     }
@@ -179,12 +190,31 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onPause() {
         super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(activeRideReceiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(activeRideReceiver, new IntentFilter("activeRideDriver"));
     }
+
+    public BroadcastReceiver activeRideReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String found = intent.getStringExtra("found");
+            if (found.equals("true")){
+                DriverCurrRideFragment driverCurrRideFragment = new DriverCurrRideFragment();
+                manager.beginTransaction().replace(R.id.driverMainContent, driverCurrRideFragment,driverCurrRideFragment.getTag()).commit();
+                drawerLayout.close();
+                LocalBroadcastManager.getInstance(DriverMainActivity.this).unregisterReceiver(activeRideReceiver);
+            }else {
+                Toast.makeText(DriverMainActivity.this,"No active ride",Toast.LENGTH_SHORT).show();
+                drawerLayout.close();
+            }
+        }
+    };
 
     @Override
     protected void onRestart() {
@@ -206,9 +236,10 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                 startActivity(intent);
                 break;
             case "Current ride":
-                intent = new Intent(DriverMainActivity.this, DriverSettingsActivity.class);
-                intent.putExtra("tab",0);
-                startActivity(intent);
+                Intent intentRide = new Intent(this, CurrentRideService.class);
+                intentRide.putExtra("endpoint", "getActiveRideForDriver");
+                this.startService(intentRide);
+
                 break;
         }
 

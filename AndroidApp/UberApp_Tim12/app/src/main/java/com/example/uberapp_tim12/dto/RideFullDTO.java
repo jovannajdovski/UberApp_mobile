@@ -4,6 +4,10 @@ import com.example.uberapp_tim12.model.VehicleCategory;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -90,12 +94,12 @@ public class RideFullDTO implements Serializable {
     public void setEstimatedTimeInMinutes(Double estimatedTimeInMinutes) {
         this.estimatedTimeInMinutes = estimatedTimeInMinutes;
     }
-
     public VehicleCategory getVehicleType() {
         return vehicleType;
     }
 
     public void setVehicleType(VehicleCategory vehicleType) {
+
         this.vehicleType = vehicleType;
     }
 

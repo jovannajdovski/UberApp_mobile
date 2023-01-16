@@ -1,12 +1,16 @@
 package com.example.uberapp_tim12.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,20 +18,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.fragments.ConfirmationFragment;
 import com.example.uberapp_tim12.fragments.DrawRouteFragment;
+import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
 import com.example.uberapp_tim12.fragments.InviteFriendsFragment;
 import com.example.uberapp_tim12.fragments.MapFragment;
 import com.example.uberapp_tim12.fragments.MoreOptionsFragment;
 import com.example.uberapp_tim12.fragments.OverviewFragment;
 import com.example.uberapp_tim12.model.Ride;
+
+import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
+
 import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
+import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.UserMockup;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationView;
 import com.shuhart.stepview.StepView;
 
@@ -198,14 +209,33 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
     @Override
     protected void onPause() {
         super.onPause();
-        //LocalBroadcastManager.getInstance(this).unregisterReceiver(bReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(activeRideReceiver);
     }
 
     @Override
     protected void onResume() {
-        //LocalBroadcastManager.getInstance(this).registerReceiver(bReceiver, new IntentFilter("ihor"));
         super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(activeRideReceiver, new IntentFilter("activeRidePassenger"));
     }
+
+    public BroadcastReceiver activeRideReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String found = intent.getStringExtra("found");
+            if (found.equals("true")){
+                PassengerCurrRideFragment passengerCurrRideFragment = new PassengerCurrRideFragment();
+                RelativeLayout content = (RelativeLayout) findViewById(R.id.passengerCurrRideContent);
+                manager.beginTransaction().replace(R.id.passengerCurrRideContent, passengerCurrRideFragment,passengerCurrRideFragment.getTag()).commit();
+                content.removeAllViews();
+                drawerLayout.close();
+                LocalBroadcastManager.getInstance(PassengerMainActivity.this).unregisterReceiver(activeRideReceiver);
+            }else {
+                Toast.makeText(PassengerMainActivity.this,"No active ride",Toast.LENGTH_SHORT).show();
+                drawerLayout.close();
+            }
+        }
+    };
 
     @Override
     protected void onRestart() {
@@ -239,9 +269,10 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
                 startActivity(intent);
                 break;
             case "Current ride":
-                intent = new Intent(PassengerMainActivity.this, PassengerInboxActivity.class);
-                intent.putExtra("tab",0);
-                startActivity(intent);
+                Intent intentRide = new Intent(this, CurrentRideService.class);
+                intentRide.putExtra("endpoint", "getActiveRideForPassenger");
+                this.startService(intentRide);
+
                 break;
         }
 

@@ -31,4 +31,11 @@ public interface RideController {
 
     @POST("ride")
     Call<RideFullDTO> createRide(@Body CreateRideDTO createRideDTO, @Header("Authorization") String jwt);
+
+    @GET("ride/driver/{driverId}/active")
+    Call<RideFullDTO> getActiveRideForDriver(@Path("driverId") Integer driverId, @Header("Authorization") String token);
+
+    @GET("ride/passenger/{passengerId}/active")
+    Call<RideFullDTO> getActiveRideForPassenger(@Path("passengerId") Integer passengerId, @Header("Authorization") String token);
+
 }

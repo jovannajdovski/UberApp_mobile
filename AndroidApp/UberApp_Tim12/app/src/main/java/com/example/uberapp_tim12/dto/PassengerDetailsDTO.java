@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class DriverDetailsDTO implements Serializable {
+public class PassengerDetailsDTO implements Serializable {
     @SerializedName("id")
     @Expose
     private Integer id;

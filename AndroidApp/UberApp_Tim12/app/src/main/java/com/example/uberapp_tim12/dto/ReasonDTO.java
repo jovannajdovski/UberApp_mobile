@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 public class ReasonDTO implements Parcelable {
     String reason;
-    public ReasonDTO(String reason)
-    {
-        this.reason=reason;
+
+    public ReasonDTO(String reason) {
+        this.reason = reason;
     }
 
     protected ReasonDTO(Parcel in) {
