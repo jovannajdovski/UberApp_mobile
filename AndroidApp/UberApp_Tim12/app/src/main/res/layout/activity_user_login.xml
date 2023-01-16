@@ -76,8 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="30dp"
-            android:background="@drawable/edit_text_border"
-            android:backgroundTint="@color/gray"
+            android:backgroundTint="@color/yellow"
             android:textColor="@color/white"
             android:text="@string/login"
             android:textSize="16sp"/>

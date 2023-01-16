@@ -32,13 +32,21 @@
             android:text="Ride information"
             android:textColor="@color/quantum_grey800"
             android:textStyle="bold" />
+
         <Button
+            style="?attr/materialIconButtonFilledTonalStyle"
             android:id="@+id/to_invite_friends_buton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:icon="@drawable/ic_next_arrow"
+            app:iconGravity="textStart"
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/info_label"
-            android:background="@drawable/next_button"/>
+            android:backgroundTint="@color/yellow"
+            />
+
+
+
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"

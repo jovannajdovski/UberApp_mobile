@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.InviteFriendsFragment">
 
     <ImageView
@@ -35,7 +36,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="#61BD28"
         android:text="Add friend"
         android:textSize="18sp"/>
 
@@ -54,13 +55,17 @@
             android:layout_height="200dp" />
 
     </LinearLayout>
+
     <Button
+        style="?attr/materialIconButtonFilledTonalStyle"
         android:id="@+id/to_more_options"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/next_button"
+        app:icon="@drawable/ic_next_arrow"
+        app:iconGravity="textStart"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/yellow"
         />
 </RelativeLayout>

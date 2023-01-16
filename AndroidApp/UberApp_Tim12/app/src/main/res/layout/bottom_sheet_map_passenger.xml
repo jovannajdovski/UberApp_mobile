@@ -160,7 +160,7 @@
             app:iconGravity="textStart"
             app:iconSize="30dp"
             android:id="@+id/routeButton"
-            android:backgroundTint="@color/quantum_grey600"
+            android:backgroundTint="@color/yellow"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
@@ -169,3 +169,4 @@
             />
     </LinearLayout>
 </LinearLayout>
+

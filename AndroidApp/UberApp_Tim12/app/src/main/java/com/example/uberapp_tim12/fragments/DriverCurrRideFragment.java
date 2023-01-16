@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -126,7 +127,6 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         Intent intentRide = new Intent(getActivity(), CurrentRideService.class);
         intentRide.putExtra("endpoint", "getActiveRideForDriver");
         getActivity().startService(intentRide);
-
     }
 
     public BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -261,6 +261,19 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
             @Override
             public void onClick(View view) {
                 showPanicDialog();
+            }
+        });
+
+        Button finishButton = (Button) view.findViewById(R.id.routeButton);
+
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = getParentFragmentManager();
+                DriverMapFragment mapFragment = new DriverMapFragment();
+                manager.beginTransaction().replace(R.id.driverMainContent,
+                        mapFragment,
+                        mapFragment.getTag()).commit();
             }
         });
 
@@ -405,7 +418,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
     public void simulateRide(){
         rideMarker = mMap.addMarker(new MarkerOptions().position(start).title("My vehicle").icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin)));
 
-        int interval = 200;
+        int interval = 2000;
 
         new CountDownTimer((long) path.size() *interval, interval) {
             int tick = 0;

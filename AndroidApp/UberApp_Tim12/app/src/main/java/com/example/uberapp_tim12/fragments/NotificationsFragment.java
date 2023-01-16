@@ -71,6 +71,8 @@ public class NotificationsFragment extends ListFragment {
         setHasOptionsMenu(true);
         view = inflater.inflate(R.layout.fragment_notifications, container, false);
         blackBackground=view.findViewById(R.id.black_background);
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
         return view;
     }
 
@@ -87,7 +89,7 @@ public class NotificationsFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
+//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(acceptRideReceiver, new IntentFilter("acceptRide"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(rejectRideReceiver, new IntentFilter("rejectRide"));
     }
@@ -108,9 +110,9 @@ public class NotificationsFragment extends ListFragment {
         notificationItems.add(new NotificationItem(
                 "Kralja Aleksandra 7 - Preradoviceva 40",
                 "13.11.2022. 14:00",
-                NotificationItem.NotificationType.CANCELLATION,
+                NotificationItem.NotificationType.REMINDER,
                 "Ride cancellation",
-                "The driver buries the dog",
+                "Driver is sick",
                 "13:00"));
         notificationItems.add(new NotificationItem(
                 "Kralja Aleksandra 7 - Preradoviceva 40",
