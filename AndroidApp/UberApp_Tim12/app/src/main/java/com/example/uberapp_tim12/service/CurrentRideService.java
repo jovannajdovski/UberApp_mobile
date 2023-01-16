@@ -12,6 +12,7 @@ import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
+import com.example.uberapp_tim12.security.LoggedUser;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,8 +41,8 @@ public class CurrentRideService extends Service {
                 if(method.equals("getActiveRideForDriver"))
                 {
                     Log.d("PASSS", "ista metoda");
-                    Call<RideFullDTO> call = ControllerUtils.rideController.getActiveRideForDriver(3,
-                            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6b2tpQGVtYWlsLmNvbSIsImp0aSI6IjMiLCJyb2xlIjoiUk9MRV9EUklWRVIiLCJpYXQiOjE2NzM4MDgwODksImV4cCI6MTY3Mzg5NDQ4OX0.rDz6g383wKWH9ygAg7_7V2e6u_hU_poShKo5w7Ro4K0");
+                    Call<RideFullDTO> call = ControllerUtils.rideController.getActiveRideForDriver(LoggedUser.getUserId(),
+                            "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<RideFullDTO>() {
                         @Override
                         public void onResponse(Call<RideFullDTO> call, Response<RideFullDTO> response) {
@@ -76,8 +77,8 @@ public class CurrentRideService extends Service {
                 }
                 else if(method.equals("getActiveRideForPassenger")){
                     Log.d("PASSS","odma");
-                    Call<RideFullDTO> call = ControllerUtils.rideController.getActiveRideForPassenger(1,
-                            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaWtpQGVtYWlsLmNvbSIsImp0aSI6IjEiLCJyb2xlIjoiUk9MRV9QQVNTRU5HRVIiLCJpYXQiOjE2NzM4MDgxODQsImV4cCI6MTY3Mzg5NDU4NH0.4BCYwvuRwTSJveUu7EWNYfKeaAaLIuq0dmIjwjl5ITs");
+                    Call<RideFullDTO> call = ControllerUtils.rideController.getActiveRideForPassenger(LoggedUser.getUserId(),
+                            "Bearer "+ LoggedUser.getToken());
                     Log.d("PASSS","posle");
                     call.enqueue(new Callback<RideFullDTO>() {
                         @Override

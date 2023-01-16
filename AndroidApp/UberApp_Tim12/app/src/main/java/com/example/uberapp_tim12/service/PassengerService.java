@@ -18,6 +18,7 @@ import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
+import com.example.uberapp_tim12.security.LoggedUser;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,7 +49,7 @@ public class PassengerService extends Service {
 
                     final PassengerDTO[] passengerDTOS=new PassengerDTO[1];
                     Log.d("PASSS", "zove bek ");
-                    Call<PassengerDTO> call = ControllerUtils.passengerController.getPassengerByEmail(intent.getStringExtra("email"), Constant.jwt);
+                    Call<PassengerDTO> call = ControllerUtils.passengerController.getPassengerByEmail(intent.getStringExtra("email"), "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<PassengerDTO>() {
                         @Override
                         public void onResponse(Call<PassengerDTO> call, Response<PassengerDTO> response) {
@@ -74,7 +75,7 @@ public class PassengerService extends Service {
                     Integer passengerId=intent.getIntExtra("passengerId",0);
                     Log.d("PASSS", "ista metoda");
                     PassengerDetailsDTO[] passengerDetailsDTO=new PassengerDetailsDTO[1];
-                    Call<PassengerDetailsDTO> call = ControllerUtils.passengerController.getPassengerDetails(passengerId, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaWtpQGVtYWlsLmNvbSIsImp0aSI6IjEiLCJyb2xlIjoiUk9MRV9QQVNTRU5HRVIiLCJpYXQiOjE2NzM4MDgxODQsImV4cCI6MTY3Mzg5NDU4NH0.4BCYwvuRwTSJveUu7EWNYfKeaAaLIuq0dmIjwjl5ITs");
+                    Call<PassengerDetailsDTO> call = ControllerUtils.passengerController.getPassengerDetails(passengerId, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<PassengerDetailsDTO>() {
                         @Override
                         public void onResponse(Call<PassengerDetailsDTO> call, Response<PassengerDetailsDTO> response) {

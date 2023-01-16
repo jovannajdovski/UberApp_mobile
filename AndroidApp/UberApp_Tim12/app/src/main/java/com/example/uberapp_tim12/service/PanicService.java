@@ -12,6 +12,7 @@ import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
+import com.example.uberapp_tim12.security.LoggedUser;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,7 +42,7 @@ public class PanicService extends Service {
                     String reason=intent.getStringExtra("reason");
                     ReasonDTO reasonDTO = new ReasonDTO(reason);
                     Log.d("PASSS", "ista metoda");
-                    Call<PanicDTO> call = ControllerUtils.panicController.panicRide(idRide, reasonDTO ,"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaWtpQGVtYWlsLmNvbSIsImp0aSI6IjEiLCJyb2xlIjoiUk9MRV9QQVNTRU5HRVIiLCJpYXQiOjE2NzM4MDgxODQsImV4cCI6MTY3Mzg5NDU4NH0.4BCYwvuRwTSJveUu7EWNYfKeaAaLIuq0dmIjwjl5ITs");
+                    Call<PanicDTO> call = ControllerUtils.panicController.panicRide(idRide, reasonDTO ,"Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<PanicDTO>() {
                         @Override
                         public void onResponse(Call<PanicDTO> call, Response<PanicDTO> response) {

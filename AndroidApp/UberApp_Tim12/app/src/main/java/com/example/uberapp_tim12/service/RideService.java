@@ -16,6 +16,7 @@ import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -44,7 +45,7 @@ public class RideService extends Service {
                 if(method.equals("getPendingRidesForDriver"))
                 {
                     final RidesListDTO[] ridesListDTOS=new RidesListDTO[1];
-                    Call<RidesListDTO> call = ControllerUtils.rideController.getPendingRidesForDriver(3, Constant.jwt);
+                    Call<RidesListDTO> call = ControllerUtils.rideController.getPendingRidesForDriver(LoggedUser.getUserId(), "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<RidesListDTO>() {
                         @Override
                         public void onResponse(Call<RidesListDTO> call, Response<RidesListDTO> response) {
@@ -68,7 +69,7 @@ public class RideService extends Service {
                 else if(method.equals("acceptRide")){
                     final Ride[] ride = new Ride[1];
                     Integer rideId=intent.getIntExtra("rideId",-1);
-                    Call<Ride> call = ControllerUtils.rideController.acceptRide(rideId, Constant.jwt);
+                    Call<Ride> call = ControllerUtils.rideController.acceptRide(rideId, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<Ride>() {
                         @Override
                         public void onResponse(Call<Ride> call, Response<Ride> response) {
@@ -92,7 +93,7 @@ public class RideService extends Service {
                     final Ride[] ride = new Ride[1];
                     ReasonDTO reasonDTO=intent.getParcelableExtra("reasonDTO");
                     Integer rideId=intent.getIntExtra("rideId",-1);
-                    Call<Ride> call = ControllerUtils.rideController.rejectRide(rideId, reasonDTO, Constant.jwt);
+                    Call<Ride> call = ControllerUtils.rideController.rejectRide(rideId, reasonDTO, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<Ride>() {
                         @Override
                         public void onResponse(Call<Ride> call, Response<Ride> response) {
@@ -118,7 +119,7 @@ public class RideService extends Service {
                     CreateRideDTO createRideDTO= (CreateRideDTO) intent.getSerializableExtra("ride");
                     Log.d("PASSS", createRideDTO.getScheduledTime().toString());
                     Log.d("PASSS", createRideDTO.getVehicleType().toString());
-                    Call<RideFullDTO> call = ControllerUtils.rideController.createRide(createRideDTO, Constant.jwt);
+                    Call<RideFullDTO> call = ControllerUtils.rideController.createRide(createRideDTO, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<RideFullDTO>() {
                         Intent ints = new Intent ("createRide");
 
@@ -145,7 +146,7 @@ public class RideService extends Service {
                 }
                 else if(method.equals("getDriverDetails")){
                     final DriverDetailsDTO[] driverDetailsDTO = new DriverDetailsDTO[1];
-                    Call<DriverDetailsDTO> call = ControllerUtils.rideController.getDriverDetails(4, Constant.jwt);
+                    Call<DriverDetailsDTO> call = ControllerUtils.rideController.getDriverDetails(LoggedUser.getUserId(), "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<DriverDetailsDTO>() {
                         @Override
                         public void onResponse(Call<DriverDetailsDTO> call, Response<DriverDetailsDTO> response) {

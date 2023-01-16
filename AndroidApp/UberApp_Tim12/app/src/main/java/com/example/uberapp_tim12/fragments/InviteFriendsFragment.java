@@ -31,6 +31,7 @@ import com.example.uberapp_tim12.dto.PassengerDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.PassengerService;
 import com.example.uberapp_tim12.service.RideService;
 import com.google.android.gms.maps.CameraUpdate;
@@ -93,7 +94,7 @@ public class InviteFriendsFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                passengers.add(new UserRideDTO(1,"miki@email.com"));
+                passengers.add(new UserRideDTO(LoggedUser.getUserId(), LoggedUser.getUsername()));
                 ride.setPassengers(passengers);
                 activity.changeFragment(3,ride, dataSet);
             }

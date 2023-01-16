@@ -12,6 +12,7 @@ import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.security.LoggedUser;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,8 +39,7 @@ public class DriverService extends Service {
                 {
                     Integer driverId=intent.getIntExtra("driverId",0);
                     Log.d("PASSS", "ista metoda");
-                    Call<DriverDetailsDTO> call = ControllerUtils.driverController.getDriverDetails(driverId, "Bearer " +
-                            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6b2tpQGVtYWlsLmNvbSIsImp0aSI6IjMiLCJyb2xlIjoiUk9MRV9EUklWRVIiLCJpYXQiOjE2NzM4MDgwODksImV4cCI6MTY3Mzg5NDQ4OX0.rDz6g383wKWH9ygAg7_7V2e6u_hU_poShKo5w7Ro4K0");
+                    Call<DriverDetailsDTO> call = ControllerUtils.driverController.getDriverDetails(driverId, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<DriverDetailsDTO>() {
                         @Override
                         public void onResponse(Call<DriverDetailsDTO> call, Response<DriverDetailsDTO> response) {
