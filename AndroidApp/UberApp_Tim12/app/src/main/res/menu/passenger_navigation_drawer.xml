@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-    android:id="@+id/main_item"
-    android:title="Pera Peric">
+        android:id="@+id/main_item"
+        >
         <menu>
             <item
                 android:id="@+id/settings"
@@ -18,6 +18,11 @@
                 android:id="@+id/about"
                 android:icon="@drawable/ic_baseline_about"
                 android:title="About"
+                android:checkable="true"/>
+            <item
+                android:id="@+id/current_ride"
+                android:icon="@drawable/black_car"
+                android:title="Current ride"
                 android:checkable="true"/>
         </menu>
     </item>

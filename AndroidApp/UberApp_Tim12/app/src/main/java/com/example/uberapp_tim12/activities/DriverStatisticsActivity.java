@@ -48,13 +48,13 @@ public class DriverStatisticsActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getTitle().toString()) {
-                    case "Day":
+                    case "Today":
                         dropDownButton.setText("Today");
                         break;
-                    case "Week":
+                    case "This week":
                         dropDownButton.setText("This week");
                         break;
-                    case "Month":
+                    case "This month":
                         dropDownButton.setText("This month");
                         break;
                 }

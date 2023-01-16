@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.model_mock.User;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.Locale;
 
@@ -106,7 +107,7 @@ public class PassengerAccountActivity extends AppCompatActivity {
     }
 
     protected void addActionListeners() {
-        ConstraintLayout profileNameLayout = findViewById(R.id.profile_name);
+        MaterialCardView profileNameLayout = findViewById(R.id.profile_name);
         profileNameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +115,7 @@ public class PassengerAccountActivity extends AppCompatActivity {
             }
         });
 
-        ConstraintLayout profileSurnameLayout = findViewById(R.id.profile_surname);
+        MaterialCardView profileSurnameLayout = findViewById(R.id.profile_surname);
         profileSurnameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +123,7 @@ public class PassengerAccountActivity extends AppCompatActivity {
             }
         });
 
-        ConstraintLayout profileAddressLayout = findViewById(R.id.profile_address);
+        MaterialCardView profileAddressLayout = findViewById(R.id.profile_address);
         profileAddressLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,21 +131,11 @@ public class PassengerAccountActivity extends AppCompatActivity {
             }
         });
 
-        ConstraintLayout profilePhoneLayout = findViewById(R.id.profile_phone);
+        MaterialCardView profilePhoneLayout = findViewById(R.id.profile_phone);
         profilePhoneLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createDialog("Phone", profilePhone, ValidationType.phoneNumber);
-            }
-        });
-
-        Button logOutButton = findViewById(R.id.logoutBtn);
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PassengerAccountActivity.this, UserLoginActivity.class);
-                startActivity(intent);
-                finish();
             }
         });
     }
