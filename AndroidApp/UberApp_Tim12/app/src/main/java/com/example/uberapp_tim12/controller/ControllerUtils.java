@@ -36,4 +36,6 @@ public class ControllerUtils {
     public static PassengerController passengerController = retrofit.create(PassengerController.class);
 
     public static PanicController panicController = retrofit.create(PanicController.class);
+
+    public static UserController userController = retrofit.create(UserController.class);
 }

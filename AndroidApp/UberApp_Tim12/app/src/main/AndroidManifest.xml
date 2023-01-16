@@ -30,6 +30,8 @@
             android:name=".service.PassengerService"/>
         <service
             android:name=".service.PanicService"/>
+        <service
+            android:name=".service.UserService"/>
 
         <activity
             android:name=".activities.RideDetailForPassengerActivity"

@@ -50,4 +50,11 @@ dependencies {
 
     implementation 'com.google.maps:google-maps-services:2.1.2'
     implementation 'com.google.android.libraries.places:places:3.0.0'
+
+//    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    api 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.11.5') {
+        exclude group: 'org.json', module: 'json' //provided by Android natively
+    }
 }
