@@ -47,6 +47,7 @@ public class NotificationsFragment extends ListFragment {
     List<Button> rejectButtons=new ArrayList<>();
     List<RelativeLayout> layouts= new ArrayList<>();
     Integer remainedPendingRides;
+    FrameLayout frameLayout;
 
 
     private ArrayList<NotificationItem> notificationItems=new ArrayList<>();
@@ -174,6 +175,7 @@ public class NotificationsFragment extends ListFragment {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("PASSS","Kliknut ".concat(ride.getId().toString()));
                 acceptButtons.remove(0);
                 rejectButtons.remove(0);
                 Log.d("PASSS", "acceptClick");
@@ -185,6 +187,7 @@ public class NotificationsFragment extends ListFragment {
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("PASSS","Kliknut ".concat(ride.getId().toString()));
                 acceptButtons.remove(0);
                 rejectButtons.remove(0);
                 Log.d("PASSS", "rejectClick");
@@ -204,17 +207,17 @@ public class NotificationsFragment extends ListFragment {
             Log.d("PASSSSSSSSS","lalalalaalla");
             RidesListDTO ridesListDTO=intent.getParcelableExtra("pendingRidesDTO");
             Log.d("PASSSSSSSSS",ridesListDTO.toString());
-            FrameLayout frameLayout=view.findViewById(R.id.acceptance_ride_layout);
+            frameLayout=view.findViewById(R.id.acceptance_ride_layout);
             remainedPendingRides=ridesListDTO.getTotalCount();
-            RelativeLayout layout;
+            //RelativeLayout layout;
             Ride ride;
             for(int i=ridesListDTO.getTotalCount()-1; i>=0;i--)
             {
                 ride=ridesListDTO.getRides().get(i);
-                layout=createAcceptanceRideDialog(ride);
+                RelativeLayout layout=createAcceptanceRideDialog(ride);
                 layouts.add(layout);
                 frameLayout.addView(layout);
-                Log.d("PASSS","Pseci");
+                Log.d("PASSS","Napravljen ".concat(ride.getId().toString()));
                 setListeners(layout, ride);
             }
         }
@@ -226,10 +229,11 @@ public class NotificationsFragment extends ListFragment {
             Log.d("PASSS", "ACCEPTED");
             Ride ride= (Ride) intent.getSerializableExtra("ride");
             Log.d("PASSSid", String.valueOf(ride.getId()));
+            RelativeLayout layout1=layouts.remove(layouts.size()-1);
             Log.d("PASSS layout", String.valueOf(layouts.size()));
-            RelativeLayout layout1=layouts.remove(0);
-            Log.d("PASSS layout", String.valueOf(layout1));
+
             layout1.setVisibility(View.GONE);
+            //frameLayout.removeView(layout1);
             if(layouts.size()==0)
                 blackBackground.setVisibility(View.GONE);
         }
@@ -242,9 +246,10 @@ public class NotificationsFragment extends ListFragment {
             Ride ride= (Ride) intent.getSerializableExtra("ride");
             Log.d("PASSSid", String.valueOf(ride.getId()));
             Log.d("PASSS layout", String.valueOf(layouts.size()));
-            RelativeLayout layout1=layouts.remove(0);
-            Log.d("PASSS layout", String.valueOf(layout1));
+            RelativeLayout layout1=layouts.remove(layouts.size()-1);
+
             layout1.setVisibility(View.GONE);
+            //frameLayout.removeView(layout1);
             if(layouts.size()==0)
                 blackBackground.setVisibility(View.GONE);
 
