@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 
 public class WorkHoursDTO implements Parcelable {
     private Integer id;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private String start;
+    private String end;
 
-    public WorkHoursDTO(Integer id, LocalDateTime start, LocalDateTime end) {
+    public WorkHoursDTO(Integer id, String start, String end) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -44,19 +44,19 @@ public class WorkHoursDTO implements Parcelable {
         this.id = id;
     }
 
-    public LocalDateTime getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public String getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 
@@ -68,7 +68,7 @@ public class WorkHoursDTO implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeSerializable(start);
-        dest.writeSerializable(end);
+        dest.writeString(start);
+        dest.writeString(end);
     }
 }

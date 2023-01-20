@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,11 +42,12 @@ import java.util.ArrayList;
 
 public class DriverMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     SwitchCompat sw;
-
+    public static boolean switchOffWhenIsNotPossible=false;
+    
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-
+    
     private ListView navDrawerList;
     private ActionBarDrawerToggle navDrawerToggle;
     private RelativeLayout navDrawerPane;
@@ -143,7 +145,7 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         MenuItem itemSwitch=menu.findItem(R.id.isOnlineButton);
         itemSwitch.setActionView(R.layout.driver_activity_switch);
         sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
-        sw.setChecked(true);
+        //sw.setChecked(true);
         Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
         intent.putExtra("endpoint", "startShift");
         startService(intent);
@@ -156,10 +158,12 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                     startService(intent);
                 }
                 else {
-                    Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
+                    if (switchOffWhenIsNotPossible == false){
+                        Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
                     intent.putExtra("workHourId", ongoingWorkHours.getId());
                     intent.putExtra("endpoint", "endShift");
                     startService(intent);
+                }
 
                 }
             }
@@ -240,7 +244,12 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("PASSSSSSSSSSSS", "onReceive pass");
             ongoingWorkHours=intent.getParcelableExtra("workHoursDTO");
+            if(ongoingWorkHours==null) {
+                switchOffWhenIsNotPossible=true;
+                sw.setChecked(false);
+            }
             Toast.makeText(DriverMainActivity.this, "ONLINE", Toast.LENGTH_SHORT).show();
         }
     };

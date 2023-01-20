@@ -3,17 +3,19 @@ package com.example.uberapp_tim12.dto;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.uberapp_tim12.model.Ride;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class ActiveDriverListDTO implements Parcelable {
-
+    @SerializedName("totalCount")
+    @Expose
     private Integer totalCount;
 
-    private List<ActiveDriverDTO> rides;
+    @SerializedName("results")
+    @Expose
+    private List<ActiveDriverDTO> drivers;
 
     protected ActiveDriverListDTO(Parcel in) {
         if (in.readByte() == 0) {
@@ -39,8 +41,16 @@ public class ActiveDriverListDTO implements Parcelable {
         return totalCount;
     }
 
-    public List<ActiveDriverDTO> getRides() {
-        return rides;
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public List<ActiveDriverDTO> getDrivers() {
+        return drivers;
+    }
+
+    public void setDrivers(List<ActiveDriverDTO> drivers) {
+        this.drivers = drivers;
     }
 
     @Override
@@ -51,6 +61,6 @@ public class ActiveDriverListDTO implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(totalCount);
-        dest.writeList(rides);
+        dest.writeList(drivers);
     }
 }

@@ -1,12 +1,10 @@
 package com.example.uberapp_tim12.controller;
 
 import com.example.uberapp_tim12.dto.ActiveDriverListDTO;
-import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
-import com.example.uberapp_tim12.dto.TimeDTO;
+import com.example.uberapp_tim12.dto.EndTimeDTO;
+import com.example.uberapp_tim12.dto.StartTimeDTO;
 import com.example.uberapp_tim12.dto.WorkHoursDTO;
-
-import java.sql.Time;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -25,8 +23,8 @@ public interface DriverController {
     Call<ActiveDriverListDTO> getActiveDrivers(@Header("Authorization") String token);
 
     @POST("driver/{driver-id}/working-hour")
-    Call<WorkHoursDTO> startShift(@Path("driver-id") Integer id, @Body TimeDTO time, @Header("Authorization") String token);
+    Call<WorkHoursDTO> startShift(@Path("driver-id") Integer id, @Body StartTimeDTO time, @Header("Authorization") String token);
 
     @PUT("driver/working-hour/{work-hour-id}")
-    Call<WorkHoursDTO> endShift(@Path("work-hour-id") Integer id, @Body TimeDTO time, @Header("Authorization") String token);
+    Call<WorkHoursDTO> endShift(@Path("work-hour-id") Integer id, @Body EndTimeDTO time, @Header("Authorization") String token);
 }

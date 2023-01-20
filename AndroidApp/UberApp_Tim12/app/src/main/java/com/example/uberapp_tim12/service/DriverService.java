@@ -11,9 +11,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.ActiveDriverListDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
-import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
-import com.example.uberapp_tim12.dto.RideFullDTO;
-import com.example.uberapp_tim12.dto.TimeDTO;
+import com.example.uberapp_tim12.dto.EndTimeDTO;
+import com.example.uberapp_tim12.dto.StartTimeDTO;
 import com.example.uberapp_tim12.dto.WorkHoursDTO;
 import com.example.uberapp_tim12.security.LoggedUser;
 
@@ -48,15 +47,17 @@ public class DriverService extends Service {
                     call.enqueue(new Callback<DriverDetailsDTO>() {
                         @Override
                         public void onResponse(Call<DriverDetailsDTO> call, Response<DriverDetailsDTO> response) {
+                            Intent ints = new Intent ("driverDetails");
                             if (response.code() == 200){
                                 Log.d("PASSS", "200");
                                 driverDetailsDTO[0]=response.body();
                                 Log.d("PASSS", driverDetailsDTO[0].toString());
-                                Intent ints = new Intent ("driverDetails");
+
                                 Log.d("PASSS", driverDetailsDTO[0].toString());
                                 ints.putExtra("driverDetailsDTO", driverDetailsDTO[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
-                            }else{
+                            }
+                            else{
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
                             }
                         }
@@ -78,7 +79,7 @@ public class DriverService extends Service {
                             if (response.code() == 200){
                                 Log.d("PASSS", "200");
                                 activeDriverListDTOS[0]=response.body();
-                                Log.d("PASSS", activeDriverListDTOS[0].toString());
+                                Log.d("PASSSSSSSSSSSS", activeDriverListDTOS[0].getTotalCount().toString());
                                 Intent ints = new Intent ("activeDrivers");
                                 ints.putExtra("activeDriversDTO", activeDriverListDTOS[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
@@ -96,20 +97,26 @@ public class DriverService extends Service {
                 else if(method.equals("startShift"))
                 {
                     final WorkHoursDTO[] workHoursDTOS = new WorkHoursDTO[1];
-                    Log.d("PASSS", "ista metoda");
-                    TimeDTO timeDTO=new TimeDTO(LocalDateTime.now());
+                    Log.d("PASSSSStart", "ista metoda");
+                    StartTimeDTO timeDTO=new StartTimeDTO(LocalDateTime.now().toString());
+                    Log.d("PASSSSStart",timeDTO.getDateTime());
                     Call<WorkHoursDTO> call = ControllerUtils.driverController.startShift(LoggedUser.getUserId(),timeDTO,"Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<WorkHoursDTO>() {
                         @Override
                         public void onResponse(Call<WorkHoursDTO> call, Response<WorkHoursDTO> response) {
+                            Intent ints = new Intent ("startShift");
                             if (response.code() == 200){
-                                Log.d("PASSS", "200");
+                                Log.d("PASSSSStart", "200");
                                 workHoursDTOS[0]=response.body();
-                                Log.d("PASSS", workHoursDTOS[0].toString());
-                                Intent ints = new Intent ("startShift");
+                                Log.d("PASSSSStart", workHoursDTOS[0].toString());
+                                Log.d("PASSSSStart", workHoursDTOS[0].getId().toString());
+
                                 ints.putExtra("workHoursDTO", workHoursDTOS[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
-                            }else{
+                            }else if(response.code()==400){
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }
+                            else{
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
                             }
                         }
@@ -125,18 +132,22 @@ public class DriverService extends Service {
                     final WorkHoursDTO[] workHoursDTOS = new WorkHoursDTO[1];
                     Log.d("PASSS", "ista metoda");
                     Integer workHourId=intent.getIntExtra("workHourId",0);
-                    TimeDTO timeDTO=new TimeDTO(LocalDateTime.now());
+                    EndTimeDTO timeDTO=new EndTimeDTO(LocalDateTime.now().toString());
                     Call<WorkHoursDTO> call = ControllerUtils.driverController.endShift(workHourId,timeDTO,"Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<WorkHoursDTO>() {
                         @Override
                         public void onResponse(Call<WorkHoursDTO> call, Response<WorkHoursDTO> response) {
+                            Intent ints = new Intent ("endShift");
                             if (response.code() == 200){
                                 Log.d("PASSS", "200");
                                 workHoursDTOS[0]=response.body();
                                 Log.d("PASSS", workHoursDTOS[0].toString());
-                                Intent ints = new Intent ("endShift");
+
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
-                            }else{
+                            }else if(response.code()==404){
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }
+                            else{
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
                             }
                         }

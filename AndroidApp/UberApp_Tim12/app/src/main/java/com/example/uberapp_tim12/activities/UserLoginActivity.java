@@ -113,7 +113,7 @@ public class UserLoginActivity extends AppCompatActivity {
             String found = intent.getStringExtra("found");
             if (found.equals("true")) {
                 UserTokenDTO token = (UserTokenDTO) intent.getSerializableExtra("userLoginDTO");
-                //zapoceti smenu
+
                 LoggedUser.setUsername(jwtUtil.getUsername(token.getAccessToken()));
                 LoggedUser.setUserId(jwtUtil.getId(token.getAccessToken()));
                 String role = jwtUtil.getRole(token.getAccessToken());

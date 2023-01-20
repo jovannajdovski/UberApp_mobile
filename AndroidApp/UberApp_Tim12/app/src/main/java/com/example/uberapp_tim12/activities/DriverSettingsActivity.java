@@ -76,7 +76,10 @@ public class DriverSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(DriverSettingsActivity.this, DriverService.class);
-                intent.putExtra("workHourId", ongoingWorkHours.getId());
+                if(DriverMainActivity.switchOffWhenIsNotPossible)
+                    intent.putExtra("workHourId", 0);
+                else
+                    intent.putExtra("workHourId", ongoingWorkHours.getId());
                 intent.putExtra("endpoint", "endShift");
                 startService(intent);
 

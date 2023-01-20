@@ -17,12 +17,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -31,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -45,11 +42,7 @@ import com.example.uberapp_tim12.dto.ActiveDriverListDTO;
 import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.dto.LocationDTO;
 import com.example.uberapp_tim12.dto.PathDTO;
-import com.example.uberapp_tim12.model.Ride;
-import com.example.uberapp_tim12.model.VehicleForMarker;
 import com.example.uberapp_tim12.service.DriverService;
-import com.example.uberapp_tim12.tools.FragmentTransition;
-import com.example.uberapp_tim12.tools.MockupVehicles;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,13 +51,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -640,8 +631,9 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ActiveDriverListDTO activeDriverDTOS=intent.getParcelableExtra("activeDriversDTO");
-            addVehicleMarkers(activeDriverDTOS.getRides());
+            ActiveDriverListDTO activeDriverDTOS= intent.getParcelableExtra("activeDriversDTO");
+            if(activeDriverDTOS.getTotalCount()>0)
+                addVehicleMarkers(activeDriverDTOS.getDrivers());
         }
     };
 }
