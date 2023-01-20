@@ -16,7 +16,7 @@ public class LocationDialog extends AlertDialog.Builder{
 
     private void setUpDialog(){
         setTitle("Location disabled");
-        setMessage("Your Locations seems to be disabled, do you want to enable it?");
+        setMessage("Your Locations seems to be disabled, you have to enable it to use the app");
         setCancelable(false);
 
         setPositiveButton("Sure", new DialogInterface.OnClickListener() {
