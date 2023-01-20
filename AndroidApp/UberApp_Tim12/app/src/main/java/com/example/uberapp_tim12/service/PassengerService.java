@@ -10,7 +10,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.uberapp_tim12.Constant;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.NewPasswordDTO;
 import com.example.uberapp_tim12.dto.PassengerDTO;
+import com.example.uberapp_tim12.dto.PassengerRegistrationDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.UserEmailDTO;
@@ -23,6 +25,7 @@ import com.example.uberapp_tim12.security.LoggedUser;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -123,6 +126,29 @@ public class PassengerService extends Service {
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                         }
 
+                        @Override
+                        public void onFailure(Call<PassengerDetailsDTO> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
+                        }
+                    });
+                }else if(method.equals("registerPassenger"))
+                {
+                    Intent ints = new Intent ("registration");
+                    PassengerRegistrationDTO passengerRegistrationDTO = (PassengerRegistrationDTO) intent.getSerializableExtra("passenger");
+
+                    Call<PassengerDetailsDTO> call = ControllerUtils.passengerController.registerPassenger(passengerRegistrationDTO);
+                    call.enqueue(new Callback<PassengerDetailsDTO>() {
+                        @Override
+                        public void onResponse(Call<PassengerDetailsDTO> call, Response<PassengerDetailsDTO> response) {
+                            if (response.code() == 200) {
+                                ints.putExtra("register", "true");
+                            } else if (response.code() == 400){
+                                ints.putExtra("register", "emailExists");
+                            } else {
+                                ints.putExtra("register", "false");
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
                         @Override
                         public void onFailure(Call<PassengerDetailsDTO> call, Throwable t) {
                             Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");

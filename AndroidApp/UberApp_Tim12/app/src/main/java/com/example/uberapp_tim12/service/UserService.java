@@ -102,8 +102,6 @@ public class UserService extends Service {
                     Integer userId = LoggedUser.getUserId();
                     String oldPassword = intent.getStringExtra("oldPassword");
                     String newPassword = intent.getStringExtra("newPassword");
-                    Log.d("PASSS", "zove bek "+userId);
-                    Log.d("PASSS", "zove bek "+LoggedUser.getRole());
                     Call<ResponseBody> call = ControllerUtils.userController.changePassword(userId, new NewPasswordDTO(oldPassword,newPassword), "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
