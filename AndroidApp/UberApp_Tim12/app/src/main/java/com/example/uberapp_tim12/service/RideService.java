@@ -143,32 +143,7 @@ public class RideService extends Service {
                         }
                     });
                 }
-                else if(method.equals("getDriverDetails")){
-                    final DriverDetailsDTO[] driverDetailsDTO = new DriverDetailsDTO[1];
-                    Call<DriverDetailsDTO> call = ControllerUtils.rideController.getDriverDetails(LoggedUser.getUserId(), "Bearer "+ LoggedUser.getToken());
-                    call.enqueue(new Callback<DriverDetailsDTO>() {
-                        @Override
-                        public void onResponse(Call<DriverDetailsDTO> call, Response<DriverDetailsDTO> response) {
-                            if (response.code() == 200){
-                                driverDetailsDTO[0]=response.body();
-                            /*JsonObject responseJson = new JsonObject().get(response.body().toString()).getAsJsonObject();
-                            Gson gson = new Gson();
-                            driverDetailsDTO[0] = gson.fromJson(responseJson, DriverDetailsDTO.class);*/
-                                Log.d("REZZZ",driverDetailsDTO[0].toString());
-                                Intent ints = new Intent ("ihor");
-                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
 
-                            }else{
-                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<DriverDetailsDTO> call, Throwable t) {
-                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
-                        }
-                    });
-                }
                 else{
                     stopSelf();
                 }

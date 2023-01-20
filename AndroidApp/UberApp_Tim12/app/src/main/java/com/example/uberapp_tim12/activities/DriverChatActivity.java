@@ -3,33 +3,46 @@ package com.example.uberapp_tim12.activities;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.adapters.ChatListAdapter;
+import com.example.uberapp_tim12.dto.MessageDTO;
+import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.model_mock.Message;
+import com.example.uberapp_tim12.security.LoggedUser;
+import com.example.uberapp_tim12.service.UserService;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DriverChatActivity extends AppCompatActivity {
-
+    private LinearLayout main_layout;
+    private ChatItem chatItem;
+    private ScrollView scroll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_chat);
 
         Intent intent=getIntent();
-        ChatItem user= intent.getParcelableExtra("user");
-        List<Message> messages= (List<Message>) intent.getSerializableExtra("messages");
+        chatItem= (ChatItem) intent.getSerializableExtra("chat");
 
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
         Toolbar toolbar=findViewById(R.id.toolbar);
@@ -38,29 +51,39 @@ public class DriverChatActivity extends AppCompatActivity {
         ActionBar actionBar=getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(user.getIcon());
-        actionBar.setTitle(user.getRoute());
+        actionBar.setIcon(chatItem.getIcon());
+        actionBar.setTitle(chatItem.getRoute());
 
-        LinearLayout main_layout = findViewById(R.id.messages_stack);
-        for(Message message:messages)
+        main_layout = findViewById(R.id.messages_stack);
+        for(MessageDTO message:chatItem.getMessages())
         {
             main_layout.addView(create(message));
         }
-        ScrollView scroll=findViewById(R.id.scroll);
+        scroll=findViewById(R.id.scroll);
         scroll.post(new Runnable() {
             @Override
             public void run() {
                 scroll.fullScroll(View.FOCUS_DOWN);
             }
         });
+
+        ImageButton sendButton=findViewById(R.id.send_button);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(DriverChatActivity.this, UserService.class);
+                intent.putExtra("endpoint", "sendMessage");
+                DriverChatActivity.this.startService(intent);
+            }
+        });
     }
 
-    private RelativeLayout create(Message message)
+    private RelativeLayout create(MessageDTO message)
     {
         LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         RelativeLayout layout;
         TextView textView;
-        if(message.getSender()== Message.Sender.MYSELF) {
+        if(Objects.equals(message.getSenderId(), LoggedUser.getUserId())) {
             layout= (RelativeLayout) vi.inflate(R.layout.user_message_layout, null);
             textView = (TextView) layout.findViewById(R.id.message);
         }
@@ -68,7 +91,29 @@ public class DriverChatActivity extends AppCompatActivity {
             layout= (RelativeLayout) vi.inflate(R.layout.other_message_layout, null);
             textView = (TextView) layout.findViewById(R.id.message);
         }
-        textView.setText(message.getText());
+        textView.setText(message.getMessage());
         return layout;
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(sendMessageReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(sendMessageReceiver, new IntentFilter("sendMessage"));
+    }
+    public BroadcastReceiver sendMessageReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSSSSSSSS","lalalalaalla");
+            MessageDTO messageDTO= (MessageDTO) intent.getSerializableExtra("messageDTO");
+            chatItem.getMessages().add(messageDTO);
+            main_layout.addView(create(messageDTO));
+            scroll.fullScroll(View.FOCUS_DOWN);
+        }
+    };
 }
