@@ -1,6 +1,11 @@
 package com.example.uberapp_tim12.activities;
 
+import static com.example.uberapp_tim12.activities.DriverMainActivity.ongoingWorkHours;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,10 +13,11 @@ import android.widget.Button;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.model_mock.User;
+import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.tools.UserMockup;
 import com.google.android.material.card.MaterialCardView;
 
@@ -68,9 +74,12 @@ public class DriverSettingsActivity extends AppCompatActivity {
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DriverSettingsActivity.this, UserLoginActivity.class);
-                startActivity(intent);
-                finish();
+
+                Intent intent = new Intent(DriverSettingsActivity.this, DriverService.class);
+                intent.putExtra("workHourId", ongoingWorkHours.getId());
+                intent.putExtra("endpoint", "endShift");
+                startService(intent);
+
             }
         });
     }
@@ -93,15 +102,28 @@ public class DriverSettingsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(endShiftReceiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(endShiftReceiver, new IntentFilter("endShift"));
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
     }
+
+    public BroadcastReceiver endShiftReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ongoingWorkHours=null;
+            Intent intentAct = new Intent(DriverSettingsActivity.this, UserLoginActivity.class);
+            startActivity(intentAct);
+            finish();
+        }
+    };
 }

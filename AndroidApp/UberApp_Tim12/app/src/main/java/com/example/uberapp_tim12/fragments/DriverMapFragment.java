@@ -2,8 +2,11 @@ package com.example.uberapp_tim12.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
@@ -18,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +33,15 @@ import android.widget.Toast;
 
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.adapters.CustomAdapter;
 import com.example.uberapp_tim12.dialogs.LocationDialog;
+import com.example.uberapp_tim12.dto.ActiveDriverDTO;
+import com.example.uberapp_tim12.dto.ActiveDriverListDTO;
+import com.example.uberapp_tim12.dto.PassengerDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.model.VehicleForMarker;
+import com.example.uberapp_tim12.service.DriverService;
+import com.example.uberapp_tim12.service.PassengerService;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.MockupVehicles;
 import com.google.android.gms.common.api.Status;
@@ -143,11 +154,18 @@ public class DriverMapFragment extends Fragment implements LocationListener, OnM
         dialog.show();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(this);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(activeDriversReceivers);
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
         super.onResume();
-
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(activeDriversReceivers, new IntentFilter("activeDrivers"));
         createMapFragmentAndInflate();
 
         boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -272,7 +290,9 @@ public class DriverMapFragment extends Fragment implements LocationListener, OnM
 
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        addVehicleMarkers();
+        Intent intent=new Intent(getActivity(), DriverService.class);
+        intent.putExtra("endpoint", "getActiveDrivers");
+        getActivity().startService(intent);
 
 //        if (location != null) {
 //            addMarker(location);
@@ -298,39 +318,58 @@ public class DriverMapFragment extends Fragment implements LocationListener, OnM
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void addVehicleMarkers() {
-        List<VehicleForMarker> vehicles = MockupVehicles.getVehicles();
-        for (VehicleForMarker vehicle : vehicles){
-            if (vehicle.isActive()){
-                addReservedVehicle(vehicle);
+    private void addVehicleMarkers(List<ActiveDriverDTO> driverDTOS) {
+        for (ActiveDriverDTO driver : driverDTOS){
+            if (driver.isFree()){
+                addFreeVehicle(driver);
             } else {
-                addFreeVehicle(vehicle);
+                addReservedVehicle(driver);
             }
         }
     }
-
-    private void addFreeVehicle(VehicleForMarker vehicle) {
+    private void addFreeVehicle(ActiveDriverDTO driverDTO) {
         Marker marker = map.addMarker(new MarkerOptions()
-                .title("Model: "+vehicle.getModel())
-                .snippet("Address: "+vehicle.getAddress())
+                .title("Model: "+driverDTO.getVehicle().getModel())
+                .snippet("Address: "+driverDTO.getLocation().getAddress())
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin))
                 .draggable(false)
-                .position(new LatLng(vehicle.getLatitude(),vehicle.getLongitude())));
+                .position(new LatLng(driverDTO.getLocation().getLatitude(),driverDTO.getLocation().getLongitude())));
     }
 
-    private void addReservedVehicle(VehicleForMarker vehicle) {
+    private void addReservedVehicle(ActiveDriverDTO driverDTO) {
         Marker marker = map.addMarker(new MarkerOptions()
-                .title("Model: "+vehicle.getModel())
-                .snippet("Address: "+vehicle.getAddress())
+                .title("Model: "+driverDTO.getVehicle().getModel())
+                .snippet("Address: "+driverDTO.getLocation().getAddress())
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin))
                 .draggable(false)
-                .position(new LatLng(vehicle.getLatitude(),vehicle.getLongitude())));
+                .position(new LatLng(driverDTO.getLocation().getLatitude(),driverDTO.getLocation().getLongitude())));
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+//    private void addFreeVehicle(VehicleForMarker vehicle) {
+//        Marker marker = map.addMarker(new MarkerOptions()
+//                .title("Model: "+vehicle.getModel())
+//                .snippet("Address: "+vehicle.getAddress())
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin))
+//                .draggable(false)
+//                .position(new LatLng(vehicle.getLatitude(),vehicle.getLongitude())));
+//    }
+//
+//    private void addReservedVehicle(VehicleForMarker vehicle) {
+//        Marker marker = map.addMarker(new MarkerOptions()
+//                .title("Model: "+vehicle.getModel())
+//                .snippet("Address: "+vehicle.getAddress())
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin))
+//                .draggable(false)
+//                .position(new LatLng(vehicle.getLatitude(),vehicle.getLongitude())));
+//    }
 
-        locationManager.removeUpdates(this);
-    }
+
+    public BroadcastReceiver activeDriversReceivers = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ActiveDriverListDTO activeDriverDTOS=intent.getParcelableExtra("activeDriversDTO");
+            addVehicleMarkers(activeDriverDTOS.getRides());
+        }
+    };
 }

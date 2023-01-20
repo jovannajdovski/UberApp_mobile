@@ -25,12 +25,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.dto.PanicDTO;
+import com.example.uberapp_tim12.dto.WorkHoursDTO;
 import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
 import com.example.uberapp_tim12.fragments.DriverMapFragment;
 import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.service.CurrentRideService;
+import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.UserMockup;
 import com.google.android.material.navigation.NavigationView;
@@ -49,6 +51,8 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
     private RelativeLayout navDrawerPane;
     private ArrayList<NavDrawerItem> navDrawerItems=new ArrayList();
     private FragmentManager manager;
+
+    public static WorkHoursDTO ongoingWorkHours=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,8 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         drawerLayout.addDrawerListener(navDrawerToggle);
         navDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
         manager=getSupportFragmentManager();
         FragmentTransition.driverTo(DriverMapFragment.newInstance(),this,false);
@@ -138,13 +144,24 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         itemSwitch.setActionView(R.layout.driver_activity_switch);
         sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
         sw.setChecked(true);
+        Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
+        intent.putExtra("endpoint", "startShift");
+        startService(intent);
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                    Toast.makeText(DriverMainActivity.this,"ONLINE",Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(DriverMainActivity.this,"OFFLINE",Toast.LENGTH_SHORT).show();
+                if(isChecked) {
+                    Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
+                    intent.putExtra("endpoint", "startShift");
+                    startService(intent);
+                }
+                else {
+                    Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
+                    intent.putExtra("workHourId", ongoingWorkHours.getId());
+                    intent.putExtra("endpoint", "endShift");
+                    startService(intent);
+
+                }
             }
         });
         return super.onCreateOptionsMenu(menu);
@@ -191,12 +208,16 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(activeRideReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(startShiftReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(endShiftReceiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(activeRideReceiver, new IntentFilter("activeRideDriver"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(startShiftReceiver, new IntentFilter("startShift"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(endShiftReceiver, new IntentFilter("endShift"));
     }
 
     public BroadcastReceiver activeRideReceiver = new BroadcastReceiver() {
@@ -213,6 +234,22 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                 Toast.makeText(DriverMainActivity.this,"No active ride",Toast.LENGTH_SHORT).show();
                 drawerLayout.close();
             }
+        }
+    };
+    public BroadcastReceiver startShiftReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ongoingWorkHours=intent.getParcelableExtra("workHoursDTO");
+            Toast.makeText(DriverMainActivity.this, "ONLINE", Toast.LENGTH_SHORT).show();
+        }
+    };
+    public BroadcastReceiver endShiftReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ongoingWorkHours=null;
+            Toast.makeText(DriverMainActivity.this, "OFFLINE", Toast.LENGTH_SHORT).show();
         }
     };
 
