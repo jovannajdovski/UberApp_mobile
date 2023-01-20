@@ -1,6 +1,7 @@
 package com.example.uberapp_tim12.controller;
 
 import com.example.uberapp_tim12.dto.LoginUserDTO;
+import com.example.uberapp_tim12.dto.NewPasswordDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
@@ -22,4 +23,7 @@ public interface UserController {
 
     @GET("user/{id}/resetPassword")
     Call<ResponseBody> sendResetCodeToEmail(@Path("id") Integer id);
+
+    @PUT("user/{id}/changePassword")
+    Call<ResponseBody> changePassword(@Path("id") Integer id, @Body NewPasswordDTO newPasswordDTO, @Header("Authorization") String token);
 }

@@ -78,4 +78,8 @@
     <string name="forgot_password_hint">Please enter the email you use to log in to Ihor.</string>
     <string name="request_password_reset">Request password reset</string>
     <string name="back_to">Back to</string>
+    <string name="save_new_password">SAVE NEW PASSWORD</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
 </resources>

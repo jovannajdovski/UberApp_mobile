@@ -138,6 +138,15 @@ public class PassengerAccountActivity extends AppCompatActivity {
                 createDialog("Phone", profilePhone, ValidationType.phoneNumber);
             }
         });
+
+        MaterialCardView profilePasswordLayout = findViewById(R.id.password_change);
+        profilePasswordLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PassengerAccountActivity.this, ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     protected void createDialog(String title, TextView view, ValidationType validationType) {
