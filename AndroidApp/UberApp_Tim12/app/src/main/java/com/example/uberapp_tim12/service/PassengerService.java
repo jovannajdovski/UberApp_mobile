@@ -97,6 +97,37 @@ public class PassengerService extends Service {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
                         }
                     });
+                } else if(method.equals("checkPassengerByEmail"))
+                {
+                    UserEmailDTO emailDTO=new UserEmailDTO(intent.getStringExtra("email"));
+                    Intent ints = new Intent ("checkByEmail");
+
+                    final PassengerDetailsDTO[] passengerDTOS=new PassengerDetailsDTO[1];
+                    Log.d("PASSS", intent.getStringExtra("email"));
+                    Call<PassengerDetailsDTO> call = ControllerUtils.passengerController.checkPassengerByEmail(intent.getStringExtra("email"));
+                    call.enqueue(new Callback<PassengerDetailsDTO>() {
+                        @Override
+                        public void onResponse(Call<PassengerDetailsDTO> call, Response<PassengerDetailsDTO> response) {
+                            Log.d("PASSS", "gde");
+                            if (response.code() == 200) {
+                                ints.putExtra("found", "true");
+                                Log.d("PASSS", "usao");
+                                passengerDTOS[0] = response.body();
+                                ints.putExtra("passengerDTO", passengerDTOS[0]);
+                            } else if (response.code() == 404){
+                                ints.putExtra("found", "false");
+                            }else {
+                                ints.putExtra("responseMessage", response.message());
+                                Log.d("PASSS", "Meesage recieved: " + response.code());
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
+
+                        @Override
+                        public void onFailure(Call<PassengerDetailsDTO> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
+                        }
+                    });
                 }
                 else{
                     stopSelf();

@@ -73,4 +73,9 @@
     <string name="other_passengers">Other passengers</string>
     <string name="back_to_home">Back to home</string>
     <string name="cancel">Cancel</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="forgot_passwrod">Forgot passwrod</string>
+    <string name="forgot_password_hint">Please enter the email you use to log in to Ihor.</string>
+    <string name="request_password_reset">Request password reset</string>
+    <string name="back_to">Back to</string>
 </resources>

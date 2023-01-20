@@ -18,6 +18,9 @@ public interface PassengerController {
     @GET("passenger/email/{email}")
     Call<PassengerDTO> getPassengerByEmail(@Path("email") String email, @Header("Authorization") String token);
 
+    @GET("passenger/email/check/{email}")
+    Call<PassengerDetailsDTO> checkPassengerByEmail(@Path("email") String email);
+
     @GET("passenger/{id}")
     Call<PassengerDetailsDTO> getPassengerDetails(@Path("id") Integer id, @Header("Authorization") String token);
 

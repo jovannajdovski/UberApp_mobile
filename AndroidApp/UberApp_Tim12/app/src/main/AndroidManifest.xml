@@ -18,23 +18,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <service
-            android:name=".service.RideService"/>
-        <service
-            android:name=".service.PassengerService"/>
-        <service
-            android:name=".service.CurrentRideService"/>
-        <service
-            android:name=".service.DriverService"/>
-        <service
-            android:name=".service.PassengerService"/>
-        <service
-            android:name=".service.PanicService"/>
-        <service
-            android:name=".service.UserService"/>
+
+        <service android:name=".service.RideService" />
+        <service android:name=".service.PassengerService" />
+        <service android:name=".service.CurrentRideService" />
+        <service android:name=".service.DriverService" />
+        <service android:name=".service.PassengerService" />
+        <service android:name=".service.PanicService" />
+        <service android:name=".service.UserService" />
 
         <activity
             android:name=".activities.RideDetailForPassengerActivity"
@@ -124,21 +118,20 @@
         </activity>
         <activity
             android:name=".activities.PassengerFavouriteRoutesActivity"
-            android:parentActivityName=".activities.PassengerMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.PassengerReportActivity"
-            android:parentActivityName=".activities.PassengerSettingsActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerSettingsActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".activities.DriverSettingsActivity"
             android:exported="false"
@@ -149,16 +142,16 @@
         </activity>
         <activity
             android:name=".activities.DriverStatisticsActivity"
-            android:parentActivityName=".activities.DriverMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.DriverReportActivity"
-            android:parentActivityName=".activities.DriverMainActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -194,6 +187,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.ForgotPasswordActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.SplashActivity"
             android:exported="true">
             <intent-filter>
@@ -213,7 +213,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
-
     </application>
 
 </manifest>
