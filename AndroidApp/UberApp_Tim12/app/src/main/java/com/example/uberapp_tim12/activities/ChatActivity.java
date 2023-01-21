@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -22,19 +21,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.adapters.ChatListAdapter;
 import com.example.uberapp_tim12.dto.MessageDTO;
-import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.SendingMessageDTO;
 import com.example.uberapp_tim12.model_mock.ChatItem;
-import com.example.uberapp_tim12.model_mock.Message;
 import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.UserService;
 
-import java.util.List;
 import java.util.Objects;
 
-public class DriverChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
     private LinearLayout main_layout;
     private ChatItem chatItem;
     private ScrollView scroll;
@@ -78,14 +73,14 @@ public class DriverChatActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(DriverChatActivity.this, UserService.class);
+                Intent intent=new Intent(ChatActivity.this, UserService.class);
                 intent.putExtra("endpoint", "sendMessage");
                 SendingMessageDTO sendingMessageDTO=new SendingMessageDTO(newMessage.getText().toString(),chatItem.getRideId());
                 newMessage.setText("");
                 intent.putExtra("messageDTO", sendingMessageDTO);
                 Log.d("PASSSS", "other person id "+chatItem.getOtherPersonId());
                 intent.putExtra("receiverId", chatItem.getOtherPersonId());
-                DriverChatActivity.this.startService(intent);
+                ChatActivity.this.startService(intent);
             }
         });
     }

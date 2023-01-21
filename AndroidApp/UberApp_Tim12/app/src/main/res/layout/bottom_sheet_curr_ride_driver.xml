@@ -238,7 +238,7 @@
             android:backgroundTint="@color/quantum_error_light"
             android:text="PANIC"
             android:textSize="18dp"
-            android:layout_width="120dp"
+            android:layout_width="90dp"
             android:padding="13dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -250,7 +250,7 @@
             android:backgroundTint="@color/quantum_yellow700"
             android:text="FINISH"
             android:textSize="18dp"
-            android:layout_width="120dp"
+            android:layout_width="90dp"
             android:padding="13dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -276,7 +276,7 @@
                     android:id="@+id/timer_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="15dp"
                     android:text="Timer"
                     android:textColor="@color/gray"
@@ -287,7 +287,7 @@
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginBottom="15dp"
                     android:layout_gravity="center"
                     android:text="5:30"
@@ -297,5 +297,17 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/chatButton"
+            android:backgroundTint="@color/quantum_yellow700"
+            android:text="CHAT"
+            android:textSize="18dp"
+            android:layout_width="90dp"
+
+            android:padding="13dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:cornerRadius="20dp"
+            android:layout_marginLeft="10dp"/>
     </LinearLayout>
 </LinearLayout>

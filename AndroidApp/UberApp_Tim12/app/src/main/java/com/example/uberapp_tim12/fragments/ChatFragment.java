@@ -14,25 +14,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.activities.DriverChatActivity;
+import com.example.uberapp_tim12.activities.ChatActivity;
 import com.example.uberapp_tim12.adapters.ChatListAdapter;
 import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
-import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.ChatItem;
-import com.example.uberapp_tim12.model_mock.Message;
 import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.RideService;
 import com.example.uberapp_tim12.service.UserService;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class ChatFragment extends ListFragment {
@@ -97,7 +92,7 @@ public class ChatFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent intent;
-        intent=new Intent(getActivity(), DriverChatActivity.class);
+        intent=new Intent(getActivity(), ChatActivity.class);
         Log.d("PASSSS", "POZICIJA "+position);
         Log.d("PASSS", String.valueOf(chatItems.get(position).getMessages().size()));
         ChatItem chatItem=chatItems.get(position);

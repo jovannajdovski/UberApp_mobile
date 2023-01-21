@@ -12,6 +12,7 @@ import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.LoginUserDTO;
 import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
+import com.example.uberapp_tim12.dto.MultipleSendingMessageDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.SendingMessageDTO;
 import com.example.uberapp_tim12.dto.UserTokenDTO;
@@ -101,6 +102,35 @@ public class UserService extends Service {
                         }
                     });
                 }
+                else if(method.equals("getRideMessages"))
+                {
+                    Log.d("PASSSS", "usao u servisu");
+                    int rideId=intent.getIntExtra("rideId", 0);
+                    final MessageListDTO[] messageListDTO = new MessageListDTO[1];
+                    Call<MessageListDTO> call = ControllerUtils.userController.getUserMessagesForSpecificRide(LoggedUser.getUserId(), rideId, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<MessageListDTO>() {
+                        @Override
+                        public void onResponse(Call<MessageListDTO> call, Response<MessageListDTO> response) {
+                            if (response.code() == 200) {
+                                Log.d("PASSS", "status 200");
+                                messageListDTO[0] = response.body();
+                                Log.d("PASSS", messageListDTO[0].toString());
+                                Intent ints = new Intent("rideChat");
+                                Log.d("PASSS", messageListDTO[0].toString());
+                                ints.putExtra("messageListDTO", messageListDTO[0]);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }
+                            else{
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MessageListDTO> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }
                 else if(method.equals("sendMessage"))
                 {
                     final MessageDTO[] messageDTO = new MessageDTO[1];
@@ -121,6 +151,30 @@ public class UserService extends Service {
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                             } else if (response.code() == 400){
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }
+                            else{
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MessageDTO> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }
+                else if(method.equals("multipleSendMessage"))
+                {
+                    MultipleSendingMessageDTO multipleSendingMessageDTO=intent.getParcelableExtra("multipleMessageDTO");
+                    Log.d("PASSS", String.valueOf(multipleSendingMessageDTO.getUserIds().size()));
+                    Log.d("PASSS", multipleSendingMessageDTO.getMessage().getMessage());
+                    Call<MessageDTO> call = ControllerUtils.userController.sendMultipleMessages(multipleSendingMessageDTO, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<MessageDTO>() {
+                        @Override
+                        public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
+
+                            if (response.code() == 200){
+                                Log.d("PASSSSSSSSSSSSSS","USPESNO!!!!!");
                             }
                             else{
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
