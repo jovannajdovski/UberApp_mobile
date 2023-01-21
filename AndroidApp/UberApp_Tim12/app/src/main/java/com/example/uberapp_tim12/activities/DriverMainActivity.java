@@ -246,6 +246,7 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         public void onReceive(Context context, Intent intent) {
             Log.d("PASSSSSSSSSSSS", "onReceive pass");
             ongoingWorkHours=intent.getParcelableExtra("workHoursDTO");
+            Log.d("PASSS", ongoingWorkHours.getStart());
             if(ongoingWorkHours==null) {
                 switchOffWhenIsNotPossible=true;
                 sw.setChecked(false);
