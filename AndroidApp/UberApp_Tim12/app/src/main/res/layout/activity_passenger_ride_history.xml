@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_grey"
     tools:context=".activities.PassengerRideHistoryActivity">
 
     <include
@@ -30,6 +31,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/passengerHistoryTitle"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="There is no past rides"
+            android:textSize="20sp"
+            android:textColor="@color/quantum_grey400"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

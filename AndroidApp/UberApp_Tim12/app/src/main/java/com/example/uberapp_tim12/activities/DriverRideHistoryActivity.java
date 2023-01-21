@@ -4,12 +4,21 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.dto.RidePageList;
 import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
 import com.example.uberapp_tim12.fragments.DriverRideHistoryFragment;
+import com.example.uberapp_tim12.fragments.PassengerRideHistoryFragment;
+import com.example.uberapp_tim12.service.CurrentRideService;
+import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 
 public class DriverRideHistoryActivity extends AppCompatActivity {
@@ -33,10 +42,39 @@ public class DriverRideHistoryActivity extends AppCompatActivity {
 
         manager = getSupportFragmentManager();
 
-        DriverRideHistoryFragment driverRideHistoryFragment = new DriverRideHistoryFragment();
-        manager.beginTransaction().replace(R.id.mainContent, driverRideHistoryFragment,driverRideHistoryFragment.getTag()).commit();
+        Intent intentRides=new Intent(this, DriverService.class);
+        intentRides.putExtra("endpoint", "getPastRides");
+        this.startService(intentRides);
 
     }
 
+    public BroadcastReceiver ridesReceiver = new BroadcastReceiver(){
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String found = intent.getStringExtra("found");
+            if (found.equals("true")){
+                RidePageList ridePageList= (RidePageList) intent.getSerializableExtra("ridesListDTOS");
+
+                if (ridePageList.getTotalCount()!=0){
+                    DriverRideHistoryFragment driverRideHistoryFragment = new DriverRideHistoryFragment(ridePageList.getResults());
+                    manager.beginTransaction().replace(R.id.mainContent, driverRideHistoryFragment,driverRideHistoryFragment.getTag()).commit();
+                }
+
+            }
+
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(ridesReceiver, new IntentFilter("pastRides"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(ridesReceiver);
+    }
 }

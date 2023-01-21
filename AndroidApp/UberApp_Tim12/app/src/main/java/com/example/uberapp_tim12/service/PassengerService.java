@@ -14,6 +14,7 @@ import com.example.uberapp_tim12.dto.NewPasswordDTO;
 import com.example.uberapp_tim12.dto.PassengerDTO;
 import com.example.uberapp_tim12.dto.PassengerRegistrationDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
+import com.example.uberapp_tim12.dto.RidePageList;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.UserEmailDTO;
 import com.example.uberapp_tim12.model.Ride;
@@ -22,6 +23,7 @@ import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.security.LoggedUser;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -151,6 +153,31 @@ public class PassengerService extends Service {
                         }
                         @Override
                         public void onFailure(Call<PassengerDetailsDTO> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
+                        }
+                    });
+                } else if(method.equals("getPastRides"))
+                {
+                    Intent ints = new Intent ("pastRides");
+                    final RidePageList[] ridesListDTOS=new RidePageList[1];
+                    Call<RidePageList> call = ControllerUtils.passengerController.getPassengerRides(LoggedUser.getUserId(),
+                            0, 100, "startTime,asc", LocalDateTime.now().minusYears(1)+"", LocalDateTime.now()+"", "Bearer "+ LoggedUser.getToken() );
+                    call.enqueue(new Callback<RidePageList>() {
+                        @Override
+                        public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {
+                            if (response.code() == 200) {
+                                ints.putExtra("found", "true");
+                                ridesListDTOS[0]=response.body();
+                                ints.putExtra("ridesListDTOS", ridesListDTOS[0]);
+                            } else if (response.code() == 404){
+                                ints.putExtra("found", "false");
+                            } else {
+                                ints.putExtra("found", "false");
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
+                        @Override
+                        public void onFailure(Call<RidePageList> call, Throwable t) {
                             Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
                         }
                     });
