@@ -105,7 +105,9 @@ public class UserService extends Service {
                 {
                     final MessageDTO[] messageDTO = new MessageDTO[1];
                     int id=intent.getIntExtra("receiverId", 0);
+                    Log.d("PASSS", String.valueOf(id));
                     SendingMessageDTO sendingMessageDTO=intent.getParcelableExtra("messageDTO");
+                    Log.d("PASSS", sendingMessageDTO.getMessage());
                     Call<MessageDTO> call = ControllerUtils.userController.sendMessage(id, sendingMessageDTO, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<MessageDTO>() {
                         @Override

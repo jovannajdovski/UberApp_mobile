@@ -48,11 +48,7 @@ public class SendingMessageDTO implements Parcelable {
     protected SendingMessageDTO(Parcel in) {
         message = in.readString();
         type = in.readString();
-        if (in.readByte() == 0) {
-            rideId = null;
-        } else {
-            rideId = in.readInt();
-        }
+        rideId=in.readInt();
     }
 
     public static final Creator<SendingMessageDTO> CREATOR = new Creator<SendingMessageDTO>() {

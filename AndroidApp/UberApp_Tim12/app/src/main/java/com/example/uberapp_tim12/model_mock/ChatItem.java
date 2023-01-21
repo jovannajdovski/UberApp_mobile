@@ -14,21 +14,24 @@ public class ChatItem implements Parcelable {
     private String dateTime;
     private int icon;
     private int rideId;
+    private int otherPersonId;
     private List<MessageDTO> messages;
 
-    public ChatItem(String route, String dateTime, int icon, int rideId, List<MessageDTO> messagesDTO)
+    public ChatItem(String route, String dateTime, int icon, int rideId, List<MessageDTO> messagesDTO, int otherPersonId)
     {
         this.route=route;
         this.dateTime=dateTime;
         this.icon=icon;
         this.rideId=rideId;
         this.messages=messagesDTO;
+        this.otherPersonId=otherPersonId;
     }
 
-    public ChatItem(int icon, int rideId, List<MessageDTO> messages) {
+    public ChatItem(int icon, int rideId, List<MessageDTO> messages, int otherPersonId) {
         this.icon = icon;
         this.rideId = rideId;
         this.messages = messages;
+        this.otherPersonId=otherPersonId;
     }
 
 
@@ -37,6 +40,7 @@ public class ChatItem implements Parcelable {
         dateTime = in.readString();
         icon = in.readInt();
         rideId = in.readInt();
+        otherPersonId=in.readInt();
         messages = new ArrayList<MessageDTO>();
         in.readList(messages, MessageDTO.class.getClassLoader());
     }
@@ -85,6 +89,13 @@ public class ChatItem implements Parcelable {
         this.messages = messages;
     }
 
+    public int getOtherPersonId() {
+        return otherPersonId;
+    }
+
+    public void setOtherPersonId(int otherPersonId) {
+        this.otherPersonId = otherPersonId;
+    }
 
     @Override
     public int describeContents() {
@@ -97,6 +108,7 @@ public class ChatItem implements Parcelable {
         dest.writeString(this.dateTime);
         dest.writeInt(this.icon);
         dest.writeInt(this.rideId);
+        dest.writeInt(this.otherPersonId);
         dest.writeList(this.messages);
     }
 }

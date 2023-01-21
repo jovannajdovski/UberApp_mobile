@@ -81,7 +81,10 @@ public class DriverChatActivity extends AppCompatActivity {
                 Intent intent=new Intent(DriverChatActivity.this, UserService.class);
                 intent.putExtra("endpoint", "sendMessage");
                 SendingMessageDTO sendingMessageDTO=new SendingMessageDTO(newMessage.getText().toString(),chatItem.getRideId());
-                intent.putExtra("messageDTO", sendingMessageDTO); //testirati
+                newMessage.setText("");
+                intent.putExtra("messageDTO", sendingMessageDTO);
+                Log.d("PASSSS", "other person id "+chatItem.getOtherPersonId());
+                intent.putExtra("receiverId", chatItem.getOtherPersonId());
                 DriverChatActivity.this.startService(intent);
             }
         });

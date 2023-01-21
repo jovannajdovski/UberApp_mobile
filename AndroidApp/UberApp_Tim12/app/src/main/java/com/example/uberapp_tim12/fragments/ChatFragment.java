@@ -26,6 +26,7 @@ import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.model_mock.Message;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.RideService;
 import com.example.uberapp_tim12.service.UserService;
 
@@ -64,20 +65,23 @@ public class ChatFragment extends ListFragment {
     {
         RideIdListDTO rideIdListDTO=new RideIdListDTO(new ArrayList<>());
         int firstIndex=0;
-        MessageDTO currentMessage;
+        MessageDTO firstMessageOfChat;
+        int otherPersonId;
         for(int i=0;i<messageListDTO.getTotalCount();i++)
         {
-            currentMessage=messageListDTO.getMessages().get(i);
-            if(!Objects.equals(currentMessage.getRideId(), messageListDTO.getMessages().get(firstIndex).getRideId()))
+            firstMessageOfChat=messageListDTO.getMessages().get(firstIndex);
+            if(!Objects.equals(messageListDTO.getMessages().get(i).getRideId(), firstMessageOfChat.getRideId()))
             {
-                rideIdListDTO.getIds().add(currentMessage.getRideId());
-                chatItems.add(new ChatItem(R.drawable.ic_profile, currentMessage.getRideId(), messageListDTO.getMessages().subList(firstIndex,i)));
+                rideIdListDTO.getIds().add(firstMessageOfChat.getRideId());
+                otherPersonId=firstMessageOfChat.getReceiverId()+ firstMessageOfChat.getSenderId()- LoggedUser.getUserId();
+                chatItems.add(new ChatItem(R.drawable.ic_profile, firstMessageOfChat.getRideId(), messageListDTO.getMessages().subList(firstIndex,i),otherPersonId));
                 firstIndex=i;
             }
         }
+        otherPersonId=messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getReceiverId()+ messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getSenderId()- LoggedUser.getUserId();
         if(messageListDTO.getTotalCount()>0) {
             rideIdListDTO.getIds().add(messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId());
-            chatItems.add(new ChatItem(R.drawable.ic_profile, messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId(), messageListDTO.getMessages().subList(firstIndex, messageListDTO.getTotalCount())));
+            chatItems.add(new ChatItem(R.drawable.ic_profile, messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId(), messageListDTO.getMessages().subList(firstIndex, messageListDTO.getTotalCount()),otherPersonId));
         }
         return rideIdListDTO;
     }
