@@ -1,5 +1,0 @@
-package com.example.uberapp_tim12;
-
-public class Constant {
-    public static String jwt="Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaWtpQGVtYWlsLmNvbSIsImp0aSI6IjEiLCJyb2xlIjoiUk9MRV9QQVNTRU5HRVIiLCJpYXQiOjE2NzM4MjcxNTgsImV4cCI6MTY3MzkxMzU1OH0.2C_-ntpov2PE_GDnFdHQRQSbQP_WTWGqgIPKZ5XnKw0";
-}

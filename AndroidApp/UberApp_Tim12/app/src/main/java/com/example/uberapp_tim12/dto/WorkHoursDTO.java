@@ -15,6 +15,10 @@ public class WorkHoursDTO implements Parcelable {
         this.start = start;
         this.end = end;
     }
+    public WorkHoursDTO()
+    {
+
+    }
 
     protected WorkHoursDTO(Parcel in) {
         if (in.readByte() == 0) {

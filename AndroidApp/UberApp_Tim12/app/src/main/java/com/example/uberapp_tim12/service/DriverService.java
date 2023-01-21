@@ -12,14 +12,19 @@ import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.ActiveDriverListDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.EndTimeDTO;
+import com.example.uberapp_tim12.dto.ErrorMessageDTO;
+import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.StartTimeDTO;
 import com.example.uberapp_tim12.dto.WorkHoursDTO;
 import com.example.uberapp_tim12.security.LoggedUser;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -114,6 +119,20 @@ public class DriverService extends Service {
                                 ints.putExtra("workHoursDTO", workHoursDTOS[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                             }else if(response.code()==400){
+                                Gson gson = new Gson();
+                                ErrorMessageDTO messageDTO=gson.fromJson(response.errorBody().charStream(),ErrorMessageDTO.class);
+
+                                if(messageDTO.getMessage().equals("Shift already ongoing!")){
+                                    Log.d("PASS", "usao dobro");
+                                    Log.d("Pas",messageDTO.getMessage());
+                                    Log.d("Pas","Shift already ongoing!");
+                                    ints.putExtra("message", "Shift already ongoing!");
+                                }
+                                else {
+                                    Log.d("Pas",messageDTO.getMessage());
+                                    Log.d("Pas","Shift already ongoing!");
+                                    ints.putExtra("message", "Work time exceeded");
+                                }
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                             }
                             else{

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.dto.LoginUserDTO;
 import com.example.uberapp_tim12.dto.UserTokenDTO;
+import com.example.uberapp_tim12.dto.WorkHoursDTO;
 import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
 import com.example.uberapp_tim12.security.JwtUtil;
 import com.example.uberapp_tim12.security.LoggedUser;
@@ -123,6 +124,7 @@ public class UserLoginActivity extends AppCompatActivity {
                 if (role.equals("ROLE_PASSENGER")){
                     intentLogin = new Intent(UserLoginActivity.this, PassengerMainActivity.class);
                 } else {
+                    DriverMainActivity.ongoingWorkHours=new WorkHoursDTO();
                     intentLogin = new Intent(UserLoginActivity.this, DriverMainActivity.class);
                 }
                 startActivity(intentLogin);

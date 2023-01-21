@@ -146,9 +146,15 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         itemSwitch.setActionView(R.layout.driver_activity_switch);
         sw=menu.findItem(R.id.isOnlineButton).getActionView().findViewById(R.id.driver_switch);
         //sw.setChecked(true);
-        Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
-        intent.putExtra("endpoint", "startShift");
-        startService(intent);
+        if(ongoingWorkHours!=null) {
+            Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
+            intent.putExtra("endpoint", "startShift");
+            startService(intent);
+        }
+        else
+        {
+            sw.setChecked(false);
+        }
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -158,12 +164,12 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                     startService(intent);
                 }
                 else {
-                    if (switchOffWhenIsNotPossible == false){
-                        Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
-                    intent.putExtra("workHourId", ongoingWorkHours.getId());
-                    intent.putExtra("endpoint", "endShift");
-                    startService(intent);
-                }
+                    if (!switchOffWhenIsNotPossible){
+                            Intent intent = new Intent(DriverMainActivity.this, DriverService.class);
+                        intent.putExtra("workHourId", ongoingWorkHours.getId());
+                        intent.putExtra("endpoint", "endShift");
+                        startService(intent);
+                    }
 
                 }
             }
@@ -245,13 +251,18 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("PASSSSSSSSSSSS", "onReceive pass");
-            ongoingWorkHours=intent.getParcelableExtra("workHoursDTO");
-            Log.d("PASSS", ongoingWorkHours.getStart());
-            if(ongoingWorkHours==null) {
-                switchOffWhenIsNotPossible=true;
-                sw.setChecked(false);
+            WorkHoursDTO ongoingWorkHoursTemp=intent.getParcelableExtra("workHoursDTO");
+            if(ongoingWorkHoursTemp==null) {
+                if(intent.getStringExtra("message").equals("Work time exceeded")) {
+                    Log.d("PASSS", "Usao");
+                    switchOffWhenIsNotPossible = true;
+                    sw.setChecked(false);
+                }
             }
-            Toast.makeText(DriverMainActivity.this, "ONLINE", Toast.LENGTH_SHORT).show();
+            else{
+                Toast.makeText(DriverMainActivity.this, "ONLINE", Toast.LENGTH_SHORT).show();
+                ongoingWorkHours=ongoingWorkHoursTemp;
+            }
         }
     };
     public BroadcastReceiver endShiftReceiver = new BroadcastReceiver(){

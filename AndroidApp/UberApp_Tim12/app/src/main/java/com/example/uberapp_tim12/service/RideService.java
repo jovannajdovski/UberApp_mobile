@@ -8,23 +8,18 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.uberapp_tim12.Constant;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.CreateRideDTO;
-import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.security.LoggedUser;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
