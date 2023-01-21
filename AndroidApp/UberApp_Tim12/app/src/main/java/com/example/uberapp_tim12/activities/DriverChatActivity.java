@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -24,6 +25,7 @@ import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.ChatListAdapter;
 import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
+import com.example.uberapp_tim12.dto.SendingMessageDTO;
 import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.model_mock.Message;
 import com.example.uberapp_tim12.security.LoggedUser;
@@ -42,8 +44,13 @@ public class DriverChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_chat);
 
         Intent intent=getIntent();
-        chatItem= (ChatItem) intent.getSerializableExtra("chat");
-
+        chatItem= (ChatItem) intent.getParcelableExtra("chat");
+        //List<MessageDTO> messages= (List<MessageDTO>) intent.getCharSequenceExtra("messages");
+//        Log.d("PASSSS", String.valueOf(messages));
+//        chatItem.setMessages(messages);
+        Log.d("PASSSS", chatItem.toString());
+        Log.d("PASSSS", chatItem.getRoute());
+        Log.d("PASSSS", String.valueOf(chatItem.getMessages().size()));
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,13 +73,15 @@ public class DriverChatActivity extends AppCompatActivity {
                 scroll.fullScroll(View.FOCUS_DOWN);
             }
         });
-
+        EditText newMessage=findViewById(R.id.message_text);
         ImageButton sendButton=findViewById(R.id.send_button);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(DriverChatActivity.this, UserService.class);
                 intent.putExtra("endpoint", "sendMessage");
+                SendingMessageDTO sendingMessageDTO=new SendingMessageDTO(newMessage.getText().toString(),chatItem.getRideId());
+                intent.putExtra("messageDTO", sendingMessageDTO); //testirati
                 DriverChatActivity.this.startService(intent);
             }
         });

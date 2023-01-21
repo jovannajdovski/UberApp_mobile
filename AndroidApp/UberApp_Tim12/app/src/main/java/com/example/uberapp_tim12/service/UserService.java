@@ -75,9 +75,9 @@ public class UserService extends Service {
                 }
                 else if(method.equals("getMessages"))
                 {
+                    Log.d("PASSS", "Usao u else if");
                     final MessageListDTO[] messageListDTO = new MessageListDTO[1];
-                    int id=intent.getIntExtra("id", 0);
-                    Call<MessageListDTO> call = ControllerUtils.userController.getUserMessages(id, "Bearer "+ LoggedUser.getToken());
+                    Call<MessageListDTO> call = ControllerUtils.userController.getUserMessages(LoggedUser.getUserId(), "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<MessageListDTO>() {
                         @Override
                         public void onResponse(Call<MessageListDTO> call, Response<MessageListDTO> response) {

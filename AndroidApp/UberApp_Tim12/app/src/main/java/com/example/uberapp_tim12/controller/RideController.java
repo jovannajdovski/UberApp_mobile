@@ -4,6 +4,7 @@ import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 
@@ -37,5 +38,8 @@ public interface RideController {
 
     @GET("ride/passenger/{passengerId}/active")
     Call<RideFullDTO> getActiveRideForPassenger(@Path("passengerId") Integer passengerId, @Header("Authorization") String token);
+
+    @PUT("ride/specific-rides")
+    Call<RidesListDTO> getRidesDetailsFromIdList(@Body RideIdListDTO rideIdListDTO, @Header("Authorization") String token);
 
 }

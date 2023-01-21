@@ -14,6 +14,7 @@ import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.security.LoggedUser;
@@ -143,7 +144,32 @@ public class RideService extends Service {
                         }
                     });
                 }
+                else if(method.equals("getRidesDetails")){
+                    Log.d("PASSS", "Usao u else if");
+                    final RidesListDTO[] rides = new RidesListDTO[1];
+                    RideIdListDTO rideIdListDTO= (RideIdListDTO) intent.getSerializableExtra("rideIdList");
+                    Call<RidesListDTO> call = ControllerUtils.rideController.getRidesDetailsFromIdList(rideIdListDTO, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<RidesListDTO>() {
+                        Intent ints = new Intent ("ridesDetails");
+                        @Override
+                        public void onResponse(Call<RidesListDTO> call, Response<RidesListDTO> response) {
+                            if (response.code() == 200){
+                                Log.d("PASSS", "odgovor 200");
+                                rides[0] =response.body();
+                                ints.putExtra("ridesDetailsDTO", rides[0]);
+                            }
+                            else{
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
 
+                        @Override
+                        public void onFailure(Call<RidesListDTO> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }
                 else{
                     stopSelf();
                 }

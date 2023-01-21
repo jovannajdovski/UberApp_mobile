@@ -6,9 +6,10 @@ import android.os.Parcelable;
 import com.example.uberapp_tim12.dto.MessageDTO;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ChatItem implements Serializable {
+public class ChatItem implements Parcelable {
     private String route;
     private String dateTime;
     private int icon;
@@ -24,7 +25,33 @@ public class ChatItem implements Serializable {
         this.messages=messagesDTO;
     }
 
+    public ChatItem(int icon, int rideId, List<MessageDTO> messages) {
+        this.icon = icon;
+        this.rideId = rideId;
+        this.messages = messages;
+    }
 
+
+    protected ChatItem(Parcel in) {
+        route = in.readString();
+        dateTime = in.readString();
+        icon = in.readInt();
+        rideId = in.readInt();
+        messages = new ArrayList<MessageDTO>();
+        in.readList(messages, MessageDTO.class.getClassLoader());
+    }
+
+    public static final Creator<ChatItem> CREATOR = new Creator<ChatItem>() {
+        @Override
+        public ChatItem createFromParcel(Parcel in) {
+            return new ChatItem(in);
+        }
+
+        @Override
+        public ChatItem[] newArray(int size) {
+            return new ChatItem[size];
+        }
+    };
 
     public String getRoute(){return this.route;}
     public String getDateTime(){return this.dateTime;}
@@ -56,5 +83,20 @@ public class ChatItem implements Serializable {
 
     public void setMessages(List<MessageDTO> messages) {
         this.messages = messages;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.route);
+        dest.writeString(this.dateTime);
+        dest.writeInt(this.icon);
+        dest.writeInt(this.rideId);
+        dest.writeList(this.messages);
     }
 }
