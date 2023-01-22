@@ -79,13 +79,13 @@ public class FavouriteRidesAdapter extends RecyclerView.Adapter<FavouriteRideHol
     }
 
 
-    private void showDeleteConfirmationDialog(FavouriteRideHolder holder, Integer id, View view) {
+    private void showDeleteConfirmationDialog(FavouriteRideHolder holder, Integer itemId, View view) {
         new MaterialAlertDialogBuilder(context)
                 .setTitle("Remove favourite route")
                 .setMessage("Are you sure you want to remove chosen route?")
                 .setPositiveButton(context.getResources().getString(R.string.confirm),
                         (dialogInterface, i) -> {
-                            deleteItem(holder, id, view);
+                            deleteItem(holder, itemId, view);
                         })
                 .setNegativeButton(context.getResources().getString(R.string.cancel),
                         (dialogInterface, i) -> {})
