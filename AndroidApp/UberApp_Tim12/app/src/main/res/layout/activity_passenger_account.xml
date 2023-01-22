@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.PassengerAccountActivity"
-    android:background="#F8F7FE"
+    android:background="#F2F2F2"
     >
     <include
         android:id="@+id/toolbar"
@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textSize="36dp"
-            android:textColor="@color/black"
+            android:textColor="#282828"
             android:text="Profile"/>
 
         <androidx.cardview.widget.CardView
@@ -88,7 +88,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

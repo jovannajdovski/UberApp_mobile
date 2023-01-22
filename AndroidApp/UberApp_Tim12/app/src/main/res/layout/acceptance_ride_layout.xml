@@ -6,7 +6,8 @@
     android:layout_width="350dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@drawable/new_ride">
+    android:background="@drawable/new_ride"
+    >
 
     <TextView
         android:id="@+id/new_ride_title"
@@ -98,7 +99,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="#00CC33"
         android:text="Accept"
         android:textSize="15sp"/>
     <Button

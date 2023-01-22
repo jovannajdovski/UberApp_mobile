@@ -1,49 +1,82 @@
 package com.example.uberapp_tim12.model;
 
+import com.example.uberapp_tim12.dto.PathDTO;
+import com.example.uberapp_tim12.dto.UserEmailDTO;
+
 import java.util.List;
 
 public class FavouriteRide {
-    String departure;
-    String destination;
-    String name;
-    List<String> passengers;
+    private Integer id;
+    private String favoriteName;
+    private List<PathDTO> locations;
+    private List<UserEmailDTO> passengers;
+    private VehicleCategory vehicleType;
+    private boolean babyTransport;
+    private boolean petTransport;
 
-    public FavouriteRide(String departure, String destination, String name, List<String> passengers) {
-        this.departure = departure;
-        this.destination = destination;
-        this.name = name;
+    public FavouriteRide(Integer id, String favoriteName, List<PathDTO> locations, List<UserEmailDTO> passengers, VehicleCategory vehicleType, boolean babyTransport, boolean petTransport) {
+        this.id = id;
+        this.favoriteName = favoriteName;
+        this.locations = locations;
         this.passengers = passengers;
+        this.vehicleType = vehicleType;
+        this.babyTransport = babyTransport;
+        this.petTransport = petTransport;
     }
 
-    public String getDeparture() {
-        return departure;
+    public Integer getId() {
+        return id;
     }
 
-    public void setDeparture(String departure) {
-        this.departure = departure;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getFavoriteName() {
+        return favoriteName;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setFavoriteName(String favoriteName) {
+        this.favoriteName = favoriteName;
     }
 
-    public String getName() {
-        return name;
+    public List<PathDTO> getLocations() {
+        return locations;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLocations(List<PathDTO> locations) {
+        this.locations = locations;
     }
 
-    public List<String> getPassengers() {
+    public List<UserEmailDTO> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<String> passengers) {
+    public void setPassengers(List<UserEmailDTO> passengers) {
         this.passengers = passengers;
+    }
+
+    public VehicleCategory getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleCategory vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public boolean isBabyTransport() {
+        return babyTransport;
+    }
+
+    public void setBabyTransport(boolean babyTransport) {
+        this.babyTransport = babyTransport;
+    }
+
+    public boolean isPetTransport() {
+        return petTransport;
+    }
+
+    public void setPetTransport(boolean petTransport) {
+        this.petTransport = petTransport;
     }
 }

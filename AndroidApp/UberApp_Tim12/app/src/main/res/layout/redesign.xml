@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
+    android:background="@color/white_1"
     >
 
     <TextView
@@ -40,7 +41,7 @@
         app:layout_constraintLeft_toLeftOf="@id/departure_choose"
         app:layout_constraintRight_toRightOf="@id/departure_choose"
         app:layout_constraintBottom_toTopOf="@id/destination_choose"
-        app:tint="#06CA6C"
+        app:tint="#00E65A"
         />
 
 
@@ -52,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="@id/start_location"
         app:layout_constraintLeft_toLeftOf="parent"
         android:src="@drawable/pin_icon"
-        app:tint="#06CA6C"
+        app:tint="#00E65A"
         />
 
     <ImageView
@@ -65,7 +66,7 @@
         app:layout_constraintBottom_toTopOf="@id/destination_icon"
         android:src="@drawable/icons8_resize_vertical_48"
         android:scaleType="fitStart"
-        app:tint="@color/gray_400"
+        app:tint="#B3B3B3"
         />
 
     <TextView
@@ -190,7 +191,7 @@
         app:iconGravity="textStart"
         app:iconSize="30dp"
         android:id="@+id/routeButton"
-        android:backgroundTint="@color/yellow"
+        android:backgroundTint="#00CC33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cornerRadius="20dp"

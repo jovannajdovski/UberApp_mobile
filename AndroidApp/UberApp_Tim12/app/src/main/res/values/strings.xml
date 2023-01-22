@@ -73,4 +73,5 @@
     <string name="other_passengers">Other passengers</string>
     <string name="back_to_home">Back to home</string>
     <string name="cancel">Cancel</string>
+    <string name="only_you">Only you</string>
 </resources>

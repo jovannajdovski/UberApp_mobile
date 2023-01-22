@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.uberapp_tim12.R;
 
 public class FavouriteRideHolder extends RecyclerView.ViewHolder {
-    public TextView departure, destination, passengers;
+    public TextView title, departure, destination, passengers;
     public Button dropDownButton;
 
     public FavouriteRideHolder(@NonNull View itemView) {
         super(itemView);
+        title = itemView.findViewById(R.id.favourite_title);
         departure = itemView.findViewById(R.id.departure_text);
         destination = itemView.findViewById(R.id.destination_text);
         passengers = itemView.findViewById(R.id.friends);

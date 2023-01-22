@@ -10,6 +10,10 @@ public class LoggedUser {
         return token;
     }
 
+    public static String getTokenWithBearer() {
+        return "Bearer " + token;
+    }
+
     public static void setToken(String token) {
         LoggedUser.token = token;
     }

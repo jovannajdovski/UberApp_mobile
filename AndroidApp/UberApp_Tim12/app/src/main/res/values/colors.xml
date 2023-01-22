@@ -91,4 +91,69 @@
     <color name="gray_200">#E1E7EC</color>
     <color name="gray_100">#F8F9FA</color>
 
+    <!--Black-->
+    <color name="black_1">#282828</color>
+    <color name="black_2">#1E1E1E</color>
+    <color name="black_3">#141414</color>
+    <color name="black_4">#0A0A0A</color>
+
+    <!--White-->
+    <color name="white_1">#F8F8F8</color>
+    <color name="white_2">#F5F5F5</color>
+    <color name="white_3">#F2F2F2</color>
+    <color name="white_4">#F0F0F0</color>
+    <color name="white_5">#EDEDED</color>
+    <color name="white_6">#E8E8E8</color>
+    <color name="white_7">#E5E5E5</color>
+    <color name="white_8">#DEDEDE</color>
+
+    <!--Light gray-->
+    <color name="light_gray_1">#D3D3D3</color>
+    <color name="light_gray_2">#C8C8C8</color>
+    <color name="light_gray_3">#BDBDBD</color>
+    <color name="light_gray_4">#B3B3B3</color>
+
+    <!--Dark gray-->
+    <color name="dark_gray_1">#2E2E2E</color>
+    <color name="dark_gray_2">#3B3B3B</color>
+    <color name="dark_gray_3">#484848</color>
+    <color name="dark_gray_4">#555555</color>
+
+    <!--Uber green-->
+    <color name="green_1">#00FF80</color>
+    <color name="green_2">#00E65A</color>
+    <color name="green_3">#00CC33</color>
+    <color name="green_4">#00B300</color>
+
+    <!--Light blue-->
+    <color name="light_blue_1">#81C0F9</color>
+    <color name="light_blue_2">#A5D5F6</color>
+    <color name="light_blue_3">#C3E6F6</color>
+    <color name="light_blue_4">#E1F6F6</color>
+
+    <!--Deep blue-->
+    <color name="deep_blue_1">#0073E6</color>
+    <color name="deep_blue_2">#0053A6</color>
+    <color name="deep_blue_3">#003366</color>
+    <color name="deep_blue_4">#001326</color>
+
+
+    <!--Yellow-->
+    <color name="yellow_1">#FFE600</color>
+    <color name="yellow_2">#FFD800</color>
+    <color name="yellow_3">#FFCA00</color>
+    <color name="yellow_4">#FFBC00</color>
+
+    <!--Orange-->
+    <color name="orange_1">#FF944D</color>
+    <color name="orange_2">#FF7800</color>
+    <color name="orange_3">#FF5D26</color>
+    <color name="orange_4">#FF3D00</color>
+
+    <!--Red-->
+    <color name="red_1">#FF2600</color>
+    <color name="red_2">#FF1A00</color>
+    <color name="red_3">#FF0D00</color>
+    <color name="red_4">#FF0000</color>
+
 </resources>

@@ -13,7 +13,7 @@
     </style>
 
     <style name="shadowMatCardMargined" parent="shadowMatCard">
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_margin">4dp</item>
     </style>
 
     <style name="whiteShadowMatCard" parent="shadowMatCardMargined">
@@ -21,7 +21,7 @@
     </style>
 
     <style name="blueShadowMatCard" parent="shadowMatCardMargined">
-        <item name="cardBackgroundColor">#38BAF7</item>
+        <item name="cardBackgroundColor">#FF7800</item>
     </style>
 
     <style name="purpleShadowMatCard" parent="shadowMatCardMargined">
