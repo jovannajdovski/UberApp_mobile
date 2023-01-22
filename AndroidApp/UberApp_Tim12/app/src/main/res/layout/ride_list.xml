@@ -47,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rate"
                 android:layout_toEndOf="@+id/star_icon"
-                android:text="Rating" />
+                android:textSize="12sp"
+                android:text="Average rating" />
 
             <TextView
                 android:id="@+id/ride_date_time"

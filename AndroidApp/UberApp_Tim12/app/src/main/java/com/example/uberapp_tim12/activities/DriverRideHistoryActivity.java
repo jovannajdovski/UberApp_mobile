@@ -13,17 +13,25 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.dto.ReviewsForRideDTO;
+import com.example.uberapp_tim12.dto.RideNoStatusDTO;
 import com.example.uberapp_tim12.dto.RidePageList;
 import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
 import com.example.uberapp_tim12.fragments.DriverRideHistoryFragment;
 import com.example.uberapp_tim12.fragments.PassengerRideHistoryFragment;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.service.DriverService;
+import com.example.uberapp_tim12.service.ReviewService;
 import com.example.uberapp_tim12.tools.FragmentTransition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriverRideHistoryActivity extends AppCompatActivity {
 
     private FragmentManager manager;
+    private RidePageList ridePageList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +62,18 @@ public class DriverRideHistoryActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String found = intent.getStringExtra("found");
             if (found.equals("true")){
-                RidePageList ridePageList= (RidePageList) intent.getSerializableExtra("ridesListDTOS");
+                ridePageList= (RidePageList) intent.getSerializableExtra("ridesListDTOS");
 
                 if (ridePageList.getTotalCount()!=0){
-                    DriverRideHistoryFragment driverRideHistoryFragment = new DriverRideHistoryFragment(ridePageList.getResults());
-                    manager.beginTransaction().replace(R.id.mainContent, driverRideHistoryFragment,driverRideHistoryFragment.getTag()).commit();
+                    ArrayList<Integer> idRides = new ArrayList<>();
+                    for (RideNoStatusDTO ride : ridePageList.getResults()){
+                        idRides.add(ride.getId());
+                    }
+
+                    Intent intentReviews = new Intent(DriverRideHistoryActivity.this, ReviewService.class);
+                    intentReviews.putExtra("endpoint", "getReviewsForMultipleRide");
+                    intentReviews.putIntegerArrayListExtra("idRides", idRides );
+                    DriverRideHistoryActivity.this.startService(intentReviews);
                 }
 
             }
@@ -66,15 +81,34 @@ public class DriverRideHistoryActivity extends AppCompatActivity {
         }
     };
 
+    public BroadcastReceiver reviewsReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String found = intent.getStringExtra("found");
+            if (found.equals("true")) {
+                List<ReviewsForRideDTO> fullReviewList = (List<ReviewsForRideDTO>) intent.getSerializableExtra("reviews");
+
+                DriverRideHistoryFragment driverRideHistoryFragment = new DriverRideHistoryFragment(ridePageList.getResults(), fullReviewList);
+                manager.beginTransaction().replace(R.id.mainContent, driverRideHistoryFragment,driverRideHistoryFragment.getTag()).commit();
+
+            }
+
+        }
+    };
+
+
     @Override
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(ridesReceiver, new IntentFilter("pastRides"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(reviewsReceiver, new IntentFilter("reviewsForMultipleRide"));
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(ridesReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(reviewsReceiver);
     }
 }

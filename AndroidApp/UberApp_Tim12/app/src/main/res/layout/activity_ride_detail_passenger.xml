@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/light_grey"
     tools:context=".activities.RideDetailForPassengerActivity">
 
@@ -25,24 +26,36 @@
             android:layout_height="wrap_content"
       >
 
-            <TextView
-                android:id="@+id/ride_plan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/mapContent"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="20dp"
+                />
+
+            <ImageView
+                android:id="@+id/favorite_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/mapContent"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/ride_plan"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:contentDescription="@null"
+                android:clickable="true"
+                android:src="@drawable/ic_baseline_favorite_border_24" />
 
             <ImageView
                 android:id="@+id/star_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/ride_plan"
-                android:layout_margin="20dp"
+                android:layout_below="@id/mapContent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_baseline_star" />
 
@@ -55,7 +68,7 @@
                 android:textColor="#E3CC03"
                 android:layout_marginTop="10dp"
                 android:textStyle="bold"
-                android:layout_below="@id/ride_plan"
+                android:layout_below="@id/mapContent"
                 android:layout_toEndOf="@+id/star_icon"
                 android:text="@string/rate_your_ride"
                 android:padding="5dp"/>
@@ -69,13 +82,26 @@
                 android:padding="5dp"
                 android:text="@string/rating_for_your_expirience" />
 
+            <ImageView
+                android:id="@+id/calender_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/description"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_baseline_calendar_month_24" />
+
             <TextView
                 android:id="@+id/startDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/description"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="70dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
@@ -89,9 +115,12 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_below="@+id/startDate"
-                android:layout_margin="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_baseline_place_24" />
+                android:src="@drawable/ic_baseline_route_24" />
 
             <TextView
                 android:id="@+id/start_time"
@@ -139,122 +168,208 @@
                 android:layout_below="@id/start_place"
                 android:padding="5dp"/>
 
-            <TextView
-                android:id="@+id/distance"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/distance_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/icon_map"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="0dp"
-                android:gravity="center_vertical"
-                android:padding="5dp"
-                android:text="@string/distance"
-                android:textSize="16sp"
-                android:textColor="#000000"
-                android:textStyle="bold" />
+                android:layout_below="@id/icon_map"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/distance_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:layout_marginTop="20dp"
+                    android:contentDescription="Distance icon"
+                    android:src="@drawable/ic_baseline_navigation_24" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/distance_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="15dp"
+                        android:text="Distance"
+                        android:textColor="@color/gray"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/distance"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="3.5 km"
+                        android:textColor="@color/quantum_grey800"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/price_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/distance"
+                android:layout_below="@id/distance_layout"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
-                android:gravity="center_vertical"
-                android:padding="5dp"
-                android:textColor="#000000"
-                android:text="@string/price"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/driver_label"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/money_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:layout_marginTop="20dp"
+                    android:contentDescription="Money icon"
+                    android:src="@drawable/ic_baseline_attach_money_24" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/total_cost_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="15dp"
+                        android:text="Total cost"
+                        android:textColor="@color/gray"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/price"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="1200 RSD"
+                        android:textColor="@color/quantum_grey800"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardview_driver"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/price"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/price_layout"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_vertical"
                 android:padding="5dp"
-                android:text="@string/driver"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                app:cardCornerRadius="20dp">
 
-            <RelativeLayout
-                android:id="@+id/driver"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:gravity="center_vertical"
-                android:layout_below="@id/driver_label">
-
-                <ImageView
-                    android:id="@+id/item_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_profile" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:gravity="center_vertical"
-                    android:textColor="#000"
-                    android:textStyle="bold"
-                    android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/item_icon"
-                    android:padding="5dp"/>
+                    android:orientation="vertical">
 
-                <TextView android:id="@+id/phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/name"
-                    android:layout_toEndOf="@+id/item_icon"
-                    android:padding="5dp"/>
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Driver"
+                        android:textColor="@color/gray"
+                        android:textStyle="bold" />
 
-            </RelativeLayout>
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginVertical="5dp"
+                        android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/passengers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/driver"
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_account_circle_48"/>
+
+                        <TextView
+                            android:id="@+id/driver_name"
+                            android:textSize="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Miki Miki"/>
+
+                        <TextView android:id="@+id/phone_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="24dp"
+                            android:text="+3816243323"
+                           />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardview_passengers"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginHorizontal="20dp"
+                app:cardCornerRadius="20dp"
+                android:layout_below="@id/cardview_driver"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center_vertical"
-                android:padding="5dp"
-                android:text="@string/passengers"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Passengers"
+                        android:textColor="@color/gray"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
 
 
-            <ListView
-                android:id="@+id/passenger_list"
-                android:layout_below="@id/passengers"
-                android:layout_alignParentStart="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
         </ScrollView>

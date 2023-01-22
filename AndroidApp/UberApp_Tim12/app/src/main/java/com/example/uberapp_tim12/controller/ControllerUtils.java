@@ -36,4 +36,7 @@ public class ControllerUtils {
     public static PanicController panicController = retrofit.create(PanicController.class);
 
     public static UserController userController = retrofit.create(UserController.class);
+    public static ReviewController reviewController = retrofit.create(ReviewController.class);
+
+    public static FavoriteController favoriteController = retrofit.create(FavoriteController.class);
 }

@@ -29,6 +29,8 @@
         <service android:name=".service.PassengerService" />
         <service android:name=".service.PanicService" />
         <service android:name=".service.UserService" />
+        <service android:name=".service.ReviewService" />
+        <service android:name=".service.FavoriteService" />
 
         <activity
             android:name=".activities.RideDetailForPassengerActivity"
@@ -195,6 +197,13 @@
         </activity>
         <activity
             android:name=".activities.ChangePasswordActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.ReviewRideDetailActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
