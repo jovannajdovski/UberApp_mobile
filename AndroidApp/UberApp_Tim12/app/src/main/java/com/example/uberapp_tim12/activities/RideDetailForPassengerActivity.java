@@ -255,7 +255,7 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
             String found = intent.getStringExtra("found");
             if (found.equals("true")){
                 FavoriteRouteForPassengerDTO favoriteRouteForPassengerDTO = (FavoriteRouteForPassengerDTO) intent.getSerializableExtra("favoriteRoute");
-                if (favoriteRouteForPassengerDTO.isFavorite()){
+                if (favoriteRouteForPassengerDTO.getFavoriteId()>0){
                     favoriteId = favoriteRouteForPassengerDTO.getFavoriteId();
                     isFavorite = true;
                     favoriteIcon.setImageDrawable(ContextCompat.getDrawable(RideDetailForPassengerActivity.this, R.drawable.ic_baseline_favorite_24));
