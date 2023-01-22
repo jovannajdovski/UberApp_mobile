@@ -48,9 +48,11 @@ import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 import com.example.uberapp_tim12.fragments.RideMapRouteFragment;
 import com.example.uberapp_tim12.model_mock.Passenger;
 import com.example.uberapp_tim12.model_mock.Ride;
+import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.FavoriteService;
 import com.example.uberapp_tim12.service.PassengerService;
+import com.example.uberapp_tim12.tools.UserMockup;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -122,7 +124,6 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
 
         distanceTxt = findViewById(R.id.distance);
         TextView price = findViewById(R.id.price);
-        TextView passengersNum = findViewById(R.id.passengers);
 
         driverName = findViewById(R.id.driver_name);
         driverPhone = findViewById(R.id.phone_number);
@@ -167,8 +168,6 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         String totalCost = nf.format(ride.getTotalCost()) + " RSD";
 
         price.setText("Price " + totalCost);
-        //passengersNum.setText("Passengers: " + ride.getPassengers().size());
-
 
         Intent intentDriver = new Intent(this, DriverService.class);
         intentDriver.putExtra("endpoint", "getDriverDetails");
@@ -201,23 +200,35 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
 
         setUpFavorite();
 
+        View inboxView = findViewById(R.id.inbox);
 
-        Button offersButton = findViewById(R.id.offers_for_route);
-        Button favRouteButton = findViewById(R.id.favorite_route);
-
-        offersButton.setOnClickListener(new View.OnClickListener() {
+        inboxView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RideDetailForPassengerActivity.this, "There is no offers for this route", Toast.LENGTH_SHORT).show();
+                //:TODO
+                Toast.makeText(RideDetailForPassengerActivity.this, "Inbox for this ride", Toast.LENGTH_SHORT).show();
             }
         });
 
-        favRouteButton.setOnClickListener(new View.OnClickListener() {
+
+        View offersView = findViewById(R.id.offers_for_route);
+
+        offersView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RideDetailForPassengerActivity.this, "Route marked as favorite", Toast.LENGTH_SHORT).show();
+                Intent offerIntent = new Intent(RideDetailForPassengerActivity.this, PassengerMainActivity.class);
+                offerIntent.putExtra("offer", "true");
+                offerIntent.putExtra("start", ride.getLocations().iterator().next().getDeparture().getAddress());
+                offerIntent.putExtra("end", ride.getLocations().iterator().next().getDestination().getAddress());
+
+                offerIntent.putExtra("startLat", ride.getLocations().iterator().next().getDeparture().getLatitude());
+                offerIntent.putExtra("endLat", ride.getLocations().iterator().next().getDestination().getLatitude());
+                offerIntent.putExtra("startLon", ride.getLocations().iterator().next().getDeparture().getLongitude());
+                offerIntent.putExtra("endLon", ride.getLocations().iterator().next().getDestination().getLongitude());
+                startActivity(offerIntent);
             }
         });
+
     }
 
     private void setUpFavorite() {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -73,7 +74,7 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
         setSupportActionBar(toolbar);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
 
-        FragmentTransition.passengerTo(MapFragment.newInstance(),this,false);
+       // FragmentTransition.passengerTo(MapFragment.newInstance(),this,false);
        // FragmentTransition.passengerTo(DrawRouteFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
         //FragmentTransition.passengerTo(PassengerCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
 
@@ -117,11 +118,24 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
 //        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
 //        actionBar.setHomeButtonEnabled(true);
 
+        String offer = getIntent().getStringExtra("offer");
+        if (offer==null){
+            mapFragment=new MapFragment(null,null, null, null);
+            manager=getSupportFragmentManager();
+            manager.beginTransaction()
+                    .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
+        } else {
+            String start = getIntent().getStringExtra("start");
+            String end = getIntent().getStringExtra("end");
+            LatLng startPoint = new LatLng(getIntent().getDoubleExtra("startLat",0),getIntent().getDoubleExtra("startLon",0));
+            LatLng endPoint = new LatLng(getIntent().getDoubleExtra("endLat",0),getIntent().getDoubleExtra("endLon",0));
+            mapFragment=new MapFragment(start, end, startPoint, endPoint);
+            manager=getSupportFragmentManager();
+            manager.beginTransaction()
+                    .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
+        }
 
-        mapFragment=new MapFragment();
-        manager=getSupportFragmentManager();
-        manager.beginTransaction()
-                .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
+
 
     }
 
