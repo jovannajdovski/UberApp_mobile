@@ -13,6 +13,8 @@ import com.example.uberapp_tim12.dto.FullReviewDTO;
 import com.example.uberapp_tim12.dto.FullReviewList;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
+import com.example.uberapp_tim12.dto.ReviewDTO;
+import com.example.uberapp_tim12.dto.ReviewRequestDTO;
 import com.example.uberapp_tim12.dto.ReviewsForRideDTO;
 import com.example.uberapp_tim12.security.LoggedUser;
 
@@ -94,6 +96,64 @@ public class ReviewService extends Service {
 
                         @Override
                         public void onFailure(Call<List<ReviewsForRideDTO>> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                } else if(method.equals("leaveReviewForVehicle"))
+                {
+                    final ReviewDTO[] reviewDTOS = new ReviewDTO[1];
+                    Log.d("PASSS", "pocetak");
+                    Intent ints = new Intent ("reviewForVehicleLeave");
+                    ReviewRequestDTO reviewRequestDTO = (ReviewRequestDTO) intent.getSerializableExtra("reviewRequest");
+                    Integer idRide=intent.getIntExtra("idRide",0);
+                    Call<ReviewDTO> call = ControllerUtils.reviewController.leaveReviewForVehicle(idRide,reviewRequestDTO, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<ReviewDTO>() {
+                        @Override
+                        public void onResponse(Call<ReviewDTO> call, Response<ReviewDTO> response) {
+                            if (response.code() == 200){
+                                Log.d("PASSS", "200");
+                                reviewDTOS[0] =response.body();
+                                ints.putExtra("found", "true");
+                                ints.putExtra("review", reviewDTOS[0]);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }else{
+                                ints.putExtra("found", "false");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ReviewDTO> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                } else if(method.equals("leaveReviewForDriver"))
+                {
+                    final ReviewDTO[] reviewDTOS = new ReviewDTO[1];
+                    Log.d("PASSS", "pocetak");
+                    Intent ints = new Intent ("reviewForDriverLeave");
+                    ReviewRequestDTO reviewRequestDTO = (ReviewRequestDTO) intent.getSerializableExtra("reviewRequest");
+                    Integer idRide=intent.getIntExtra("idRide",0);
+                    Call<ReviewDTO> call = ControllerUtils.reviewController.leaveReviewForDriver(idRide,reviewRequestDTO, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<ReviewDTO>() {
+                        @Override
+                        public void onResponse(Call<ReviewDTO> call, Response<ReviewDTO> response) {
+                            if (response.code() == 200){
+                                Log.d("PASSS", "200");
+                                reviewDTOS[0] =response.body();
+                                ints.putExtra("found", "true");
+                                ints.putExtra("review", reviewDTOS[0]);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }else{
+                                ints.putExtra("found", "false");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ReviewDTO> call, Throwable t) {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
                         }
                     });

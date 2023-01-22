@@ -79,10 +79,18 @@ public class RideAdapter extends BaseAdapter {
             return "Not rated";
         }
         Double s = 0.0;
+        int reviewsNum = 0;
         for (FullReviewDTO review: reviews.getReviews()){
-            s+=review.getDriverReview().getRating();
-            s+=review.getVehicleReview().getRating();
+            if (review.getDriverReview().getRating()!=null){
+                s+=review.getDriverReview().getRating();
+                reviewsNum++;
+            }
+            if (review.getVehicleReview().getRating()!=null){
+                s+=review.getVehicleReview().getRating();
+                reviewsNum++;
+            }
+
         }
-        return String.valueOf(s/(reviews.getReviews().size()*2));
+        return String.valueOf(s/(reviewsNum));
     }
 }

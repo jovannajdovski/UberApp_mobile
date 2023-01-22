@@ -1,7 +1,6 @@
 package com.example.uberapp_tim12.activities;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -13,26 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.CustomAdapter;
-import com.example.uberapp_tim12.adapters.PassengerAdapter;
 import com.example.uberapp_tim12.dto.CreateFavoriteDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.FavoriteFullDTO;
@@ -43,16 +33,10 @@ import com.example.uberapp_tim12.dto.PathDTO;
 import com.example.uberapp_tim12.dto.ReviewsForRideDTO;
 import com.example.uberapp_tim12.dto.RideNoStatusDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
-import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
-import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 import com.example.uberapp_tim12.fragments.RideMapRouteFragment;
-import com.example.uberapp_tim12.model_mock.Passenger;
-import com.example.uberapp_tim12.model_mock.Ride;
-import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.FavoriteService;
 import com.example.uberapp_tim12.service.PassengerService;
-import com.example.uberapp_tim12.tools.UserMockup;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -74,7 +58,7 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
 
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
 
-    private enum LayoutManagerType {
+    enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
@@ -142,18 +126,6 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         String endTime = timePoints[0] + ":" + timePoints[1];
 
         PathDTO path = (PathDTO) ride.getLocations().toArray()[0];
-
-
-        rate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RideDetailForPassengerActivity.this, ReviewRideDetailActivity.class);
-                intent.putExtra("ride", ride);
-                intent.putExtra("reviews", reviews);
-
-                startActivity(intent);
-            }
-        });
 
         date.setText(startDate);
         startTimes.setText(startTime);
@@ -226,6 +198,17 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
                 offerIntent.putExtra("startLon", ride.getLocations().iterator().next().getDeparture().getLongitude());
                 offerIntent.putExtra("endLon", ride.getLocations().iterator().next().getDestination().getLongitude());
                 startActivity(offerIntent);
+            }
+        });
+
+        View reviewsLink = findViewById(R.id.review_ratings);
+        reviewsLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RideDetailForPassengerActivity.this, ReviewRideDetailActivity.class);
+                intent.putExtra("ride", ride);
+                intent.putExtra("reviews", reviews);
+                startActivity(intent);
             }
         });
 
@@ -392,15 +375,23 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
 
 
     private String getAverage() {
-        if (reviews.getReviews().size() == 0) {
+        if (reviews.getReviews().size()==0){
             return "Not rated";
         }
         Double s = 0.0;
-        for (FullReviewDTO review : reviews.getReviews()) {
-            s += review.getDriverReview().getRating();
-            s += review.getVehicleReview().getRating();
+        int reviewsNum = 0;
+        for (FullReviewDTO review: reviews.getReviews()){
+            if (review.getDriverReview().getRating()!=null){
+                s+=review.getDriverReview().getRating();
+                reviewsNum++;
+            }
+            if (review.getVehicleReview().getRating()!=null){
+                s+=review.getVehicleReview().getRating();
+                reviewsNum++;
+            }
+
         }
-        return String.valueOf(s / (reviews.getReviews().size() * 2));
+        return String.valueOf(s/(reviewsNum));
     }
 
     public void setRecyclerViewLayoutManager(RideDetailForPassengerActivity.LayoutManagerType layoutManagerType) {
