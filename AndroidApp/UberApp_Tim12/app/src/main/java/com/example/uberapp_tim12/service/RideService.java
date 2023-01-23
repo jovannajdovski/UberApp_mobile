@@ -14,6 +14,7 @@ import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RidePageList;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.security.LoggedUser;
@@ -65,6 +66,32 @@ public class RideService extends Service {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
                         }
                     });
+                } else if(method.equals("getAcceptedRidesForDriver"))
+                {
+                    final RidePageList[] ridesListDTOS=new RidePageList[1];
+                    Call<RidePageList> call = ControllerUtils.rideController.getAcceptedRidesForDriver(LoggedUser.getUserId(), "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<RidePageList>() {
+                        @Override
+                        public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {
+                            Intent ints = new Intent ("acceptedRides");
+                            if (response.code() == 200){
+                                Log.d("REZZ", "usao");
+                                ridesListDTOS[0]=response.body();
+                                ints.putExtra("found", "true");
+                                ints.putExtra("ridesList", ridesListDTOS[0]);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }else{
+                                ints.putExtra("found", "false");
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<RidePageList> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
                 }
                 else if(method.equals("acceptRide")){
                     final Ride[] ride = new Ride[1];
@@ -88,11 +115,39 @@ public class RideService extends Service {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
                         }
                     });
+                } else if(method.equals("startRide")){
+                    final Ride[] ride = new Ride[1];
+                    Integer rideId=intent.getIntExtra("rideId",-1);
+                    Integer position=intent.getIntExtra("position",-1);
+                    Call<Ride> call = ControllerUtils.rideController.startRide(rideId, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<Ride>() {
+                        @Override
+                        public void onResponse(Call<Ride> call, Response<Ride> response) {
+                            Intent ints = new Intent ("rideStarted");
+                            if (response.code() == 200){
+                                ride[0] =response.body();
+                                ints.putExtra("found", "true");
+                                ints.putExtra("ride", ride[0]);
+                                ints.putExtra("position", position);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }else{
+                                ints.putExtra("found", "false");
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Ride> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
                 }
                 else if(method.equals("rejectRide")){
                     final Ride[] ride = new Ride[1];
                     ReasonDTO reasonDTO=intent.getParcelableExtra("reasonDTO");
                     Integer rideId=intent.getIntExtra("rideId",-1);
+                    Integer position=intent.getIntExtra("position",-1);
                     Call<Ride> call = ControllerUtils.rideController.rejectRide(rideId, reasonDTO, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<Ride>() {
                         @Override
@@ -102,8 +157,13 @@ public class RideService extends Service {
                                 Log.d("PASSS",ride[0].toString());
                                 Intent ints = new Intent ("rejectRide");
                                 ints.putExtra("ride", ride[0]);
+                                ints.putExtra("found", "true");
+                                ints.putExtra("position", position);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                             }else{
+                                Intent ints = new Intent ("rejectRide");
+                                ints.putExtra("found", "false");
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
                             }
                         }

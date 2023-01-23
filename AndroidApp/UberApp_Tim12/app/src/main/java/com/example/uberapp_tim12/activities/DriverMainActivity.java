@@ -239,7 +239,11 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                 Intent intentRide = new Intent(this, CurrentRideService.class);
                 intentRide.putExtra("endpoint", "getActiveRideForDriver");
                 this.startService(intentRide);
-
+                break;
+            case "Accepted rides":
+                intent = new Intent(DriverMainActivity.this, DriverAcceptedRidesActivity.class);
+                intent.putExtra("tab",3);
+                startActivity(intent);
                 break;
         }
 

@@ -22,7 +22,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-
         <service android:name=".service.RideService" />
         <service android:name=".service.PassengerService" />
         <service android:name=".service.CurrentRideService" />
@@ -214,6 +213,13 @@
             android:name=".activities.LeaveReviewForRideActivity"
             android:exported="false"
             android:parentActivityName=".activities.ReviewRideDetailActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.DriverAcceptedRidesActivity"
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

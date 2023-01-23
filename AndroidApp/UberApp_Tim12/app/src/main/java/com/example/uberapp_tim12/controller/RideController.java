@@ -4,6 +4,7 @@ import com.example.uberapp_tim12.dto.CreateRideDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RidePageList;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 
@@ -26,6 +27,9 @@ public interface RideController {
     @PUT("ride/{id}/accept")
     Call<Ride> acceptRide(@Path("id") Integer rideId, @Header("Authorization") String token);
 
+    @PUT("ride/{id}/start")
+    Call<Ride> startRide(@Path("id") Integer rideId, @Header("Authorization") String token);
+
     @PUT("ride/{id}/cancel")
     Call<Ride> rejectRide(@Path("id") Integer rideId, @Body ReasonDTO reasonDTO, @Header("Authorization") String token);
 
@@ -34,6 +38,9 @@ public interface RideController {
 
     @GET("ride/driver/{driverId}/active")
     Call<RideFullDTO> getActiveRideForDriver(@Path("driverId") Integer driverId, @Header("Authorization") String token);
+
+    @GET("ride/driver/{driverId}/accepted")
+    Call<RidePageList> getAcceptedRidesForDriver(@Path("driverId") Integer driverId, @Header("Authorization") String token);
 
     @GET("ride/passenger/{passengerId}/active")
     Call<RideFullDTO> getActiveRideForPassenger(@Path("passengerId") Integer passengerId, @Header("Authorization") String token);
