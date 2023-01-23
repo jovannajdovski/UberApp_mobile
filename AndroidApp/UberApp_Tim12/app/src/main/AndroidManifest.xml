@@ -204,7 +204,8 @@
         </activity>
         <activity
             android:name=".activities.ReviewRideDetailActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.RideDetailActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -219,7 +220,8 @@
         </activity>
         <activity
             android:name=".activities.DriverAcceptedRidesActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

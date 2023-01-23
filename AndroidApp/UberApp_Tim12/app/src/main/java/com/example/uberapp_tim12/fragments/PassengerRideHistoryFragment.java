@@ -64,7 +64,6 @@ public class PassengerRideHistoryFragment extends ListFragment {
         intent.putExtra("ride", ride);
         intent.putExtra("reviews", reviews);
 
-        Log.d("FFFF", ride.getPassengers().size()+"");
         startActivity(intent);
     }
 

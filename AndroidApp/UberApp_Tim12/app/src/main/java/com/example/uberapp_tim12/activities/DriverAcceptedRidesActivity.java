@@ -1,6 +1,8 @@
 package com.example.uberapp_tim12.activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.uberapp_tim12.R;
@@ -53,10 +56,31 @@ public class DriverAcceptedRidesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_accepted_rides);
 
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setIcon(R.drawable.ic_baseline_check_circle_24);
+        actionBar.setTitle("Accepted rides");
+
         Intent intentRide = new Intent(this, RideService.class);
         intentRide.putExtra("endpoint", "getAcceptedRidesForDriver");
         this.startService(intentRide);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public BroadcastReceiver acceptedRidesReceiver = new BroadcastReceiver() {

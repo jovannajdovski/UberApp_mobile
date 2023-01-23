@@ -1,12 +1,16 @@
 package com.example.uberapp_tim12.activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -30,6 +34,7 @@ public class ReviewRideDetailActivity extends AppCompatActivity {
 
     private RideNoStatusDTO ride;
     private ReviewsForRideDTO reviews;
+    private boolean canRate;
 
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
 
@@ -47,7 +52,7 @@ public class ReviewRideDetailActivity extends AppCompatActivity {
     private List<PassengerDetailsDTO> passengers;
     private int DATASET_COUNT;
 
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +60,20 @@ public class ReviewRideDetailActivity extends AppCompatActivity {
 
         ride = (RideNoStatusDTO) getIntent().getSerializableExtra("ride");
         reviews = (ReviewsForRideDTO) getIntent().getSerializableExtra("reviews");
+
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black,this.getTheme()));
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setIcon(R.drawable.ic_baseline_rate_review_24);
+        actionBar.setTitle("Ride reviews");
+
+        String canRateExtra = getIntent().getStringExtra("canRate");
+        if (canRateExtra.equals("true")) canRate = true; else canRate = false;
 
         DATASET_COUNT = reviews.getReviews().size();
 
@@ -69,29 +88,44 @@ public class ReviewRideDetailActivity extends AppCompatActivity {
         initReviews();
 
         Button leaveReview = findViewById(R.id.leave_review_fab);
-        leaveReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (canRate){
+            leaveReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 //                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm");
 //                LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
-                ZonedDateTime zdt = ZonedDateTime.parse(ride.getStartTime());
-                LocalDateTime ldt = zdt.toLocalDateTime();
-                if (ldt.plusDays(3).isBefore(LocalDateTime.now())){
-                    Toast.makeText(ReviewRideDetailActivity.this, "Your time for leaving review has expired", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                for (FullReviewDTO review: reviews.getReviews()){
-                    if (Objects.equals(review.getVehicleReview().getPassenger().getId(), LoggedUser.getUserId())){
-                        Toast.makeText(ReviewRideDetailActivity.this, "You already leave review and rating", Toast.LENGTH_SHORT).show();
+                    ZonedDateTime zdt = ZonedDateTime.parse(ride.getStartTime());
+                    LocalDateTime ldt = zdt.toLocalDateTime();
+                    if (ldt.plusDays(3).isBefore(LocalDateTime.now())){
+                        Toast.makeText(ReviewRideDetailActivity.this, "Your time for leaving review has expired", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    for (FullReviewDTO review: reviews.getReviews()){
+                        if (Objects.equals(review.getVehicleReview().getPassenger().getId(), LoggedUser.getUserId())){
+                            Toast.makeText(ReviewRideDetailActivity.this, "You already leave review and rating", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    Intent intent = new Intent(ReviewRideDetailActivity.this, LeaveReviewForRideActivity.class);
+                    intent.putExtra("ride", ride);
+                    intent.putExtra("reviews", reviews);
+                    startActivity(intent);
                 }
-                Intent intent = new Intent(ReviewRideDetailActivity.this, LeaveReviewForRideActivity.class);
-                intent.putExtra("ride", ride);
-                intent.putExtra("reviews", reviews);
-                startActivity(intent);
-            }
-        });
+            });
+        } else {
+            leaveReview.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initReviews() {

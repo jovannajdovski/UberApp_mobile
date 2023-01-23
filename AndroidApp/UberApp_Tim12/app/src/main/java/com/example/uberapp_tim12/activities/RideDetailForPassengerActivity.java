@@ -80,10 +80,7 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         ride = (RideNoStatusDTO) getIntent().getSerializableExtra("ride");
         reviews = (ReviewsForRideDTO) getIntent().getSerializableExtra("reviews");
 
-        Log.d("FFFF", ride.getPassengers().size()+"");
-
         manager = getSupportFragmentManager();
-
 
         RideMapRouteFragment rideMapRouteFragment = new RideMapRouteFragment(ride);
         manager.beginTransaction().replace(R.id.mapContent, rideMapRouteFragment, rideMapRouteFragment.getTag()).commit();
@@ -208,6 +205,7 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
                 Intent intent = new Intent(RideDetailForPassengerActivity.this, ReviewRideDetailActivity.class);
                 intent.putExtra("ride", ride);
                 intent.putExtra("reviews", reviews);
+                intent.putExtra("canRate", "true");
                 startActivity(intent);
             }
         });
