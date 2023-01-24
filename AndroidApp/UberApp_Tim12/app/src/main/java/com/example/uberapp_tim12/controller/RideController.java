@@ -18,9 +18,6 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface RideController {
-    @GET("driver/{id}")
-    Call<DriverDetailsDTO> getDriverDetails(@Path("id") Integer id,
-                                            @Header("Authorization") String token);
     @GET("driver/{id}/ride/pending")
     Call<RidesListDTO> getPendingRidesForDriver(@Path("id") Integer id, @Header("Authorization") String token);
 
