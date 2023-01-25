@@ -6,6 +6,8 @@ import retrofit2.Call;
 
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.model.RideCostStatistics;
+import com.example.uberapp_tim12.model.RideCountStatistics;
+import com.example.uberapp_tim12.model.RideDistanceStatistics;
 
 import java.time.LocalDateTime;
 

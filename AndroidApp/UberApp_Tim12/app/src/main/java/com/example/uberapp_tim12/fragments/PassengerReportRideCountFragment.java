@@ -16,6 +16,7 @@ import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.controller.PassengerController;
 import com.example.uberapp_tim12.model.DailyRideCount;
+import com.example.uberapp_tim12.model.RideCountStatistics;
 import com.example.uberapp_tim12.security.LoggedUser;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;

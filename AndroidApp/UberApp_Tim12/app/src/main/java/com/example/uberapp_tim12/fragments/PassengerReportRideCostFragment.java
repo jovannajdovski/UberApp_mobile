@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
@@ -14,16 +15,23 @@ import androidx.fragment.app.Fragment;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.controller.PassengerController;
+import com.example.uberapp_tim12.model.DailyRideCost;
 import com.example.uberapp_tim12.model.RideCostStatistics;
 import com.example.uberapp_tim12.security.LoggedUser;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +40,7 @@ import retrofit2.Retrofit;
 
 public class PassengerReportRideCostFragment extends Fragment {
     LineChart lineChart;
+    List<String> xAxisValues;
     RideCostStatistics statistics = new RideCostStatistics(new ArrayList<>(), 0, 0);
     Button dropDownButton;
     TextView selectedDate, cost, average_cost;
@@ -79,11 +88,11 @@ public class PassengerReportRideCostFragment extends Fragment {
         Retrofit retrofit = ControllerUtils.retrofit;
         PassengerController controller = retrofit.create(PassengerController.class);
 
-        Call<RideCostStatistics> call = controller.getRideDistanceStatistics(LoggedUser.getUserId(),
+        Call<RideCostStatistics> call = controller.getRideCostStatistics(LoggedUser.getUserId(),
                 LoggedUser.getTokenWithBearer(), from, to);
-        call.enqueue(new Callback<RideDistanceStatistics>() {
+        call.enqueue(new Callback<RideCostStatistics>() {
             @Override
-            public void onResponse(Call<RideDistanceStatistics> call, Response<RideDistanceStatistics> response) {
+            public void onResponse(Call<RideCostStatistics> call, Response<RideCostStatistics> response) {
                 if (response.code() == 200) {
                     statistics = response.body();
                     updateUI();
@@ -94,10 +103,50 @@ public class PassengerReportRideCostFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<RideDistanceStatistics> call, Throwable t) {
+            public void onFailure(Call<RideCostStatistics> call, Throwable t) {
                 showMessage(view, "Something went wrong!");
             }
         });
+    }
+
+    private void updateGraph() {
+        xAxisValues = new ArrayList<>();
+
+        ArrayList<Entry> entries = new ArrayList<>();
+        for (int i = 0; i < statistics.getAmountPerDay().size(); i++) {
+            DailyRideCost distance = statistics.getAmountPerDay().get(i);
+            xAxisValues.add(String.valueOf(LocalDate.parse(distance.getDay()).getDayOfMonth()));
+            entries.add(new Entry(i, distance.getAmount()));
+        }
+
+        ArrayList<ILineDataSet> dataSets;
+        dataSets = new ArrayList<>();
+        LineDataSet set1;
+
+        set1 = new LineDataSet(entries, "Ride Count");
+        set1.setColor(Color.rgb(97, 189, 40));
+        set1.setLineWidth(2);
+        set1.setValueTextColor(Color.rgb(97, 189, 40));
+        set1.setValueTextSize(10f);
+        set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSets.add(set1);
+
+        lineChart.getXAxis().setValueFormatter(
+                new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(xAxisValues));
+
+
+        LineData data = new LineData(dataSets);
+        lineChart.setData(data);
+        lineChart.animateX(1000);
+        lineChart.invalidate();
+        lineChart.getLegend().setEnabled(false);
+        lineChart.getDescription().setEnabled(false);
+
+    }
+
+    private void updateUI() {
+        cost.setText(String.format("%s $", statistics.getTotalAmount().toString()));
+        average_cost.setText(String.format("%s $", statistics.getAverageAmount().toString()));
     }
 
     private void customizeLineChart() {
@@ -129,5 +178,12 @@ public class PassengerReportRideCostFragment extends Fragment {
         xAxis.setTextColor(Color.rgb(92, 92, 92));
         xAxis.setTextSize(12);
         xAxis.setDrawGridLines(false);
+    }
+
+    private void showMessage(View view, String message) {
+        Toast toast = new Toast(view.getContext());
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setText(message);
+        toast.show();
     }
 }
