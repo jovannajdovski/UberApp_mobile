@@ -1,6 +1,5 @@
 package com.example.uberapp_tim12.fragments;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,28 +7,46 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.controller.ControllerUtils;
+import com.example.uberapp_tim12.controller.DriverController;
+import com.example.uberapp_tim12.model.DailyRideCount;
+import com.example.uberapp_tim12.model.RideCountStatistics;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class DriverReportRideCountFragment extends Fragment {
-    LineChart lineGraph;
+    LineChart lineChart;
     List<String> xAxisValues;
+    RideCountStatistics statistics = new RideCountStatistics(new ArrayList<>(), 0, 0d);
     Button dropDownButton;
     TextView selectedDate, ride_count, ride_average_count;
 
@@ -58,38 +75,61 @@ public class DriverReportRideCountFragment extends Fragment {
         ride_average_count = view.findViewById(R.id.ride_average_count_text);
 
 
-        lineGraph = view.findViewById(R.id.line_chart);
+        lineChart = view.findViewById(R.id.line_chart);
         customizeLineChart();
-//        showEmptyChart();
 
         selectedDate = view.findViewById(R.id.selected_date);
-        materialDatePicker.addOnPositiveButtonClickListener(
-                new MaterialPickerOnPositiveButtonClickListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onPositiveButtonClick(Object selection) {
-                        selectedDate.setText(materialDatePicker.getHeaderText());
-                        populateGraphWithDayData();
-                    }
-                });
+        materialDatePicker.addOnPositiveButtonClickListener(selection -> {
+            LocalDateTime from =
+                    Instant.ofEpochMilli(selection.first).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime to =
+                    Instant.ofEpochMilli(selection.second).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            getStatistics(view, from, to);
+            selectedDate.setText(materialDatePicker.getHeaderText());
+        });
 
     }
 
-    private void populateGraphWithDayData() {
-        xAxisValues = new ArrayList<>(Arrays.asList("12", "13", "14", "15", "16"));
+    private void getStatistics(View view, LocalDateTime from, LocalDateTime to) {
+        Retrofit retrofit = ControllerUtils.retrofit;
+        DriverController controller = retrofit.create(DriverController.class);
+
+        Call<RideCountStatistics> call = controller.getRideCountStatistics(LoggedUser.getUserId(),
+                LoggedUser.getTokenWithBearer(), from, to);
+        call.enqueue(new Callback<RideCountStatistics>() {
+            @Override
+            public void onResponse(Call<RideCountStatistics> call, Response<RideCountStatistics> response) {
+                if (response.code() == 200) {
+                    statistics = response.body();
+                    updateUI();
+                    updateGraph();
+                } else {
+                    showMessage(view, "Something went wrong!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RideCountStatistics> call, Throwable t) {
+                showMessage(view, "Something went wrong!");
+            }
+        });
+    }
+
+    private void updateGraph() {
+        xAxisValues = new ArrayList<>();
 
         ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0, 10));
-        entries.add(new Entry(1, 20));
-        entries.add(new Entry(2, 25));
-        entries.add(new Entry(3, 10));
-        entries.add(new Entry(4, 35));
+        for (int i = 0; i < statistics.getCountPerDay().size(); i++) {
+            DailyRideCount count = statistics.getCountPerDay().get(i);
+            xAxisValues.add(String.valueOf(LocalDate.parse(count.getDay()).getDayOfMonth()));
+            entries.add(new Entry(i, count.getCount()));
+        }
 
         ArrayList<ILineDataSet> dataSets;
         dataSets = new ArrayList<>();
         LineDataSet set1;
 
-        set1 = new LineDataSet(entries, "Income");
+        set1 = new LineDataSet(entries, "Ride Count");
         set1.setColor(Color.rgb(255, 120, 33));
         set1.setLineWidth(2);
         set1.setValueTextColor(Color.rgb(255, 120, 33));
@@ -97,52 +137,45 @@ public class DriverReportRideCountFragment extends Fragment {
         set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         dataSets.add(set1);
 
-        lineGraph.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(xAxisValues));
+        lineChart.getXAxis().setValueFormatter(
+                new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(xAxisValues));
+
 
         LineData data = new LineData(dataSets);
-        lineGraph.setData(data);
-        lineGraph.animateX(1000);
-        lineGraph.invalidate();
-        lineGraph.getLegend().setEnabled(false);
-        lineGraph.getDescription().setEnabled(false);
-
-        ride_count.setText("50 rides");
-        ride_average_count.setText("25 rides");
+        lineChart.setData(data);
+        lineChart.animateX(1000);
+        lineChart.invalidate();
+        lineChart.getLegend().setEnabled(false);
+        lineChart.getDescription().setEnabled(false);
     }
 
-    private void showEmptyChart() {
-        YAxis yAxis = lineGraph.getAxisLeft();
-        yAxis.setAxisMaximum(100f);
-        yAxis.setAxisMinimum(0f);
-
-        xAxisValues = new ArrayList<>(Arrays.asList("1", "15", "30"));
-        LineData data = new LineData();
-        lineGraph.setData(data);
-        lineGraph.invalidate();
+    private void updateUI() {
+        ride_count.setText(String.format("%s rides", statistics.getTotalCount().toString()));
+        ride_average_count.setText(String.format("%s rides", statistics.getAverageCount().toString()));
     }
 
     private void customizeLineChart() {
         //customization
-        lineGraph.setTouchEnabled(true);
-        lineGraph.setDragEnabled(true);
-        lineGraph.setScaleEnabled(false);
-        lineGraph.setPinchZoom(false);
-        lineGraph.setDrawGridBackground(false);
+        lineChart.setTouchEnabled(true);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(false);
+        lineChart.setPinchZoom(false);
+        lineChart.setDrawGridBackground(false);
 
 
-        lineGraph.getAxisLeft().setDrawGridLines(true);
-        lineGraph.getAxisLeft().setAxisLineColor(Color.GRAY);
-        lineGraph.getAxisLeft().setAxisLineWidth(1);
-        lineGraph.getAxisLeft().setGridColor(Color.GRAY);
-        lineGraph.getAxisLeft().setGridLineWidth(1.2f);
-        lineGraph.getAxisLeft().setTextColor(Color.rgb(92, 92, 92));
-        lineGraph.getAxisLeft().setTextSize(12);
+        lineChart.getAxisLeft().setDrawGridLines(true);
+        lineChart.getAxisLeft().setAxisLineColor(Color.GRAY);
+        lineChart.getAxisLeft().setAxisLineWidth(1);
+        lineChart.getAxisLeft().setGridColor(Color.GRAY);
+        lineChart.getAxisLeft().setGridLineWidth(1.2f);
+        lineChart.getAxisLeft().setTextColor(Color.rgb(92, 92, 92));
+        lineChart.getAxisLeft().setTextSize(12);
 
-        lineGraph.getAxisRight().setEnabled(false);
-        lineGraph.getAxisRight().setDrawGridLines(false);
-        lineGraph.getAxisRight().setDrawLabels(false);
+        lineChart.getAxisRight().setEnabled(false);
+        lineChart.getAxisRight().setDrawGridLines(false);
+        lineChart.getAxisRight().setDrawLabels(false);
 
-        XAxis xAxis = lineGraph.getXAxis();
+        XAxis xAxis = lineChart.getXAxis();
         xAxis.setAxisLineColor(Color.BLACK);
         xAxis.setGranularity(1f);
         xAxis.setEnabled(true);
@@ -150,5 +183,13 @@ public class DriverReportRideCountFragment extends Fragment {
         xAxis.setTextColor(Color.rgb(92, 92, 92));
         xAxis.setTextSize(12);
         xAxis.setDrawGridLines(false);
+        xAxis.setLabelCount(5);
+    }
+
+    private void showMessage(View view, String message) {
+        Toast toast = new Toast(view.getContext());
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setText(message);
+        toast.show();
     }
 }
