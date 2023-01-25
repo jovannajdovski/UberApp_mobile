@@ -35,7 +35,7 @@ public class DriverReportRideDistanceFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_passenger_report_ride_distance, parent, false);
+        return inflater.inflate(R.layout.fragment_driver_report_ride_distance, parent, false);
     }
 
     @Override
@@ -59,7 +59,6 @@ public class DriverReportRideDistanceFragment extends Fragment {
 
         lineGraph = view.findViewById(R.id.line_chart);
         customizeLineChart();
-//        showEmptyChart();
 
         selectedDate = view.findViewById(R.id.selected_date);
         materialDatePicker.addOnPositiveButtonClickListener(

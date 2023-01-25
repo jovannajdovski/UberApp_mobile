@@ -21,7 +21,7 @@
     </style>
 
     <style name="blueShadowMatCard" parent="shadowMatCardMargined">
-        <item name="cardBackgroundColor">#FF7800</item>
+        <item name="cardBackgroundColor">@color/deep_blue_1</item>
     </style>
 
     <style name="purpleShadowMatCard" parent="shadowMatCardMargined">
@@ -37,7 +37,7 @@
     </style>
 
     <style name="orangeShadowMatCard" parent="shadowMatCardMargined">
-        <item name="cardBackgroundColor">#ff7821</item>
+        <item name="cardBackgroundColor">#FF7800</item>
     </style>
 
     <style name="yellowBottomNavigation" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
