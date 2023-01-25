@@ -1,14 +1,5 @@
 package com.example.uberapp_tim12.activities;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
@@ -19,11 +10,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.uberapp_tim12.R;
-import com.example.uberapp_tim12.model_mock.User;
-import com.google.android.material.card.MaterialCardView;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import java.util.Locale;
+import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.controller.ControllerUtils;
+import com.example.uberapp_tim12.controller.DriverController;
+import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.UserDTO;
+import com.example.uberapp_tim12.model.User;
+import com.example.uberapp_tim12.security.LoggedUser;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class DriverAccountActivity extends AppCompatActivity {
     private enum ValidationType {
@@ -31,12 +36,8 @@ public class DriverAccountActivity extends AppCompatActivity {
         phoneNumber,
         address
     }
-
-    TextView profileName;
-    TextView profileSurname;
-    TextView profileEmail;
-    TextView profileAddress;
-    TextView profilePhone;
+    TextView profileName, profileSurname, profileEmail, profileAddress, profilePhone;
+    DriverDetailsDTO driverDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,36 +60,6 @@ public class DriverAccountActivity extends AppCompatActivity {
         addActionListeners();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
     protected void initializeGUI() {
         profileName = findViewById(R.id.profile_name_text);
         profileSurname = findViewById(R.id.profile_surname_text);
@@ -96,87 +67,127 @@ public class DriverAccountActivity extends AppCompatActivity {
         profileAddress = findViewById(R.id.profile_address_text);
         profilePhone = findViewById(R.id.profile_phone_text);
 
-        Intent intent = getIntent();
-        User user = intent.getParcelableExtra("user");
+        updateUI();
+    }
 
-        profileName.setText(user.getName());
-        profileSurname.setText(user.getSurname());
-        profileEmail.setText(user.getEmail());
-        profileAddress.setText(user.getAddress());
-        profilePhone.setText(user.getPhoneNumber());
+    private void updateUI() {
+        Retrofit retrofit = ControllerUtils.retrofit;
+        DriverController controller = retrofit.create(DriverController.class);
+
+        Call<DriverDetailsDTO> call = controller.getDriverDetails(LoggedUser.getUserId(),
+                LoggedUser.getTokenWithBearer());
+        call.enqueue(new Callback<DriverDetailsDTO>() {
+            @Override
+            public void onResponse(Call<DriverDetailsDTO> call, Response<DriverDetailsDTO> response) {
+                if (response.code() == 200) {
+                    driverDetails = response.body();
+                    profileName.setText(driverDetails.getName());
+                    profileSurname.setText(driverDetails.getSurname());
+                    profileEmail.setText(driverDetails.getEmail());
+                    profileAddress.setText(driverDetails.getAddress());
+                    profilePhone.setText(driverDetails.getTelephoneNumber());
+                } else {
+                    showMessage(findViewById(android.R.id.content).getRootView(),
+                            "Something went wrong!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DriverDetailsDTO> call, Throwable t) {
+                showMessage(findViewById(android.R.id.content).getRootView(),
+                        "Something went wrong!");
+            }
+        });
     }
 
     protected void addActionListeners() {
         MaterialCardView profileNameLayout = findViewById(R.id.profile_name);
-        profileNameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createDialog("Name", profileName, ValidationType.allLetters);
-            }
-        });
+        profileNameLayout.setOnClickListener(view ->
+                createDialog("Name", profileName.getText().toString(), ValidationType.allLetters));
 
         MaterialCardView profileSurnameLayout = findViewById(R.id.profile_surname);
-        profileSurnameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createDialog("Surname", profileSurname, ValidationType.allLetters);
-            }
-        });
+        profileSurnameLayout.setOnClickListener(view ->
+                createDialog("Surname", profileSurname.getText().toString(), ValidationType.allLetters));
 
         MaterialCardView profileAddressLayout = findViewById(R.id.profile_address);
-        profileAddressLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createDialog("Address", profileAddress, ValidationType.address);
-            }
-        });
+        profileAddressLayout.setOnClickListener(view ->
+                createDialog("Address", profileAddress.getText().toString(), ValidationType.address));
 
         MaterialCardView profilePhoneLayout = findViewById(R.id.profile_phone);
-        profilePhoneLayout.setOnClickListener(new View.OnClickListener() {
+        profilePhoneLayout.setOnClickListener(view ->
+                createDialog("Phone", profilePhone.getText().toString(), ValidationType.phoneNumber));
+    }
+
+    private void updateDriver() {
+        UserDTO user = new UserDTO(driverDetails.getName(),
+                driverDetails.getSurname(),
+                driverDetails.getProfilePicture(),
+                driverDetails.getTelephoneNumber(),
+                driverDetails.getEmail(),
+                driverDetails.getAddress());
+        Retrofit retrofit = ControllerUtils.retrofit;
+        DriverController controller = retrofit.create(DriverController.class);
+
+        Call<User> call = controller.updateDriver(LoggedUser.getUserId(),
+                LoggedUser.getTokenWithBearer(), user);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onClick(View view) {
-                createDialog("Phone", profilePhone, ValidationType.phoneNumber);
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() == 200) {
+                    updateUI();
+                    showMessage(findViewById(android.R.id.content).getRootView(),
+                            "Account updated successfully.");
+                } else {
+                    showMessage(findViewById(android.R.id.content).getRootView(),
+                            "Something went wrong!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                showMessage(findViewById(android.R.id.content).getRootView(),
+                        "Something went wrong!");
             }
         });
     }
 
-    protected void createDialog(String title, TextView view, ValidationType validationType) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(DriverAccountActivity.this);
+    protected void createDialog(String title, String fieldName, ValidationType validationType) {
+        View view = getLayoutInflater().inflate(R.layout.custom_dialog, null);
+        EditText editText = view.findViewById(R.id.edit_text);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(title)
+                .setView(view)
+                .setPositiveButton(this.getResources().getString(R.string.confirm),
+                        (dialogInterface, i) -> {
+                String input = editText.getText().toString();
+                    switch (title) {
+                        case "Name":
+                            driverDetails.setName(input);
+                            break;
+                        case "Surname":
+                            driverDetails.setSurname(input);
+                            break;
+                        case "Address":
+                            driverDetails.setAddress(input);
+                            break;
+                        case "Phone":
+                            driverDetails.setTelephoneNumber(input);
+                            break;
+                    }
+                    updateDriver();
+                })
+                .setNegativeButton(this.getResources().getString(R.string.cancel),
+                        (dialogInterface, i) -> {
+                })
+                .show();
 
-        final View customLayout = getLayoutInflater().inflate(R.layout.custom_dialog, null);
-        builder.setView(customLayout);
-        builder.setTitle(title);
-        EditText editText = customLayout.findViewById(R.id.edit_text);
-        editText.setText(view.getText().toString());
-
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Context context = getApplicationContext();
-                CharSequence text = "Request for " + title.toLowerCase(Locale.ROOT) + " change has been made.";
-                Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-        final Button button = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        final Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         button.setEnabled(false);
 
+        editText.setText(fieldName);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -184,9 +195,7 @@ public class DriverAccountActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
+            public void afterTextChanged(Editable editable) {}
         });
     }
 
@@ -210,5 +219,12 @@ public class DriverAccountActivity extends AppCompatActivity {
 
     protected boolean isAddress(String text) {
         return text.length() > 0 && text.matches("^[#.0-9a-zA-Z\\s,-]+$");
+    }
+
+    private void showMessage(View view, String message) {
+        Toast toast = new Toast(view.getContext());
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setText(message);
+        toast.show();
     }
 }
