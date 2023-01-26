@@ -10,12 +10,17 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.LoginUserDTO;
+import com.example.uberapp_tim12.dto.NewPasswordDTO;
+import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.UserEmailDTO;
 import com.example.uberapp_tim12.dto.UserTokenDTO;
+import com.example.uberapp_tim12.security.LoggedUser;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,6 +70,52 @@ public class UserService extends Service {
                         @Override
                         public void onFailure(Call<UserTokenDTO> call, Throwable t) {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }else if(method.equals("sendResetCodeToEmail"))
+                {
+                    Intent ints = new Intent ("resetPassword");
+
+                    Log.d("PASSS", "zove bek ");
+                    Call<ResponseBody> call = ControllerUtils.userController.sendResetCodeToEmail(intent.getIntExtra("id",0));
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.code() == 204) {
+                                ints.putExtra("sent", "true");
+                            } else if (response.code() == 404){
+                                ints.putExtra("sent", "false");
+                            }else {
+                                ints.putExtra("responseMessage", response.message());
+                                Log.d("PASSS", "Meesage recieved: " + response.code());
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
+                        }
+                    });
+                } else if(method.equals("changePassword"))
+                {
+                    Intent ints = new Intent ("passwordChanged");
+                    Integer userId = LoggedUser.getUserId();
+                    String oldPassword = intent.getStringExtra("oldPassword");
+                    String newPassword = intent.getStringExtra("newPassword");
+                    Call<ResponseBody> call = ControllerUtils.userController.changePassword(userId, new NewPasswordDTO(oldPassword,newPassword), "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.code() == 204) {
+                                ints.putExtra("changed", "true");
+                            } else {
+                                ints.putExtra("changed", "false");
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
                         }
                     });
                 }

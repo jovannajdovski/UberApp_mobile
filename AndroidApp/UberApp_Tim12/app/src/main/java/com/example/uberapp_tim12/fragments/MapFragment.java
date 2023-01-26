@@ -81,6 +81,9 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
+    private String offerStart;
+    private String offerEnd;
+
     private LocationManager locationManager;
     private String provider;
     private SupportMapFragment mMapFragment;
@@ -110,8 +113,16 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private AutocompleteSupportFragment autocompleteEnd;
 
     private PassengerMainActivity activity;
-    public static MapFragment newInstance() {
-        MapFragment mpf = new MapFragment();
+
+    public MapFragment(String offerStart, String offerEnd, LatLng startPoint, LatLng endPoint) {
+        this.offerStart = offerStart;
+        this.offerEnd = offerEnd;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+    }
+
+    public static MapFragment newInstance(String offerStart, String offerEnd, LatLng startPoint, LatLng endPoint) {
+        MapFragment mpf = new MapFragment(offerStart, offerEnd, startPoint, endPoint);
         return mpf;
     }
 
@@ -155,8 +166,6 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         chooseTime.getEditText().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("fds", "sdffs");
-
 
                 picker.showNow(getParentFragmentManager(), "Time");
 
@@ -504,6 +513,16 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
         setUpAutocompleteFragment(autocompleteStart);
         setUpAutocompleteFragment(autocompleteEnd);
+
+        if (offerStart!=null){
+            autocompleteStart.setText(offerStart);
+            startAddress = offerStart;
+        }
+
+        if (offerEnd!=null){
+            autocompleteEnd.setText(offerEnd);
+            endAddress = offerEnd;
+        }
 
         autocompleteStart.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override

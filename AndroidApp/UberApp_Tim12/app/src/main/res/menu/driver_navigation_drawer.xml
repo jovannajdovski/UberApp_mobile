@@ -24,6 +24,11 @@
                 android:icon="@drawable/black_car"
                 android:title="Current ride"
                 android:checkable="true"/>
+            <item
+                android:id="@+id/accepted_rides"
+                android:icon="@drawable/ic_baseline_add_road_24"
+                android:title="Accepted rides"
+                android:checkable="true"/>
         </menu>
     </item>
 </menu>

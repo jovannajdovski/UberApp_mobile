@@ -37,4 +37,7 @@ public static final String SERVICE_API_PATH = "http://192.168.3.6:8080/api/";
     public static PassengerController passengerController=retrofit.create(PassengerController.class);
     public static PanicController panicController = retrofit.create(PanicController.class);
     public static UserController userController = retrofit.create(UserController.class);
+    public static ReviewController reviewController = retrofit.create(ReviewController.class);
+
+    public static FavoriteController favoriteController = retrofit.create(FavoriteController.class);
 }

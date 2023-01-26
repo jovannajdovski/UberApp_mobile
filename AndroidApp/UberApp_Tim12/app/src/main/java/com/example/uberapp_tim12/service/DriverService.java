@@ -12,8 +12,10 @@ import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RidePageList;
 import com.example.uberapp_tim12.security.LoggedUser;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -59,6 +61,31 @@ public class DriverService extends Service {
                         @Override
                         public void onFailure(Call<DriverDetailsDTO> call, Throwable t) {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                } else if(method.equals("getPastRides"))
+                {
+                    Intent ints = new Intent ("pastRides");
+                    final RidePageList[] ridesListDTOS=new RidePageList[1];
+                    Call<RidePageList> call = ControllerUtils.driverController.getDriverRides(LoggedUser.getUserId(),
+                            0, 100, "startTime,asc", LocalDateTime.now().minusYears(1)+"", LocalDateTime.now()+"", "Bearer "+ LoggedUser.getToken() );
+                    call.enqueue(new Callback<RidePageList>() {
+                        @Override
+                        public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {
+                            if (response.code() == 200) {
+                                ints.putExtra("found", "true");
+                                ridesListDTOS[0]=response.body();
+                                ints.putExtra("ridesListDTOS", ridesListDTOS[0]);
+                            } else if (response.code() == 404){
+                                ints.putExtra("found", "false");
+                            } else {
+                                ints.putExtra("found", "false");
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
+                        @Override
+                        public void onFailure(Call<RidePageList> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
                         }
                     });
                 }

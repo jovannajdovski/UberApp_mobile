@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
@@ -18,23 +19,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <service
-            android:name=".service.RideService"/>
-        <service
-            android:name=".service.PassengerService"/>
-        <service
-            android:name=".service.CurrentRideService"/>
-        <service
-            android:name=".service.DriverService"/>
-        <service
-            android:name=".service.PassengerService"/>
-        <service
-            android:name=".service.PanicService"/>
-        <service
-            android:name=".service.UserService"/>
+
+        <service android:name=".service.RideService" />
+        <service android:name=".service.PassengerService" />
+        <service android:name=".service.CurrentRideService" />
+        <service android:name=".service.DriverService" />
+        <service android:name=".service.PassengerService" />
+        <service android:name=".service.PanicService" />
+        <service android:name=".service.UserService" />
+        <service android:name=".service.ReviewService" />
+        <service android:name=".service.FavoriteService" />
 
         <activity
             android:name=".activities.RideDetailForPassengerActivity"
@@ -132,13 +129,12 @@
         </activity>
         <activity
             android:name=".activities.PassengerReportActivity"
-            android:parentActivityName=".activities.PassengerSettingsActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.PassengerSettingsActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".activities.DriverSettingsActivity"
             android:exported="false"
@@ -194,6 +190,45 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.ForgotPasswordActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.ChangePasswordActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.ReviewRideDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.RideDetailActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.LeaveReviewForRideActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.ReviewRideDetailActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.DriverAcceptedRidesActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.DriverMainActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <activity
             android:name=".activities.SplashActivity"
             android:exported="true">
             <intent-filter>
@@ -213,7 +248,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
-
     </application>
 
 </manifest>

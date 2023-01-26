@@ -191,6 +191,15 @@ public class DriverAccountActivity extends AppCompatActivity {
                         "Something went wrong!");
             }
         });
+
+        MaterialCardView profilePasswordLayout = findViewById(R.id.password_change);
+        profilePasswordLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DriverAccountActivity.this, ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     protected void createDialog(String title, String fieldName, ValidationType validationType) {

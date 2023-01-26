@@ -1,5 +1,7 @@
 package com.example.uberapp_tim12.controller;
 
+import com.example.uberapp_tim12.dto.RidePageList;
+import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.TimeSpanDTO;
 import com.example.uberapp_tim12.dto.UserDTO;
@@ -48,4 +50,7 @@ public interface DriverController {
                                                            @Header("Authorization") String token,
                                                            @Query("from") LocalDateTime from,
                                                            @Query("to") LocalDateTime to);
+
+    @GET("driver/{id}/ride")
+    Call<RidePageList> getDriverRides(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size, @Query("sort") String sort, @Query("from") String from, @Query("to") String to, @Header("Authorization") String token);
 }

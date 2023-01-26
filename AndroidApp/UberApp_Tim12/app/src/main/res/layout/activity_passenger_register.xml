@@ -28,23 +28,75 @@
         android:textSize="35sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:layout_marginTop="5dp"
-        android:labelFor="@+id/editTextTextFullName"
-        android:text="@string/full_name" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/editTextTextFullName"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:ems="10"
-        android:inputType="text"
-        android:autofillHints=""
-        android:paddingHorizontal="5dp"
-        android:background="@drawable/edit_text_border"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:layout_gravity="left"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:layout_marginTop="5dp"
+                    android:labelFor="@+id/editTextName"
+                    android:text="@string/name" />
+
+                <EditText
+                    android:id="@+id/editTextName"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:autofillHints=""
+                    android:paddingHorizontal="5dp"
+                    android:background="@drawable/edit_text_border"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.05"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.55"
+                android:layout_gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:layout_marginTop="5dp"
+                    android:labelFor="@+id/editTextSurname"
+                    android:text="@string/surname" />
+
+                <EditText
+                    android:id="@+id/editTextSurname"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:autofillHints=""
+                    android:paddingHorizontal="5dp"
+                    android:background="@drawable/edit_text_border"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
 
     <TextView
         android:layout_width="match_parent"
@@ -141,9 +193,9 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/edit_text_border"
-        android:backgroundTint="@color/gray"
-        android:textColor="@color/white"
+        android:backgroundTint="@color/yellow"
+        android:textColor="@color/quantum_bluegrey700"
+        android:textStyle="bold"
         android:textSize="16sp"
         android:text="@string/register" />
 
