@@ -8,23 +8,19 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.uberapp_tim12.Constant;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.dto.CreateRideDTO;
-import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidePageList;
+import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.security.LoggedUser;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -203,28 +199,28 @@ public class RideService extends Service {
                         }
                     });
                 }
-                else if(method.equals("getDriverDetails")){
-                    final DriverDetailsDTO[] driverDetailsDTO = new DriverDetailsDTO[1];
-                    Call<DriverDetailsDTO> call = ControllerUtils.rideController.getDriverDetails(LoggedUser.getUserId(), "Bearer "+ LoggedUser.getToken());
-                    call.enqueue(new Callback<DriverDetailsDTO>() {
+                else if(method.equals("getRidesDetails")){
+                    Log.d("PASSS", "Usao u else if");
+                    final RidesListDTO[] rides = new RidesListDTO[1];
+                    RideIdListDTO rideIdListDTO= (RideIdListDTO) intent.getSerializableExtra("rideIdList");
+                    Call<RidesListDTO> call = ControllerUtils.rideController.getRidesDetailsFromIdList(rideIdListDTO, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<RidesListDTO>() {
+                        Intent ints = new Intent ("ridesDetails");
                         @Override
-                        public void onResponse(Call<DriverDetailsDTO> call, Response<DriverDetailsDTO> response) {
+                        public void onResponse(Call<RidesListDTO> call, Response<RidesListDTO> response) {
                             if (response.code() == 200){
-                                driverDetailsDTO[0]=response.body();
-                            /*JsonObject responseJson = new JsonObject().get(response.body().toString()).getAsJsonObject();
-                            Gson gson = new Gson();
-                            driverDetailsDTO[0] = gson.fromJson(responseJson, DriverDetailsDTO.class);*/
-                                Log.d("REZZZ",driverDetailsDTO[0].toString());
-                                Intent ints = new Intent ("ihor");
-                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
-
-                            }else{
+                                Log.d("PASSS", "odgovor 200");
+                                rides[0] =response.body();
+                                ints.putExtra("ridesDetailsDTO", rides[0]);
+                            }
+                            else{
                                 Log.d("REZZZZZ","Meesage recieved: "+response.code());
                             }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                         }
 
                         @Override
-                        public void onFailure(Call<DriverDetailsDTO> call, Throwable t) {
+                        public void onFailure(Call<RidesListDTO> call, Throwable t) {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
                         }
                     });

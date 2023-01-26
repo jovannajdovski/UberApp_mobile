@@ -46,11 +46,9 @@ public class ChatListAdapter extends BaseAdapter {
         TextView routeView = view.findViewById(R.id.route);
         TextView dateTimeView = view.findViewById(R.id.date_time);
         ImageView iconView = view.findViewById(R.id.icon);
-        RelativeLayout chatItemView=view.findViewById(R.id.chat_item);
         routeView.setText( items.get(position).getRoute());
         dateTimeView.setText(items.get(position).getDateTime());
         iconView.setImageResource(items.get(position).getIcon());
-        chatItemView.setBackgroundColor(items.get(position).getColor());
 
         return view;
     }

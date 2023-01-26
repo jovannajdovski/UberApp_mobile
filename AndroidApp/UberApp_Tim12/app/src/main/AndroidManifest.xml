@@ -56,8 +56,10 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <!--            pitaj babu-->
         <activity
-            android:name=".activities.DriverChatActivity"
+            android:name=".activities.ChatActivity"
             android:exported="false"
             android:parentActivityName=".activities.DriverInboxActivity">
             <meta-data

@@ -5,6 +5,7 @@ import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidePageList;
+import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model.FavouriteRide;
 import com.example.uberapp_tim12.model.Ride;
@@ -21,9 +22,6 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface RideController {
-    @GET("driver/{id}")
-    Call<DriverDetailsDTO> getDriverDetails(@Path("id") Integer id,
-                                            @Header("Authorization") String token);
     @GET("driver/{id}/ride/pending")
     Call<RidesListDTO> getPendingRidesForDriver(@Path("id") Integer id, @Header("Authorization") String token);
 
@@ -53,4 +51,8 @@ public interface RideController {
 
     @DELETE("ride/favorites/{passengerId}")
     Call<String> deleteFavoriteForPassenger(@Path("passengerId") Integer passengerId, @Header("Authorization") String token);
+    
+    @PUT("ride/specific-rides")
+    Call<RidesListDTO> getRidesDetailsFromIdList(@Body RideIdListDTO rideIdListDTO, @Header("Authorization") String token);
+
 }

@@ -27,14 +27,18 @@ import android.widget.Toast;
 
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.activities.ChatActivity;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
+import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.PanicService;
 import com.example.uberapp_tim12.service.RideService;
+import com.example.uberapp_tim12.service.UserService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -87,6 +91,8 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
     private List<LatLng> path;
     private Marker rideMarker;
 
+    private RideFullDTO activeRide;
+
     public PassengerCurrRideFragment() {
     }
 
@@ -111,7 +117,7 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            RideFullDTO activeRide= (RideFullDTO) intent.getSerializableExtra("activeRideDTO");
+            activeRide= (RideFullDTO) intent.getSerializableExtra("activeRideDTO");
 
             start = new LatLng(activeRide.getLocations().iterator().next().getDeparture().getLatitude(),
                     activeRide.getLocations().iterator().next().getDeparture().getLongitude());
@@ -189,6 +195,7 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("activeRidePassenger"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(driverReceiver, new IntentFilter("driverDetails"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(panicReceiver, new IntentFilter("panicRideDetails"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(chatReceiver, new IntentFilter("rideChat"));
     }
 
     @Override
@@ -197,6 +204,7 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(driverReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(panicReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(chatReceiver);
     }
 
     @Override
@@ -213,11 +221,39 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
             }
         });
 
+        Button chatButton=(Button) view.findViewById(R.id.chatButton);
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentMessages = new Intent(getActivity(), UserService.class);
+                intentMessages.putExtra("endpoint", "getRideMessages");
+                intentMessages.putExtra("rideId", activeRide.getId());
+                Log.d("PASSSS", "poslao");
+                getActivity().startService(intentMessages);
+            }
+        });
+
         timer = (TextView) view.findViewById(R.id.timer_value);
         setTimer();
 
         return view;
     }
+    public BroadcastReceiver chatReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSSS", "primio u on receive");
+            Intent intentSer;
+            intentSer=new Intent(getActivity(), ChatActivity.class);
+            MessageListDTO messageListDTO=intent.getParcelableExtra("messageListDTO");
+            Log.d("PASSSS", String.valueOf(messageListDTO.getMessages().size()));
+            ChatItem chatItem=new ChatItem(activeRide.getLocations().iterator().next().getDeparture().getAddress()+" - "
+                    +activeRide.getLocations().iterator().next().getDestination().getAddress(),
+                    activeRide.getStartTime(),R.drawable.ic_profile,activeRide.getId(), messageListDTO.getMessages(),activeRide.getPassengers().iterator().next().getId());
+            intentSer.putExtra("chat", chatItem);
+            startActivity(intentSer);
+        }
+    };
 
     public void updateDistance(String distance){
         TextView distanceLbl =view.findViewById(R.id.distance_value);
@@ -334,6 +370,8 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 
             public void onTick(long millisUntilFinished) {
                 rideMarker.setPosition(path.get(tick));
+                if(tick%10==0)
+                    Log.d("TAJMER", String.valueOf(tick));
                 tick++;
             }
 

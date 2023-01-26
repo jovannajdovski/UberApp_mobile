@@ -23,13 +23,20 @@ import androidx.fragment.app.ListFragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.activities.ChatActivity;
 import com.example.uberapp_tim12.adapters.NotificationsListAdapter;
+import com.example.uberapp_tim12.dto.ErrorMessageDTO;
+import com.example.uberapp_tim12.dto.MultipleSendingMessageDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
+import com.example.uberapp_tim12.dto.SendingMessageDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.Message;
 import com.example.uberapp_tim12.model_mock.NotificationItem;
 import com.example.uberapp_tim12.service.RideService;
+import com.example.uberapp_tim12.service.UserService;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -231,11 +238,23 @@ public class NotificationsFragment extends ListFragment {
             Log.d("PASSSid", String.valueOf(ride.getId()));
             RelativeLayout layout1=layouts.remove(layouts.size()-1);
             Log.d("PASSS layout", String.valueOf(layouts.size()));
-
             layout1.setVisibility(View.GONE);
             //frameLayout.removeView(layout1);
             if(layouts.size()==0)
                 blackBackground.setVisibility(View.GONE);
+            Intent createChatIntent=new Intent(getActivity(), UserService.class);
+            createChatIntent.putExtra("endpoint", "multipleSendMessage");
+            SendingMessageDTO sendingMessageDTO=new SendingMessageDTO("Ride is accepted",ride.getId());
+            MultipleSendingMessageDTO multipleSendingMessageDTO=new MultipleSendingMessageDTO(sendingMessageDTO, new ArrayList<>());
+            for(UserRideDTO passenger: ride.getPassengers())
+            {
+                multipleSendingMessageDTO.getUserIds().add(passenger.getId());
+            }
+            Gson gson = new Gson();
+            String obj=gson.toJson(multipleSendingMessageDTO);
+            Log.d("PASSS", obj);
+            createChatIntent.putExtra("multipleMessageDTO", multipleSendingMessageDTO);
+            getActivity().startService(createChatIntent);
         }
     };
     public BroadcastReceiver rejectRideReceiver = new BroadcastReceiver(){

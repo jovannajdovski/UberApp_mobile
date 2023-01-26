@@ -3,27 +3,46 @@ package com.example.uberapp_tim12.model_mock;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.uberapp_tim12.dto.MessageDTO;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChatItem implements Parcelable {
     private String route;
     private String dateTime;
     private int icon;
-    private MessageType messageType;
-    public enum MessageType {
-        DRIVER,
-        SUPPORT,
-        PANIC
-    }
-    public ChatItem(String route, String dateTime, int icon, MessageType messageType)
+    private int rideId;
+    private int otherPersonId;
+    private List<MessageDTO> messages;
+
+    public ChatItem(String route, String dateTime, int icon, int rideId, List<MessageDTO> messagesDTO, int otherPersonId)
     {
         this.route=route;
         this.dateTime=dateTime;
         this.icon=icon;
-        this.messageType=messageType;
+        this.rideId=rideId;
+        this.messages=messagesDTO;
+        this.otherPersonId=otherPersonId;
     }
+
+    public ChatItem(int icon, int rideId, List<MessageDTO> messages, int otherPersonId) {
+        this.icon = icon;
+        this.rideId = rideId;
+        this.messages = messages;
+        this.otherPersonId=otherPersonId;
+    }
+
+
     protected ChatItem(Parcel in) {
-        route=in.readString();
-        dateTime=in.readString();
-        icon=in.readInt();
+        route = in.readString();
+        dateTime = in.readString();
+        icon = in.readInt();
+        rideId = in.readInt();
+        otherPersonId=in.readInt();
+        messages = new ArrayList<MessageDTO>();
+        in.readList(messages, MessageDTO.class.getClassLoader());
     }
 
     public static final Creator<ChatItem> CREATOR = new Creator<ChatItem>() {
@@ -41,18 +60,41 @@ public class ChatItem implements Parcelable {
     public String getRoute(){return this.route;}
     public String getDateTime(){return this.dateTime;}
     public int getIcon(){return this.icon;}
-    public int getColor() {
-        switch (this.messageType)
-        {
-            case DRIVER:
-                return 0x1800FF00;
-            case PANIC:
-                return 0x18FF0000;
-            case SUPPORT:
-                return 0x18FFFF00;
-            default:
-                return 0xFFFFFFFF;
-        }
+
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
+
+    public int getRideId() {
+        return rideId;
+    }
+
+    public void setRideId(int rideId) {
+        this.rideId = rideId;
+    }
+
+    public List<MessageDTO> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<MessageDTO> messages) {
+        this.messages = messages;
+    }
+
+    public int getOtherPersonId() {
+        return otherPersonId;
+    }
+
+    public void setOtherPersonId(int otherPersonId) {
+        this.otherPersonId = otherPersonId;
     }
 
     @Override
@@ -62,10 +104,11 @@ public class ChatItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(route);
-        dest.writeString(dateTime);
-        dest.writeInt(icon);
+        dest.writeString(this.route);
+        dest.writeString(this.dateTime);
+        dest.writeInt(this.icon);
+        dest.writeInt(this.rideId);
+        dest.writeInt(this.otherPersonId);
+        dest.writeList(this.messages);
     }
-
-
 }

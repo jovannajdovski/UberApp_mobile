@@ -31,16 +31,23 @@ import android.widget.Toast;
 
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.activities.ChatActivity;
+import com.example.uberapp_tim12.adapters.ChatListAdapter;
 import com.example.uberapp_tim12.adapters.CustomAdapter;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RideIdListDTO;
+import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
+import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.PanicService;
 import com.example.uberapp_tim12.service.PassengerService;
+import com.example.uberapp_tim12.service.UserService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -81,6 +88,9 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
     private LatLng start;
     private LatLng end;
+    private LatLng currentLocation=null;
+    private CountDownTimer countDownTimer;
+    private int stepPassed;
     private CameraUpdate cu;
 
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
@@ -104,9 +114,12 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
     private int rideId;
     private TextView timer;
     private Timer timerReal;
+    private Timer timerSimulation;
 
     private List<LatLng> path;
     private Marker rideMarker;
+
+    private RideFullDTO activeRide;
 
     public DriverCurrRideFragment() {
     }
@@ -133,7 +146,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            RideFullDTO activeRide = (RideFullDTO) intent.getSerializableExtra("activeRideDTO");
+            activeRide = (RideFullDTO) intent.getSerializableExtra("activeRideDTO");
 
             start = new LatLng(activeRide.getLocations().iterator().next().getDeparture().getLatitude(),
                     activeRide.getLocations().iterator().next().getDeparture().getLongitude());
@@ -227,6 +240,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("activeRideDriver"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(passengerReceiver, new IntentFilter("passengerDetails"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(panicReceiver, new IntentFilter("panicRideDetails"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(chatReceiver, new IntentFilter("rideChat"));
     }
 
     @Override
@@ -235,6 +249,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(passengerReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(panicReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(chatReceiver);
     }
 
     @Override
@@ -277,11 +292,39 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
             }
         });
 
+        Button chatButton=(Button) view.findViewById(R.id.chatButton);
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentMessages = new Intent(getActivity(), UserService.class);
+                intentMessages.putExtra("endpoint", "getRideMessages");
+                intentMessages.putExtra("rideId", activeRide.getId());
+                Log.d("PASSSS", "poslao");
+                getActivity().startService(intentMessages);
+            }
+        });
+
         timer = (TextView) view.findViewById(R.id.timer_value);
         setTimer();
 
         return view;
     }
+    public BroadcastReceiver chatReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("PASSSS", "primio u on receive");
+            Intent intentSer;
+            intentSer=new Intent(getActivity(), ChatActivity.class);
+            MessageListDTO messageListDTO=intent.getParcelableExtra("messageListDTO");
+            Log.d("PASSSS", String.valueOf(messageListDTO.getMessages().size()));
+            ChatItem chatItem=new ChatItem(activeRide.getLocations().iterator().next().getDeparture().getAddress()+" - "
+                    +activeRide.getLocations().iterator().next().getDestination().getAddress(),
+                    activeRide.getStartTime(),R.drawable.ic_profile,activeRide.getId(), messageListDTO.getMessages(),activeRide.getPassengers().iterator().next().getId());
+            intentSer.putExtra("chat", chatItem);
+            startActivity(intentSer);
+        }
+    };
 
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
         int scrollPosition = 0;
@@ -411,31 +454,67 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 6));
 
         routeDraw = true;
-
+//        if(currentLocation==null) currentLocation=start;
         simulateRide();
     }
 
     public void simulateRide(){
+        timerSimulation = new Timer();
+        TimerTask task = new TimerSimulationTask();
+
         rideMarker = mMap.addMarker(new MarkerOptions().position(start).title("My vehicle").icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin)));
 
-        int interval = 2000;
+        timerSimulation.schedule(task, 1000, 1000);
+//
+//
+//        int interval = 2000;
+//
+//        countDownTimer= new CountDownTimer((long) (path.size()) * interval, interval) {
+//            int tick = 0;
+//
+//            public void onTick(long millisUntilFinished) {
+//                rideMarker.setPosition(path.get(tick));
+//                tick++;
+//            }
+//
+//            public void onFinish() {
+//                Toast.makeText(getActivity(), "You are at your destination", Toast.LENGTH_SHORT).show();
+//                rideMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin));
+//                timerReal.cancel();
+//                timerReal.purge();
+//            }
+//
+//        }.start();
 
-        new CountDownTimer((long) path.size() *interval, interval) {
-            int tick = 0;
+    }
+    private class TimerSimulationTask extends TimerTask {
+        int tick = 0;
 
-            public void onTick(long millisUntilFinished) {
-                rideMarker.setPosition(path.get(tick));
-                tick++;
-            }
-
-            public void onFinish() {
-                Toast.makeText(getActivity(), "You are at your destination", Toast.LENGTH_SHORT).show();
-                rideMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin));
+        public void run() {
+            if(tick>=path.size())
+            {
                 timerReal.cancel();
                 timerReal.purge();
+                timerSimulation.cancel();
+                timerSimulation.purge();
+                return;
             }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("TAJMER", String.valueOf(tick));
+                    Log.d("PATH SIZE", String.valueOf(path.size()));
+                    if(tick>=path.size()) {
+                        Toast.makeText(getActivity(), "You are at your destination", Toast.LENGTH_SHORT).show();
+                        rideMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin));
+                        return;
+                    }
+                    rideMarker.setPosition(path.get(tick));
+                }
+            });
+            tick++;
+        }
 
-        }.start();
     }
 
     @Override
@@ -495,11 +574,11 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
     }
 
     public void setTimer() {
+        Log.d("SET TIMER", "SET TIMER");
         timerReal = new Timer();
         TimerTask task = new TimerUpdateTask();
 
         timerReal.schedule(task, 1000, 1000);
-
     }
 
     private class TimerUpdateTask extends TimerTask {
@@ -524,6 +603,8 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         super.onDestroy();
         timerReal.cancel();
         timerReal.purge();
+        timerSimulation.cancel();
+        timerSimulation.purge();
     }
 }
 
