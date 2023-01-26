@@ -22,6 +22,7 @@ import com.example.uberapp_tim12.dto.TimeSpanDTO;
 import com.example.uberapp_tim12.model.DriverStatistics;
 import com.example.uberapp_tim12.model.FavouriteRide;
 import com.example.uberapp_tim12.security.LoggedUser;
+import com.example.uberapp_tim12.tools.SnackbarUtil;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -118,13 +119,13 @@ public class DriverStatisticsActivity extends AppCompatActivity {
                                  statistics = response.body();
                                  updateUI();
                              } else {
-                                 showMessage(view, "Something went wrong!");
+                                 SnackbarUtil.show(view, "Something went wrong!");
                              }
                          }
 
                          @Override
                          public void onFailure(Call<DriverStatistics> call, Throwable t) {
-                             showMessage(view, "Something went wrong!");
+                             SnackbarUtil.show(view, "Something went wrong!");
                          }
                      }
         );
@@ -135,12 +136,5 @@ public class DriverStatisticsActivity extends AppCompatActivity {
         rejectedRides.setText(String.format(statistics.getNumberOfRejectedRides().toString()));
         workHours.setText(String.format("%s h", statistics.getTotalWorkHours().toString()));
         totalEarned.setText(String.format("%s $", statistics.getTotalIncome().toString()));
-    }
-
-    private void showMessage(View view, String message) {
-        Toast toast = new Toast(view.getContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setText(message);
-        toast.show();
     }
 }

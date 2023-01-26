@@ -18,6 +18,7 @@ import com.example.uberapp_tim12.controller.DriverController;
 import com.example.uberapp_tim12.model.DailyRideDistance;
 import com.example.uberapp_tim12.model.RideDistanceStatistics;
 import com.example.uberapp_tim12.security.LoggedUser;
+import com.example.uberapp_tim12.tools.SnackbarUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -98,13 +99,13 @@ public class DriverReportRideDistanceFragment extends Fragment {
                     updateUI();
                     updateGraph();
                 } else {
-                    showMessage(view, "Something went wrong!");
+                    SnackbarUtil.show(view, "Something went wrong!");
                 }
             }
 
             @Override
             public void onFailure(Call<RideDistanceStatistics> call, Throwable t) {
-                showMessage(view, "Something went wrong!");
+                SnackbarUtil.show(view, "Something went wrong!");
             }
         });
     }
@@ -178,12 +179,5 @@ public class DriverReportRideDistanceFragment extends Fragment {
         xAxis.setTextSize(12);
         xAxis.setDrawGridLines(false);
         xAxis.setLabelCount(5);
-    }
-
-    private void showMessage(View view, String message) {
-        Toast toast = new Toast(view.getContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setText(message);
-        toast.show();
     }
 }

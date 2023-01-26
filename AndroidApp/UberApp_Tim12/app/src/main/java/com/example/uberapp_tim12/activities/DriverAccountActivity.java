@@ -1,5 +1,9 @@
 package com.example.uberapp_tim12.activities;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
@@ -7,9 +11,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +28,13 @@ import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.UserDTO;
 import com.example.uberapp_tim12.model.User;
 import com.example.uberapp_tim12.security.LoggedUser;
+import com.example.uberapp_tim12.tools.ImageConverter;
+import com.example.uberapp_tim12.tools.SnackbarUtil;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,7 +48,9 @@ public class DriverAccountActivity extends AppCompatActivity {
         address
     }
     TextView profileName, profileSurname, profileEmail, profileAddress, profilePhone;
+    ImageView profileImage;
     DriverDetailsDTO driverDetails;
+    private int PICK_IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +79,7 @@ public class DriverAccountActivity extends AppCompatActivity {
         profileEmail = findViewById(R.id.profile_email_text);
         profileAddress = findViewById(R.id.profile_address_text);
         profilePhone = findViewById(R.id.profile_phone_text);
+        profileImage = findViewById(R.id.profile_image);
 
         updateUI();
     }
@@ -86,21 +100,26 @@ public class DriverAccountActivity extends AppCompatActivity {
                     profileEmail.setText(driverDetails.getEmail());
                     profileAddress.setText(driverDetails.getAddress());
                     profilePhone.setText(driverDetails.getTelephoneNumber());
+                    profileImage.setImageBitmap(ImageConverter.decodeToImage(driverDetails.getProfilePicture()));
                 } else {
-                    showMessage(findViewById(android.R.id.content).getRootView(),
+                    SnackbarUtil.show(findViewById(R.id.driver_account),
                             "Something went wrong!");
                 }
             }
 
             @Override
             public void onFailure(Call<DriverDetailsDTO> call, Throwable t) {
-                showMessage(findViewById(android.R.id.content).getRootView(),
+                SnackbarUtil.show(findViewById(R.id.driver_account),
                         "Something went wrong!");
             }
         });
     }
 
     protected void addActionListeners() {
+        MaterialCardView profilePictureLayout = findViewById(R.id.profile_picture_change);
+        profilePictureLayout.setOnClickListener(view ->
+                showImagePicker());
+
         MaterialCardView profileNameLayout = findViewById(R.id.profile_name);
         profileNameLayout.setOnClickListener(view ->
                 createDialog("Name", profileName.getText().toString(), ValidationType.allLetters));
@@ -116,6 +135,29 @@ public class DriverAccountActivity extends AppCompatActivity {
         MaterialCardView profilePhoneLayout = findViewById(R.id.profile_phone);
         profilePhoneLayout.setOnClickListener(view ->
                 createDialog("Phone", profilePhone.getText().toString(), ValidationType.phoneNumber));
+    }
+
+    private void showImagePicker() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Profile Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(uri);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                driverDetails.setProfilePicture(ImageConverter.encodeToString(bitmap));
+                updateDriver();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void updateDriver() {
@@ -135,17 +177,17 @@ public class DriverAccountActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.code() == 200) {
                     updateUI();
-                    showMessage(findViewById(android.R.id.content).getRootView(),
+                    SnackbarUtil.show(findViewById(R.id.driver_account),
                             "Account updated successfully.");
                 } else {
-                    showMessage(findViewById(android.R.id.content).getRootView(),
+                    SnackbarUtil.show(findViewById(R.id.driver_account),
                             "Something went wrong!");
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                showMessage(findViewById(android.R.id.content).getRootView(),
+                SnackbarUtil.show(findViewById(R.id.driver_account),
                         "Something went wrong!");
             }
         });
@@ -219,12 +261,5 @@ public class DriverAccountActivity extends AppCompatActivity {
 
     protected boolean isAddress(String text) {
         return text.length() > 0 && text.matches("^[#.0-9a-zA-Z\\s,-]+$");
-    }
-
-    private void showMessage(View view, String message) {
-        Toast toast = new Toast(view.getContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setText(message);
-        toast.show();
     }
 }

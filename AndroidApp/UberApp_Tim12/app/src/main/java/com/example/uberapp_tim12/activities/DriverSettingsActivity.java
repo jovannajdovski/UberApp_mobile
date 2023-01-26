@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,8 @@ import com.example.uberapp_tim12.controller.DriverController;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.model_mock.User;
 import com.example.uberapp_tim12.security.LoggedUser;
+import com.example.uberapp_tim12.tools.ImageConverter;
+import com.example.uberapp_tim12.tools.SnackbarUtil;
 import com.example.uberapp_tim12.tools.UserMockup;
 import com.google.android.material.card.MaterialCardView;
 
@@ -27,6 +30,7 @@ import retrofit2.Retrofit;
 
 public class DriverSettingsActivity extends AppCompatActivity {
     TextView profileName;
+    ImageView profileImage;
     DriverDetailsDTO driverDetails;
 
 
@@ -45,6 +49,8 @@ public class DriverSettingsActivity extends AppCompatActivity {
         actionBar.setTitle("Settings");
 
         profileName = findViewById(R.id.profile_name);
+        profileImage = findViewById(R.id.profile_image);
+
 
         MaterialCardView profileLayout = findViewById(R.id.edit_profile);
         profileLayout.setOnClickListener(view -> {
@@ -93,16 +99,17 @@ public class DriverSettingsActivity extends AppCompatActivity {
                     driverDetails = response.body();
                     profileName.setText(String.format("%s %s", driverDetails.getName(),
                             driverDetails.getSurname()));
+                    profileImage.setImageBitmap(ImageConverter.decodeToImage(driverDetails.getProfilePicture()));
 
                 } else {
-                    showMessage(findViewById(android.R.id.content).getRootView(),
+                    SnackbarUtil.show(findViewById(R.id.driver_settings),
                             "Something went wrong!");
                 }
             }
 
             @Override
             public void onFailure(Call<DriverDetailsDTO> call, Throwable t) {
-                showMessage(findViewById(android.R.id.content).getRootView(),
+                SnackbarUtil.show(findViewById(R.id.driver_settings),
                         "Something went wrong!");
             }
         });
@@ -136,12 +143,5 @@ public class DriverSettingsActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-    }
-
-    private void showMessage(View view, String message) {
-        Toast toast = new Toast(view.getContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setText(message);
-        toast.show();
     }
 }

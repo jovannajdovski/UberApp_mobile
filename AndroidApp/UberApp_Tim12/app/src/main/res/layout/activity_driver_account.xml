@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.PassengerAccountActivity"
     android:background="#F8F7FE"
+    android:id="@+id/driver_account"
     >
     <include
         android:id="@+id/toolbar"
@@ -43,6 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:cardBackgroundColor="@color/yellow">
             <ImageView
+                android:id="@+id/profile_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_profile"

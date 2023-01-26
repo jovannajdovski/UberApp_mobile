@@ -16,6 +16,7 @@ import com.example.uberapp_tim12.controller.RideController;
 import com.example.uberapp_tim12.holder.FavouriteRideHolder;
 import com.example.uberapp_tim12.model.FavouriteRide;
 import com.example.uberapp_tim12.security.LoggedUser;
+import com.example.uberapp_tim12.tools.SnackbarUtil;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
@@ -101,23 +102,16 @@ public class FavouriteRidesAdapter extends RecyclerView.Adapter<FavouriteRideHol
                 if (response.code() == 204) {
                     items.remove(holder.getBindingAdapterPosition());
                     notifyItemRemoved(holder.getBindingAdapterPosition());
-                    showMessage(view, "Favorite route is deleted successfully.");
+                    SnackbarUtil.show(view, "Favorite route is deleted successfully.");
                 } else {
-                    showMessage(view, "Something went wrong!");
+                    SnackbarUtil.show(view, "Something went wrong!");
                 }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                showMessage(view, "Something went wrong!");
+                SnackbarUtil.show(view, "Something went wrong!");
             }
         });
-    }
-
-    private void showMessage(View view, String message) {
-        Toast toast = new Toast(view.getContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setText(message);
-        toast.show();
     }
 }
