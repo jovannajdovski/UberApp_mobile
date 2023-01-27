@@ -204,6 +204,31 @@ public class DriverService extends Service {
                             Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
                         }
                     });
+                }else if(method.equals("getFinishedRides"))
+                {
+                    Intent ints = new Intent ("finishedRides");
+                    final RidePageList[] ridesListDTOS=new RidePageList[1];
+                    Call<RidePageList> call = ControllerUtils.driverController.getDriverFinishedRides(LoggedUser.getUserId(),
+                            0, 100, "startTime,asc", "Bearer "+ LoggedUser.getToken() );
+                    call.enqueue(new Callback<RidePageList>() {
+                        @Override
+                        public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {
+                            if (response.code() == 200) {
+                                ints.putExtra("found", "true");
+                                ridesListDTOS[0]=response.body();
+                                ints.putExtra("ridesListDTOS", ridesListDTOS[0]);
+                            } else if (response.code() == 404){
+                                ints.putExtra("found", "false");
+                            } else {
+                                ints.putExtra("found", "false");
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
+                        @Override
+                        public void onFailure(Call<RidePageList> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
+                        }
+                    });
                 }
                 else{
                     stopSelf();

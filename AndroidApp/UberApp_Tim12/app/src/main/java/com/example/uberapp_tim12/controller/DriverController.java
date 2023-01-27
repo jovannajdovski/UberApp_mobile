@@ -60,6 +60,9 @@ public interface DriverController {
     @GET("driver/{id}/ride")
     Call<RidePageList> getDriverRides(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size, @Query("sort") String sort, @Query("from") String from, @Query("to") String to, @Header("Authorization") String token);
 
+    @GET("driver/{id}/ride/finished")
+    Call<RidePageList> getDriverFinishedRides(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size, @Query("sort") String sort, @Header("Authorization") String token);
+
     @GET("driver/active-drivers")
     Call<ActiveDriverListDTO> getActiveDrivers(@Header("Authorization") String token);
 
