@@ -22,7 +22,7 @@ public class STOMPUtils {
 //public static final String SERVICE_API_PATH = "172.29.240.1:8080/";
 
     private String TAG = "STOMP";
-    public static StompClient stompClient;
+    public StompClient stompClient;
 
     private CompositeDisposable compositeDisposable;
 
@@ -87,7 +87,7 @@ public class STOMPUtils {
                 }));
     }
 
-    protected CompletableTransformer applySchedulers() {
+    public CompletableTransformer applySchedulers() {
         return upstream -> upstream
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribeOn(Schedulers.io())
