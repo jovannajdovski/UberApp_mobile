@@ -28,6 +28,9 @@ public interface RideController {
     @PUT("ride/{id}/accept")
     Call<Ride> acceptRide(@Path("id") Integer rideId, @Header("Authorization") String token);
 
+    @PUT("ride/{id}/end")
+    Call<Ride> endRide(@Path("id") Integer rideId, @Header("Authorization") String token);
+
     @PUT("ride/{id}/start")
     Call<Ride> startRide(@Path("id") Integer rideId, @Header("Authorization") String token);
 

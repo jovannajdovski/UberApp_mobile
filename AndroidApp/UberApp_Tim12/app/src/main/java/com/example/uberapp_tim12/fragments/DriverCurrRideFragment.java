@@ -45,12 +45,14 @@ import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
+import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.PanicService;
 import com.example.uberapp_tim12.service.PassengerService;
+import com.example.uberapp_tim12.service.RideService;
 import com.example.uberapp_tim12.service.UserService;
 import com.example.uberapp_tim12.web_socket.STOMPUtils;
 import com.google.android.gms.maps.CameraUpdate;
@@ -215,6 +217,38 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
     };
 
+    public BroadcastReceiver finishRideReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Ride ride = (Ride) intent.getSerializableExtra("ride");
+            sendSocketForFinishRide(ride.getId());
+
+        }
+    };
+
+    @SuppressLint("CheckResult")
+    private void sendSocketForFinishRide(Integer rideId){
+        STOMPUtils stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.send("api/socket-subscriber/finish-ride/"+rideId)
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+        stompUtils.disconnectStomp();
+
+        FragmentManager manager = getParentFragmentManager();
+        DriverMapFragment mapFragment = new DriverMapFragment();
+        manager.beginTransaction().replace(R.id.driverMainContent,
+                mapFragment,
+                mapFragment.getTag()).commit();
+    }
+
     public BroadcastReceiver panicReceiver = new BroadcastReceiver() {
 
         @Override
@@ -264,6 +298,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         mMapFragment.getMapAsync(this);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("activeRideDriver"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(finishRideReceiver, new IntentFilter("endRide"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(passengerReceiver, new IntentFilter("passengerDetails"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(panicReceiver, new IntentFilter("panicRideDetails"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(chatReceiver, new IntentFilter("rideChat"));
@@ -276,6 +311,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(passengerReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(panicReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(chatReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(finishRideReceiver);
     }
 
     @Override
@@ -310,11 +346,11 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager manager = getParentFragmentManager();
-                DriverMapFragment mapFragment = new DriverMapFragment();
-                manager.beginTransaction().replace(R.id.driverMainContent,
-                        mapFragment,
-                        mapFragment.getTag()).commit();
+                Intent intentFinish = new Intent(getActivity(), RideService.class);
+                intentFinish.putExtra("endpoint", "endRide");
+                intentFinish.putExtra("rideId", activeRide.getId());
+                Log.d("PASSSS", "poslao");
+                getActivity().startService(intentFinish);
             }
         });
 

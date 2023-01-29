@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -29,10 +30,16 @@ import android.widget.Toast;
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.ChatActivity;
+import com.example.uberapp_tim12.activities.LeaveReviewForRideActivity;
+import com.example.uberapp_tim12.activities.PassengerRideHistoryActivity;
+import com.example.uberapp_tim12.activities.ReviewRideDetailActivity;
+import com.example.uberapp_tim12.dto.ChatMessageDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RideNoStatusDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.security.LoggedUser;
@@ -58,6 +65,8 @@ import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -73,6 +82,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener {
 
@@ -96,6 +108,10 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 
     private RideFullDTO activeRide;
 
+    private STOMPUtils stompUtils;
+    private Gson mGson = new GsonBuilder().create();
+    FragmentManager manager;
+
     public PassengerCurrRideFragment() {
     }
 
@@ -108,12 +124,31 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        manager = getParentFragmentManager();
         routeDraw = false;
 
         Intent intentRide=new Intent(getActivity(), CurrentRideService.class);
         intentRide.putExtra("endpoint", "getActiveRideForPassenger");
         getActivity().startService(intentRide);
 
+        registerSocketForFinishRide(LoggedUser.getUserId());
+    }
+
+    @SuppressLint("CheckResult")
+    private void registerSocketForFinishRide(Integer userId){
+        stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.topic("api/socket-publisher/finished-ride/"+userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
+                    RideFullDTO rideFullDTO = mGson.fromJson(topicMessage.getPayload(), RideFullDTO.class);
+                    showFinishRideDialog(new RideNoStatusDTO(rideFullDTO));
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error on subscribe topic", throwable);
+                });
     }
 
     public BroadcastReceiver bReceiver = new BroadcastReceiver(){
@@ -461,6 +496,29 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
         alert.show();
     }
 
+    private void showFinishRideDialog(RideNoStatusDTO ride){
+        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(getActivity());
+        alert.setTitle("Your ride is over");
+        alert.setMessage("Do you want to leave a review?");
+
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Intent intent = new Intent(getActivity(), LeaveReviewForRideActivity.class);
+                intent.putExtra("ride", ride);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        alert.setNeutralButton("Maybe later",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intentHistory = new Intent(getActivity(), PassengerRideHistoryActivity.class);
+                        startActivity(intentHistory);
+                    }
+                });
+        alert.show();
+    }
+
     public void setTimer() {
         timerReal = new Timer();
         TimerTask task = new TimerUpdateTask();
@@ -491,5 +549,6 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
         super.onDestroy();
         timerReal.cancel();
         timerReal.purge();
+        stompUtils.disconnectStomp();
     }
 }
