@@ -82,8 +82,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        registerSocketForRideChat(chatItem.getRideId());
-
+        registerSocketForRideChat(LoggedUser.getUserId());
 
         EditText newMessage=findViewById(R.id.message_text);
         ImageButton sendButton=findViewById(R.id.send_button);
@@ -103,22 +102,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @SuppressLint("CheckResult")
-    private void registerSocketForRideChat(Integer rideId){
+    private void registerSocketForRideChat(Integer userId){
         stompUtils = new STOMPUtils();
         stompUtils.connectStomp();
 
-        stompUtils.stompClient.topic("api/socket-publisher/ride-chat/"+rideId)
+        stompUtils.stompClient.topic("api/socket-publisher/user-chat/"+userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
                     Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
                     ChatMessageDTO chatMessage = mGson.fromJson(topicMessage.getPayload(), ChatMessageDTO.class);
-                    MessageDTO messageDTO = new MessageDTO();
-                    messageDTO.setMessage(chatMessage.getMessage());
-                    messageDTO.setRideId(chatMessage.getRideId());
-                    messageDTO.setSenderId(chatMessage.getFromId());
-                    main_layout.addView(create(messageDTO));
-                    scroll.fullScroll(View.FOCUS_DOWN);
+                    if (chatMessage.getFromId()!=userId){
+                        MessageDTO messageDTO = new MessageDTO();
+                        messageDTO.setMessage(chatMessage.getMessage());
+                        messageDTO.setRideId(chatMessage.getRideId());
+                        messageDTO.setSenderId(chatMessage.getFromId());
+                        main_layout.addView(create(messageDTO));
+                        scroll.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scroll.fullScroll(View.FOCUS_DOWN);
+                            }
+                        });
+                    }
                 }, throwable -> {
                     Log.e("RIDECHAT", "Error on subscribe topic", throwable);
                 });
@@ -158,13 +164,19 @@ public class ChatActivity extends AppCompatActivity {
             Log.d("PASSSSSSSSS","lalalalaalla");
             MessageDTO messageDTO= (MessageDTO) intent.getSerializableExtra("messageDTO");
             chatItem.getMessages().add(messageDTO);
-            sendMessageSocket(messageDTO.getRideId(),messageDTO.getSenderId(), messageDTO.getMessage());
+
+            if (Objects.equals(messageDTO.getSenderId(), LoggedUser.getUserId())){
+                main_layout.addView(create(messageDTO));
+                scroll.fullScroll(View.FOCUS_DOWN);
+            }
+
+            sendMessageSocket(messageDTO.getRideId(),messageDTO.getSenderId(),messageDTO.getReceiverId(), messageDTO.getMessage());
         }
     };
 
     @SuppressLint("CheckResult")
-    public void sendMessageSocket(Integer rideId, Integer fromId, String message){
-        stompUtils.stompClient.send("api/socket-subscriber/send/message/"+rideId+"/"+fromId, message)
+    public void sendMessageSocket(Integer rideId, Integer fromId,Integer toId, String message){
+        stompUtils.stompClient.send("api/socket-subscriber/send/message/"+rideId+"/"+fromId+"/"+toId, message)
                 .compose(stompUtils.applySchedulers())
                 .subscribe(() -> {
                     Log.d("RIDECHAT", "STOMP echo send successfully");
@@ -180,5 +192,11 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stompUtils.disconnectStomp();
     }
 }

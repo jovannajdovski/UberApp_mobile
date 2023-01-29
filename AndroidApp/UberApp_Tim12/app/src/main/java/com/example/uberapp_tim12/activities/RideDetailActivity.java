@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -24,15 +25,18 @@ import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.adapters.CustomAdapter;
 import com.example.uberapp_tim12.adapters.PassengerAdapter;
 import com.example.uberapp_tim12.dto.FullReviewDTO;
+import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.PathDTO;
 import com.example.uberapp_tim12.dto.ReviewsForRideDTO;
 import com.example.uberapp_tim12.dto.RideNoStatusDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.fragments.RideMapRouteFragment;
+import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.model_mock.Passenger;
 import com.example.uberapp_tim12.model_mock.Ride;
 import com.example.uberapp_tim12.service.PassengerService;
+import com.example.uberapp_tim12.service.UserService;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -162,8 +166,10 @@ public class RideDetailActivity extends AppCompatActivity {
         inboxView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //:TODO
-                Toast.makeText(RideDetailActivity.this, "Inbox for this ride", Toast.LENGTH_SHORT).show();
+                Intent intentMessages = new Intent(RideDetailActivity.this, UserService.class);
+                intentMessages.putExtra("endpoint", "getRideMessages");
+                intentMessages.putExtra("rideId", ride.getId());
+                RideDetailActivity.this.startService(intentMessages);
             }
         });
 
@@ -179,6 +185,21 @@ public class RideDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    public BroadcastReceiver chatReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent intentSer;
+            intentSer=new Intent(RideDetailActivity.this, ChatActivity.class);
+            MessageListDTO messageListDTO=intent.getParcelableExtra("messageListDTO");
+            ChatItem chatItem=new ChatItem(ride.getLocations().iterator().next().getDeparture().getAddress()+" - "
+                    +ride.getLocations().iterator().next().getDestination().getAddress(),
+                    ride.getStartTime(),R.drawable.ic_profile,ride.getId(), messageListDTO.getMessages(),ride.getPassengers().iterator().next().getId());
+            intentSer.putExtra("chat", chatItem);
+            startActivity(intentSer);
+        }
+    };
 
     public BroadcastReceiver passengerReceiver = new BroadcastReceiver() {
 
@@ -221,6 +242,7 @@ public class RideDetailActivity extends AppCompatActivity {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(passengerReceiver, new IntentFilter("passengerDetails"));
         LocalBroadcastManager.getInstance(this).registerReceiver(distanceReceiver, new IntentFilter("updateDistance"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(chatReceiver, new IntentFilter("rideChat"));
     }
 
     @Override
@@ -228,6 +250,7 @@ public class RideDetailActivity extends AppCompatActivity {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(passengerReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(distanceReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(chatReceiver);
     }
 
 

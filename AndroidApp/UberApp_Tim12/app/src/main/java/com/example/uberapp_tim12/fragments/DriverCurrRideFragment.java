@@ -1,5 +1,6 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,7 +35,9 @@ import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.ChatActivity;
 import com.example.uberapp_tim12.adapters.ChatListAdapter;
 import com.example.uberapp_tim12.adapters.CustomAdapter;
+import com.example.uberapp_tim12.dto.ChatMessageDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
@@ -43,11 +46,13 @@ import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.model_mock.ChatItem;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.PanicService;
 import com.example.uberapp_tim12.service.PassengerService;
 import com.example.uberapp_tim12.service.UserService;
+import com.example.uberapp_tim12.web_socket.STOMPUtils;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -79,6 +84,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener {
@@ -212,9 +220,27 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         @Override
         public void onReceive(Context context, Intent intent) {
             PanicDTO panicDTO = (PanicDTO) intent.getSerializableExtra("panicDTO");
+            sendSocketForPanic(panicDTO.getReason());
 
         }
     };
+
+    @SuppressLint("CheckResult")
+    private void sendSocketForPanic(String reason){
+        STOMPUtils stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        Integer fromId = LoggedUser.getUserId();
+        stompUtils.stompClient.send("api/socket-subscriber/send/panic/"+fromId+"/"+rideId, reason)
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+        stompUtils.disconnectStomp();
+    }
 
     private void initPassengers() {
         mDataset = new String[passengers.size()];
@@ -292,7 +318,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
             }
         });
 
-        Button chatButton=(Button) view.findViewById(R.id.chatButton);
+        LinearLayout chatButton=(LinearLayout) view.findViewById(R.id.chatButton);
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -371,7 +397,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
     public void drawRoute() {
         mMap.addMarker(new MarkerOptions().position(start).title("Start point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
-        mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
+        mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.finish_marker)));
 
         //Define list to get all latlng for the route
         path = new ArrayList();
