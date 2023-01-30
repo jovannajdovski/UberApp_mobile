@@ -58,7 +58,7 @@ public class ChatFragment extends ListFragment {
 
     private RideIdListDTO prepareChatListWithoutRideDetails(MessageListDTO messageListDTO)
     {
-        RideIdListDTO rideIdListDTO=new RideIdListDTO(new ArrayList<>());
+        RideIdListDTO rideIdListDTO=new RideIdListDTO(new ArrayList<>()); //proveriti sa velikim brojem poruka
         if(messageListDTO.getTotalCount()>0) {
             int firstIndex=0, currentOtherUserId, lastOtherUserId=(messageListDTO.getMessages().get(0).getReceiverId())+(messageListDTO.getMessages().get(0).getSenderId())-LoggedUser.getUserId();
             MessageDTO firstMessageOfChat;
