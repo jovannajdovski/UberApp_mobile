@@ -100,7 +100,8 @@ public class DriverAccountActivity extends AppCompatActivity {
                     profileEmail.setText(driverDetails.getEmail());
                     profileAddress.setText(driverDetails.getAddress());
                     profilePhone.setText(driverDetails.getTelephoneNumber());
-                    profileImage.setImageBitmap(ImageConverter.decodeToImage(driverDetails.getProfilePicture()));
+                    if (driverDetails.getProfilePicture() != null)
+                        profileImage.setImageBitmap(ImageConverter.decodeToImage(driverDetails.getProfilePicture()));
                 } else {
                     SnackbarUtil.show(findViewById(R.id.driver_account),
                             "Something went wrong!");

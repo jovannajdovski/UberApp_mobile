@@ -99,7 +99,8 @@ public class PassengerAccountActivity extends AppCompatActivity {
                     profileEmail.setText(passengerDetails.getEmail());
                     profileAddress.setText(passengerDetails.getAddress());
                     profilePhone.setText(passengerDetails.getTelephoneNumber());
-                    profileImage.setImageBitmap(ImageConverter.decodeToImage(passengerDetails.getProfilePicture()));
+                    if (passengerDetails.getProfilePicture() != null)
+                        profileImage.setImageBitmap(ImageConverter.decodeToImage(passengerDetails.getProfilePicture()));
                 } else {
                     SnackbarUtil.show(findViewById(R.id.passenger_account),
                             "Something went wrong!");

@@ -110,7 +110,8 @@ public class DriverSettingsActivity extends AppCompatActivity {
                     driverDetails = response.body();
                     profileName.setText(String.format("%s %s", driverDetails.getName(),
                             driverDetails.getSurname()));
-                    profileImage.setImageBitmap(ImageConverter.decodeToImage(driverDetails.getProfilePicture()));
+                    if (driverDetails.getProfilePicture() != null)
+                        profileImage.setImageBitmap(ImageConverter.decodeToImage(driverDetails.getProfilePicture()));
 
                 } else {
                     SnackbarUtil.show(findViewById(R.id.driver_settings),

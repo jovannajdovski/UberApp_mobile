@@ -100,7 +100,8 @@ public class PassengerSettingsActivity extends AppCompatActivity {
                     passengerDetails = response.body();
                     profileName.setText(String.format("%s %s", passengerDetails.getName(),
                             passengerDetails.getSurname()));
-                    profileImage.setImageBitmap(ImageConverter.decodeToImage(passengerDetails.getProfilePicture()));
+                    if (passengerDetails.getProfilePicture() != null)
+                        profileImage.setImageBitmap(ImageConverter.decodeToImage(passengerDetails.getProfilePicture()));
 
                 } else {
                     SnackbarUtil.show(findViewById(R.id.passenger_settings),
