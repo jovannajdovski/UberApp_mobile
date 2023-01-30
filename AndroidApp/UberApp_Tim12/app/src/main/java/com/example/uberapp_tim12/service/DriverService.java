@@ -80,12 +80,12 @@ public class DriverService extends Service {
                 {
                     final ActiveDriverListDTO[] activeDriverListDTOS = new ActiveDriverListDTO[1];
                     Log.d("PASSS", "ista metoda");
-                    Call<ActiveDriverListDTO> call = ControllerUtils.driverController.getActiveDrivers("Bearer "+ LoggedUser.getToken());
+                    Call<ActiveDriverListDTO> call = ControllerUtils.driverController.getActiveDrivers();
                     call.enqueue(new Callback<ActiveDriverListDTO>() {
                         @Override
                         public void onResponse(Call<ActiveDriverListDTO> call, Response<ActiveDriverListDTO> response) {
                             if (response.code() == 200){
-                                Log.d("PASSS", "200");
+                                Log.d("PASSS", "UZIMA AKTIVNE");
                                 activeDriverListDTOS[0]=response.body();
                                 Log.d("PASSSSSSSSSSSS", activeDriverListDTOS[0].getTotalCount().toString());
                                 Intent ints = new Intent ("activeDrivers");
@@ -114,7 +114,7 @@ public class DriverService extends Service {
                         public void onResponse(Call<WorkHoursDTO> call, Response<WorkHoursDTO> response) {
                             Intent ints = new Intent ("startShift");
                             if (response.code() == 200){
-                                Log.d("PASSSSStart", "200");
+                                Log.d("PASSSSStart", "POCINJE SMENU");
                                 workHoursDTOS[0]=response.body();
                                 Log.d("PASSSSStart", workHoursDTOS[0].toString());
                                 Log.d("PASSSSStart", workHoursDTOS[0].getId().toString());

@@ -37,6 +37,7 @@ import com.example.uberapp_tim12.adapters.ChatListAdapter;
 import com.example.uberapp_tim12.adapters.CustomAdapter;
 import com.example.uberapp_tim12.dto.ChatMessageDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.LocationDTO;
 import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
@@ -71,6 +72,8 @@ import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -102,6 +105,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
     private CountDownTimer countDownTimer;
     private int stepPassed;
     private CameraUpdate cu;
+    private Gson mGson = new GsonBuilder().create();
 
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
 
@@ -517,7 +521,44 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
         routeDraw = true;
 //        if(currentLocation==null) currentLocation=start;
-        simulateRide();
+        rideMarker = mMap.addMarker(new MarkerOptions().position(start).title("My vehicle").icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin)));
+
+        registerSocketForCurrentLocation(rideId);
+    }
+
+    @SuppressLint("CheckResult")
+    private void registerSocketForCurrentLocation(Integer rideId) {
+        STOMPUtils stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.topic("api/socket-publisher/" + "vehicle/current-location/" + rideId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
+                    LocationDTO locationDTO = mGson.fromJson(topicMessage.getPayload(), LocationDTO.class);
+                    setCurrentLocation(locationDTO);
+
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error on subscribe topic", throwable);
+                });
+        stompUtils.stompClient.send("api/socket-subscriber/vehicle/" + rideId + "/current-location")
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+    }
+
+    public void setCurrentLocation(LocationDTO locationDTO)
+    {
+        if(locationDTO.getAddress().equals("finish"))
+            rideMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin));
+        else
+            rideMarker.setPosition(new LatLng(locationDTO.getLatitude(),locationDTO.getLongitude()));
+
     }
 
     public void simulateRide(){

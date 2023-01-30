@@ -17,7 +17,7 @@ import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class STOMPUtils {
-    public static final String SERVICE_API_PATH = "192.168.0.113:8080/";
+    public static final String SERVICE_API_PATH = "192.168.0.11:8080/";
 //public static final String SERVICE_API_PATH = "192.168.3.6:8080/";
 //public static final String SERVICE_API_PATH = "172.29.240.1:8080/";
 

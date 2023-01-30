@@ -64,7 +64,7 @@ public interface DriverController {
     Call<RidePageList> getDriverFinishedRides(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size, @Query("sort") String sort, @Header("Authorization") String token);
 
     @GET("driver/active-drivers")
-    Call<ActiveDriverListDTO> getActiveDrivers(@Header("Authorization") String token);
+    Call<ActiveDriverListDTO> getActiveDrivers();
 
     @POST("driver/{driver-id}/working-hour")
     Call<WorkHoursDTO> startShift(@Path("driver-id") Integer id, @Body StartTimeDTO time, @Header("Authorization") String token);
