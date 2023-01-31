@@ -1,5 +1,6 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,8 +30,10 @@ import com.example.uberapp_tim12.dto.PassengerDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.model.Ride;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.PassengerService;
 import com.example.uberapp_tim12.service.RideService;
+import com.example.uberapp_tim12.web_socket.STOMPUtils;
 
 import java.util.List;
 
@@ -195,8 +198,27 @@ public class OverviewFragment extends Fragment {
                 //time.setText(String.valueOf(ride.getStartTime().getHour()).concat(" : ").concat(String.valueOf(ride.getStartTime().getMinute())));
 
                 driver.setText(String.valueOf(ride.getDriver()));
+
+                createRideSocket(LoggedUser.getUserId(),ride.getId());
             }
         }
     };
-
+    private STOMPUtils stompUtils;
+    @SuppressLint("CheckResult")
+    public void createRideSocket(Integer userId, Integer rideId){
+        stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+        stompUtils.stompClient.send("api/socket-subscriber/"+userId+"/new-ride/"+rideId)
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stompUtils.disconnectStomp();
+    }
 }

@@ -11,7 +11,7 @@ public class PanicDTO implements Serializable {
 
     private RideFullDTO ride;
 
-    private LocalDateTime time;
+    private String time;
 
     private String reason;
 
@@ -39,11 +39,11 @@ public class PanicDTO implements Serializable {
         this.ride = ride;
     }
 
-    public LocalDateTime getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

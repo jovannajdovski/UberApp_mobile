@@ -28,15 +28,18 @@ import com.example.uberapp_tim12.dto.DriverDetailsDTO;
 import com.example.uberapp_tim12.dto.FavoriteFullDTO;
 import com.example.uberapp_tim12.dto.FavoriteRouteForPassengerDTO;
 import com.example.uberapp_tim12.dto.FullReviewDTO;
+import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
 import com.example.uberapp_tim12.dto.PathDTO;
 import com.example.uberapp_tim12.dto.ReviewsForRideDTO;
 import com.example.uberapp_tim12.dto.RideNoStatusDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.fragments.RideMapRouteFragment;
+import com.example.uberapp_tim12.model_mock.ChatItem;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.FavoriteService;
 import com.example.uberapp_tim12.service.PassengerService;
+import com.example.uberapp_tim12.service.UserService;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -174,8 +177,10 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         inboxView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //:TODO
-                Toast.makeText(RideDetailForPassengerActivity.this, "Inbox for this ride", Toast.LENGTH_SHORT).show();
+                Intent intentMessages = new Intent(RideDetailForPassengerActivity.this, UserService.class);
+                intentMessages.putExtra("endpoint", "getRideMessages");
+                intentMessages.putExtra("rideId", ride.getId());
+                RideDetailForPassengerActivity.this.startService(intentMessages);
             }
         });
 
@@ -239,6 +244,21 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
             }
         });
     }
+
+    public BroadcastReceiver chatReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent intentSer;
+            intentSer=new Intent(RideDetailForPassengerActivity.this, ChatActivity.class);
+            MessageListDTO messageListDTO=intent.getParcelableExtra("messageListDTO");
+            ChatItem chatItem=new ChatItem(ride.getLocations().iterator().next().getDeparture().getAddress()+" - "
+                    +ride.getLocations().iterator().next().getDestination().getAddress(),
+                    ride.getStartTime(),R.drawable.ic_profile,ride.getId(), messageListDTO.getMessages(),ride.getDriver().getId());
+            intentSer.putExtra("chat", chatItem);
+            startActivity(intentSer);
+        }
+    };
 
     public BroadcastReceiver setFavoriteReceiver = new BroadcastReceiver() {
 
@@ -357,6 +377,7 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(setFavoriteReceiver, new IntentFilter("setFavorite"));
         LocalBroadcastManager.getInstance(this).registerReceiver(createFavoriteReceiver, new IntentFilter("createFavorite"));
         LocalBroadcastManager.getInstance(this).registerReceiver(deleteFavoriteReceiver, new IntentFilter("deleteFavorite"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(chatReceiver, new IntentFilter("rideChat"));
     }
 
     @Override
@@ -368,6 +389,7 @@ public class RideDetailForPassengerActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(setFavoriteReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(createFavoriteReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(deleteFavoriteReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(chatReceiver);
     }
 
 

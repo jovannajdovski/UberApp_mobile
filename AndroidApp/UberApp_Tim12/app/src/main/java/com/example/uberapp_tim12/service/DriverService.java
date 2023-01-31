@@ -80,12 +80,12 @@ public class DriverService extends Service {
                 {
                     final ActiveDriverListDTO[] activeDriverListDTOS = new ActiveDriverListDTO[1];
                     Log.d("PASSS", "ista metoda");
-                    Call<ActiveDriverListDTO> call = ControllerUtils.driverController.getActiveDrivers("Bearer "+ LoggedUser.getToken());
+                    Call<ActiveDriverListDTO> call = ControllerUtils.driverController.getActiveDrivers();
                     call.enqueue(new Callback<ActiveDriverListDTO>() {
                         @Override
                         public void onResponse(Call<ActiveDriverListDTO> call, Response<ActiveDriverListDTO> response) {
                             if (response.code() == 200){
-                                Log.d("PASSS", "200");
+                                Log.d("PASSS", "UZIMA AKTIVNE");
                                 activeDriverListDTOS[0]=response.body();
                                 Log.d("PASSSSSSSSSSSS", activeDriverListDTOS[0].getTotalCount().toString());
                                 Intent ints = new Intent ("activeDrivers");
@@ -114,7 +114,7 @@ public class DriverService extends Service {
                         public void onResponse(Call<WorkHoursDTO> call, Response<WorkHoursDTO> response) {
                             Intent ints = new Intent ("startShift");
                             if (response.code() == 200){
-                                Log.d("PASSSSStart", "200");
+                                Log.d("PASSSSStart", "POCINJE SMENU");
                                 workHoursDTOS[0]=response.body();
                                 Log.d("PASSSSStart", workHoursDTOS[0].toString());
                                 Log.d("PASSSSStart", workHoursDTOS[0].getId().toString());
@@ -185,6 +185,31 @@ public class DriverService extends Service {
                     final RidePageList[] ridesListDTOS=new RidePageList[1];
                     Call<RidePageList> call = ControllerUtils.driverController.getDriverRides(LoggedUser.getUserId(),
                             0, 100, "startTime,asc", LocalDateTime.now().minusYears(1)+"", LocalDateTime.now()+"", "Bearer "+ LoggedUser.getToken() );
+                    call.enqueue(new Callback<RidePageList>() {
+                        @Override
+                        public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {
+                            if (response.code() == 200) {
+                                ints.putExtra("found", "true");
+                                ridesListDTOS[0]=response.body();
+                                ints.putExtra("ridesListDTOS", ridesListDTOS[0]);
+                            } else if (response.code() == 404){
+                                ints.putExtra("found", "false");
+                            } else {
+                                ints.putExtra("found", "false");
+                            }
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                        }
+                        @Override
+                        public void onFailure(Call<RidePageList> call, Throwable t) {
+                            Log.d("PASSS", t.getMessage() != null ? t.getMessage() : "error");
+                        }
+                    });
+                }else if(method.equals("getFinishedRides"))
+                {
+                    Intent ints = new Intent ("finishedRides");
+                    final RidePageList[] ridesListDTOS=new RidePageList[1];
+                    Call<RidePageList> call = ControllerUtils.driverController.getDriverFinishedRides(LoggedUser.getUserId(),
+                            0, 100, "startTime,asc", "Bearer "+ LoggedUser.getToken() );
                     call.enqueue(new Callback<RidePageList>() {
                         @Override
                         public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {

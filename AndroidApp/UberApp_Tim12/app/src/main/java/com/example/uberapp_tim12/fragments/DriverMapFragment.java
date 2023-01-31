@@ -262,16 +262,18 @@ public class DriverMapFragment extends Fragment implements LocationListener, OnM
 
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        Intent intent=new Intent(getActivity(), DriverService.class);
-        intent.putExtra("endpoint", "getActiveDrivers");
-        getActivity().startService(intent);
+
 
 //        if (location != null) {
 //            addMarker(location);
 //        }
 
     }
-
+    public void findActiveDrivers(){
+        Intent intent=new Intent(getActivity(), DriverService.class);
+        intent.putExtra("endpoint", "getActiveDrivers");
+        getActivity().startService(intent);
+    }
     private void addMarker(Location location) {
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
 

@@ -33,6 +33,22 @@ public class RideNoStatusDTO implements Serializable {
 
     private String scheduledTime;
 
+    public RideNoStatusDTO(RideFullDTO rideFullDTO) {
+        this.id = rideFullDTO.getId();
+        this.startTime = rideFullDTO.getStartTime();
+        this.endTime = rideFullDTO.getEndTime();
+        this.totalCost = rideFullDTO.getTotalCost();
+        this.driver = rideFullDTO.getDriver();
+        this.passengers = rideFullDTO.getPassengers();
+        this.estimatedTimeInMinutes = rideFullDTO.getEstimatedTimeInMinutes();
+        this.vehicleType = rideFullDTO.getVehicleType();
+        this.babyTransport = rideFullDTO.isBabyTransport();
+        this.petTransport = rideFullDTO.isPetTransport();
+        this.rejection = rideFullDTO.getRejection();
+        this.locations = rideFullDTO.getLocations();
+        this.scheduledTime = rideFullDTO.getScheduledTime();
+    }
+
     public RideNoStatusDTO(Integer id, String startTime, String endTime, Double totalCost, UserRideDTO driver, Set<UserRideDTO> passengers, Double estimatedTimeInMinutes, VehicleCategory vehicleType, boolean babyTransport, boolean petTransport, RideRejectionDTO rejection, Set<PathDTO> locations, String scheduledTime) {
         this.id = id;
         this.startTime = startTime;

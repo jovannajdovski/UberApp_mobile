@@ -25,24 +25,33 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.ChatActivity;
 import com.example.uberapp_tim12.adapters.NotificationsListAdapter;
+import com.example.uberapp_tim12.dto.ChatMessageDTO;
 import com.example.uberapp_tim12.dto.ErrorMessageDTO;
+import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MultipleSendingMessageDTO;
 import com.example.uberapp_tim12.dto.ReasonDTO;
+import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.SendingMessageDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.Message;
 import com.example.uberapp_tim12.model_mock.NotificationItem;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.RideService;
 import com.example.uberapp_tim12.service.UserService;
+import com.example.uberapp_tim12.web_socket.STOMPUtils;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class NotificationsFragment extends ListFragment {
 
@@ -70,7 +79,7 @@ public class NotificationsFragment extends ListFragment {
         getActivity().startService(intent);
         NotificationsListAdapter adapter=new NotificationsListAdapter(getActivity(),notificationItems);
         setListAdapter(adapter);
-
+        registerSocketForNewRide(LoggedUser.getUserId());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -183,8 +192,7 @@ public class NotificationsFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 Log.d("PASSS","Kliknut ".concat(ride.getId().toString()));
-                acceptButtons.remove(0);
-                rejectButtons.remove(0);
+
                 Log.d("PASSS", "acceptClick");
                 intent.putExtra("rideId", ride.getId());
                 intent.putExtra("endpoint", "acceptRide");
@@ -205,6 +213,31 @@ public class NotificationsFragment extends ListFragment {
                 getActivity().startService(intent);
             }
         });
+    }
+    private STOMPUtils stompUtils;
+    private Gson mGson = new GsonBuilder().create();
+    @SuppressLint("CheckResult")
+    private void registerSocketForNewRide(Integer userId){
+        stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.topic("api/socket-publisher/" +"new-ride/"+userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
+                    Ride ride = mGson.fromJson(topicMessage.getPayload(), Ride.class);
+
+                    frameLayout=view.findViewById(R.id.acceptance_ride_layout);
+                    RelativeLayout layout=createAcceptanceRideDialog(ride);
+                    layouts.add(layout);
+                    frameLayout.addView(layout);
+                    Log.d("PASSS","Napravljen ".concat(ride.getId().toString()));
+                    setListeners(layout, ride);
+
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error on subscribe topic", throwable);
+                });
     }
 
     public BroadcastReceiver pendingRidesReceiver = new BroadcastReceiver(){
@@ -233,6 +266,8 @@ public class NotificationsFragment extends ListFragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            acceptButtons.remove(0);
+            rejectButtons.remove(0);
             Log.d("PASSS", "ACCEPTED");
             Ride ride= (Ride) intent.getSerializableExtra("ride");
             Log.d("PASSSid", String.valueOf(ride.getId()));
@@ -261,6 +296,8 @@ public class NotificationsFragment extends ListFragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            acceptButtons.remove(0);
+            rejectButtons.remove(0);
             Log.d("PASSS", "REJECTED");
             Ride ride= (Ride) intent.getSerializableExtra("ride");
             Log.d("PASSSid", String.valueOf(ride.getId()));
@@ -274,4 +311,9 @@ public class NotificationsFragment extends ListFragment {
 
         }
     };
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stompUtils.disconnectStomp();
+    }
 }

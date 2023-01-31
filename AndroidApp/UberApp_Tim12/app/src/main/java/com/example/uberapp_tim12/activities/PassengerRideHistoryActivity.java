@@ -55,7 +55,7 @@ public class PassengerRideHistoryActivity extends AppCompatActivity {
         manager = getSupportFragmentManager();
 
         Intent intentRides = new Intent(this, PassengerService.class);
-        intentRides.putExtra("endpoint", "getPastRides");
+        intentRides.putExtra("endpoint", "getFinishedRides");
         this.startService(intentRides);
     }
 
@@ -103,7 +103,7 @@ public class PassengerRideHistoryActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(ridesReceiver, new IntentFilter("pastRides"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(ridesReceiver, new IntentFilter("finishedRides"));
         LocalBroadcastManager.getInstance(this).registerReceiver(reviewsReceiver, new IntentFilter("reviewsForMultipleRide"));
     }
 

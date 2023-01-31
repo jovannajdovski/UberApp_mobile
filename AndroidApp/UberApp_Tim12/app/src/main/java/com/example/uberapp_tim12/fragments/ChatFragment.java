@@ -58,35 +58,56 @@ public class ChatFragment extends ListFragment {
 
     private RideIdListDTO prepareChatListWithoutRideDetails(MessageListDTO messageListDTO)
     {
-        RideIdListDTO rideIdListDTO=new RideIdListDTO(new ArrayList<>());
-        int firstIndex=0;
-        MessageDTO firstMessageOfChat;
-        int otherPersonId;
-        for(int i=0;i<messageListDTO.getTotalCount();i++)
-        {
-            firstMessageOfChat=messageListDTO.getMessages().get(firstIndex);
-            if(!Objects.equals(messageListDTO.getMessages().get(i).getRideId(), firstMessageOfChat.getRideId()))
-            {
-                rideIdListDTO.getIds().add(firstMessageOfChat.getRideId());
-                otherPersonId=firstMessageOfChat.getReceiverId()+ firstMessageOfChat.getSenderId()- LoggedUser.getUserId();
-                chatItems.add(new ChatItem(R.drawable.ic_profile, firstMessageOfChat.getRideId(), messageListDTO.getMessages().subList(firstIndex,i),otherPersonId));
-                firstIndex=i;
-            }
-        }
-        otherPersonId=messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getReceiverId()+ messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getSenderId()- LoggedUser.getUserId();
+        RideIdListDTO rideIdListDTO=new RideIdListDTO(new ArrayList<>()); //proveriti sa velikim brojem poruka
         if(messageListDTO.getTotalCount()>0) {
-            rideIdListDTO.getIds().add(messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId());
-            chatItems.add(new ChatItem(R.drawable.ic_profile, messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId(), messageListDTO.getMessages().subList(firstIndex, messageListDTO.getTotalCount()),otherPersonId));
+            int firstIndex=0, currentOtherUserId, lastOtherUserId=(messageListDTO.getMessages().get(0).getReceiverId())+(messageListDTO.getMessages().get(0).getSenderId())-LoggedUser.getUserId();
+            MessageDTO firstMessageOfChat;
+            int otherPersonId;
+            for(int i=0;i<messageListDTO.getTotalCount();i++)
+            {
+                currentOtherUserId=(messageListDTO.getMessages().get(i).getReceiverId())+(messageListDTO.getMessages().get(i).getSenderId())-LoggedUser.getUserId();
+                firstMessageOfChat=messageListDTO.getMessages().get(firstIndex);
+                if(!Objects.equals(messageListDTO.getMessages().get(i).getRideId(), firstMessageOfChat.getRideId())
+                    || currentOtherUserId!=lastOtherUserId)
+                {
+                    rideIdListDTO.getIds().add(firstMessageOfChat.getRideId());
+                    //otherPersonId=firstMessageOfChat.getReceiverId()+ firstMessageOfChat.getSenderId()- LoggedUser.getUserId();
+                    if(firstMessageOfChat.getRideId()==0)
+                        chatItems.add(new ChatItem(R.drawable.ic_baseline_support, firstMessageOfChat.getRideId(), messageListDTO.getMessages().subList(firstIndex,i),lastOtherUserId));
+                    else
+                        chatItems.add(new ChatItem(R.drawable.ic_profile, firstMessageOfChat.getRideId(), messageListDTO.getMessages().subList(firstIndex,i),lastOtherUserId));
+                    firstIndex=i;
+                    lastOtherUserId=currentOtherUserId;
+                }
+            }
+            //otherPersonId=messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getReceiverId()+ messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getSenderId()- LoggedUser.getUserId();
+
+                rideIdListDTO.getIds().add(messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId());
+                if(messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId()==0)
+                    chatItems.add(new ChatItem(R.drawable.ic_baseline_support, messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId(), messageListDTO.getMessages().subList(firstIndex, messageListDTO.getTotalCount()),lastOtherUserId));
+                else
+                    chatItems.add(new ChatItem(R.drawable.ic_profile, messageListDTO.getMessages().get(messageListDTO.getTotalCount() - 1).getRideId(), messageListDTO.getMessages().subList(firstIndex, messageListDTO.getTotalCount()),lastOtherUserId));
+
         }
         return rideIdListDTO;
     }
     private void prepareChatList(RidesListDTO ridesListDTO)
     {
+        int j=0;
         for(int i=0;i<chatItems.size();i++)
         {
-            chatItems.get(i).setRoute(ridesListDTO.getRides().get(i).getLocations().iterator().next().getDeparture().getAddress()+" - "
-                    +ridesListDTO.getRides().get(i).getLocations().iterator().next().getDestination().getAddress());
-            chatItems.get(i).setDateTime(ridesListDTO.getRides().get(i).getStartTime());
+            if(chatItems.get(i).getRideId()==0) {
+                chatItems.get(i).setRoute("LIVE SUPPORT");
+                chatItems.get(i).setDateTime("");
+                j--;
+            }
+            else{
+                chatItems.get(i).setRoute(ridesListDTO.getRides().get(j).getLocations().iterator().next().getDeparture().getAddress()+" - "
+                        +ridesListDTO.getRides().get(j).getLocations().iterator().next().getDestination().getAddress());
+                chatItems.get(i).setDateTime(ridesListDTO.getRides().get(j).getStartTime());
+            }
+
+            j++;
         }
     }
     @Override
@@ -138,6 +159,7 @@ public class ChatFragment extends ListFragment {
             RidesListDTO ridesListDTO=intent.getParcelableExtra("ridesDetailsDTO");
             if(ridesListDTO.getTotalCount()>0)
                 prepareChatList(ridesListDTO);
+
             ChatListAdapter adapter=new ChatListAdapter(getActivity(),chatItems);
             setListAdapter(adapter);
         }

@@ -1,5 +1,6 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -28,17 +30,26 @@ import android.widget.Toast;
 import com.example.uberapp_tim12.BuildConfig;
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.ChatActivity;
+import com.example.uberapp_tim12.activities.LeaveReviewForRideActivity;
+import com.example.uberapp_tim12.activities.PassengerRideHistoryActivity;
+import com.example.uberapp_tim12.activities.ReviewRideDetailActivity;
+import com.example.uberapp_tim12.dto.ChatMessageDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.LocationDTO;
+import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.RideFullDTO;
+import com.example.uberapp_tim12.dto.RideNoStatusDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.model_mock.ChatItem;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.PanicService;
 import com.example.uberapp_tim12.service.RideService;
 import com.example.uberapp_tim12.service.UserService;
+import com.example.uberapp_tim12.web_socket.STOMPUtils;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,6 +66,8 @@ import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -70,6 +83,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener {
 
@@ -93,6 +109,10 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 
     private RideFullDTO activeRide;
 
+    private STOMPUtils stompUtils;
+    private Gson mGson = new GsonBuilder().create();
+    FragmentManager manager;
+
     public PassengerCurrRideFragment() {
     }
 
@@ -105,19 +125,41 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        manager = getParentFragmentManager();
         routeDraw = false;
 
-        Intent intentRide=new Intent(getActivity(), CurrentRideService.class);
+        Intent intentRide = new Intent(getActivity(), CurrentRideService.class);
         intentRide.putExtra("endpoint", "getActiveRideForPassenger");
         getActivity().startService(intentRide);
 
+
+        registerSocketForFinishRide(LoggedUser.getUserId());
+
     }
 
-    public BroadcastReceiver bReceiver = new BroadcastReceiver(){
+    @SuppressLint("CheckResult")
+    private void registerSocketForFinishRide(Integer userId) {
+        stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.topic("api/socket-publisher/finished-ride/" + userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
+                    RideFullDTO rideFullDTO = mGson.fromJson(topicMessage.getPayload(), RideFullDTO.class);
+                    showFinishRideDialog(new RideNoStatusDTO(rideFullDTO));
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error on subscribe topic", throwable);
+                });
+    }
+
+
+    public BroadcastReceiver bReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            activeRide= (RideFullDTO) intent.getSerializableExtra("activeRideDTO");
+            activeRide = (RideFullDTO) intent.getSerializableExtra("activeRideDTO");
 
             start = new LatLng(activeRide.getLocations().iterator().next().getDeparture().getLatitude(),
                     activeRide.getLocations().iterator().next().getDeparture().getLongitude());
@@ -129,57 +171,74 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
             String startAddress = activeRide.getLocations().iterator().next().getDeparture().getAddress();
             String endAddress = activeRide.getLocations().iterator().next().getDestination().getAddress();
 
-            NumberFormat nf= NumberFormat.getInstance();
+            NumberFormat nf = NumberFormat.getInstance();
             nf.setMaximumFractionDigits(2);
 
-            String estimatedTime = nf.format(activeRide.getEstimatedTimeInMinutes())+"min";
-            String totalCost = nf.format(activeRide.getTotalCost())+" RSD";
+            String estimatedTime = nf.format(activeRide.getEstimatedTimeInMinutes()) + "min";
+            String totalCost = nf.format(activeRide.getTotalCost()) + " RSD";
 
             driverId = activeRide.getDriver().getId();
 
-            TextView estimatedTimeLbl =view.findViewById(R.id.estimated_time_value);
-            TextView totalCostLbl =view.findViewById(R.id.total_cost_value);
-            TextView routeLbl =view.findViewById(R.id.route);
+            TextView estimatedTimeLbl = view.findViewById(R.id.estimated_time_value);
+            TextView totalCostLbl = view.findViewById(R.id.total_cost_value);
+            TextView routeLbl = view.findViewById(R.id.route);
 
-            routeLbl.setText(startAddress+" - "+endAddress);
+            routeLbl.setText(startAddress + " - " + endAddress);
             totalCostLbl.setText(totalCost);
             estimatedTimeLbl.setText(estimatedTime);
 
-            Intent intentDriver=new Intent(getActivity(), DriverService.class);
+            Intent intentDriver = new Intent(getActivity(), DriverService.class);
             intentDriver.putExtra("endpoint", "getDriverDetails");
             intentDriver.putExtra("driverId", driverId);
             getActivity().startService(intentDriver);
 
-            Log.d("PASSS",getActivity().toString());
-            if (!routeDraw){
+
+            if (!routeDraw) {
                 drawRoute();
             }
         }
     };
 
-    public BroadcastReceiver driverReceiver = new BroadcastReceiver(){
+    public BroadcastReceiver driverReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            DriverDetailsDTO driver= (DriverDetailsDTO) intent.getSerializableExtra("driverDetailsDTO");
+            DriverDetailsDTO driver = (DriverDetailsDTO) intent.getSerializableExtra("driverDetailsDTO");
 
             String name = driver.getName();
             String surname = driver.getSurname();
 
-            TextView driverLbl =view.findViewById(R.id.driver_value);
+            TextView driverLbl = view.findViewById(R.id.driver_value);
 
-            driverLbl.setText(name+ " "+ surname);
+            driverLbl.setText(name + " " + surname);
         }
     };
 
-    public BroadcastReceiver panicReceiver = new BroadcastReceiver(){
+    public BroadcastReceiver panicReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            PanicDTO panicDTO= (PanicDTO) intent.getSerializableExtra("panicDTO");
-
+            PanicDTO panicDTO = (PanicDTO) intent.getSerializableExtra("panicDTO");
+            sendSocketForPanic(panicDTO.getReason());
         }
     };
+
+    @SuppressLint("CheckResult")
+    private void sendSocketForPanic(String reason) {
+        STOMPUtils stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        Integer fromId = LoggedUser.getUserId();
+        stompUtils.stompClient.send("api/socket-subscriber/send/panic/" + fromId + "/" + rideId, reason)
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+        stompUtils.disconnectStomp();
+    }
 
     @Override
     public void onResume() {
@@ -221,7 +280,7 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
             }
         });
 
-        Button chatButton=(Button) view.findViewById(R.id.chatButton);
+        LinearLayout chatButton = (LinearLayout) view.findViewById(R.id.chatButton);
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -238,25 +297,26 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 
         return view;
     }
-    public BroadcastReceiver chatReceiver = new BroadcastReceiver(){
+
+    public BroadcastReceiver chatReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("PASSSS", "primio u on receive");
             Intent intentSer;
-            intentSer=new Intent(getActivity(), ChatActivity.class);
-            MessageListDTO messageListDTO=intent.getParcelableExtra("messageListDTO");
+            intentSer = new Intent(getActivity(), ChatActivity.class);
+            MessageListDTO messageListDTO = intent.getParcelableExtra("messageListDTO");
             Log.d("PASSSS", String.valueOf(messageListDTO.getMessages().size()));
-            ChatItem chatItem=new ChatItem(activeRide.getLocations().iterator().next().getDeparture().getAddress()+" - "
-                    +activeRide.getLocations().iterator().next().getDestination().getAddress(),
-                    activeRide.getStartTime(),R.drawable.ic_profile,activeRide.getId(), messageListDTO.getMessages(),activeRide.getPassengers().iterator().next().getId());
+            ChatItem chatItem = new ChatItem(activeRide.getLocations().iterator().next().getDeparture().getAddress() + " - "
+                    + activeRide.getLocations().iterator().next().getDestination().getAddress(),
+                    activeRide.getStartTime(), R.drawable.ic_profile, activeRide.getId(), messageListDTO.getMessages(), activeRide.getDriver().getId());
             intentSer.putExtra("chat", chatItem);
             startActivity(intentSer);
         }
     };
 
-    public void updateDistance(String distance){
-        TextView distanceLbl =view.findViewById(R.id.distance_value);
+    public void updateDistance(String distance) {
+        TextView distanceLbl = view.findViewById(R.id.distance_value);
         distanceLbl.setText(distance);
     }
 
@@ -266,14 +326,14 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 //        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.style_1_json));
 //        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.style_2_json));
 
-        if (start!=null && end!=null){
+        if (start != null && end != null) {
             drawRoute();
         }
     }
 
-    public void drawRoute(){
+    public void drawRoute() {
         mMap.addMarker(new MarkerOptions().position(start).title("Start point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
-        mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
+        mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.finish_marker)));
 
         //Define list to get all latlng for the route
         path = new ArrayList();
@@ -291,15 +351,15 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
             if (res.routes != null && res.routes.length > 0) {
                 DirectionsRoute route = res.routes[0];
 
-                if (route.legs !=null) {
-                    for(int i=0; i<route.legs.length; i++) {
+                if (route.legs != null) {
+                    for (int i = 0; i < route.legs.length; i++) {
                         DirectionsLeg leg = route.legs[i];
                         updateDistance(leg.distance.toString());
                         if (leg.steps != null) {
-                            for (int j=0; j<leg.steps.length;j++){
+                            for (int j = 0; j < leg.steps.length; j++) {
                                 DirectionsStep step = leg.steps[j];
-                                if (step.steps != null && step.steps.length >0) {
-                                    for (int k=0; k<step.steps.length;k++){
+                                if (step.steps != null && step.steps.length > 0) {
+                                    for (int k = 0; k < step.steps.length; k++) {
                                         DirectionsStep step1 = step.steps[k];
                                         EncodedPolyline points1 = step1.polyline;
                                         if (points1 != null) {
@@ -325,7 +385,7 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
                     }
                 }
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             Log.e("Map direction", ex.getLocalizedMessage());
         }
 
@@ -356,10 +416,45 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 6));
 
         routeDraw = true;
+        rideMarker = mMap.addMarker(new MarkerOptions().position(start).title("My vehicle").icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin)));
 
-        simulateRide();
+        registerSocketForCurrentLocation(rideId);
     }
 
+    @SuppressLint("CheckResult")
+    private void registerSocketForCurrentLocation(Integer rideId) {
+        stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.topic("api/socket-publisher/" + "vehicle/current-location/" + rideId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
+                    LocationDTO locationDTO = mGson.fromJson(topicMessage.getPayload(), LocationDTO.class);
+                    setCurrentLocation(locationDTO);
+
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error on subscribe topic", throwable);
+                });
+        stompUtils.stompClient.send("api/socket-subscriber/vehicle/" + rideId + "/current-location")
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+    }
+
+    public void setCurrentLocation(LocationDTO locationDTO)
+    {
+        if(locationDTO.getAddress().equals("finish"))
+            rideMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin));
+        else
+            rideMarker.setPosition(new LatLng(locationDTO.getLatitude(),locationDTO.getLongitude()));
+
+    }
     public void simulateRide(){
         rideMarker = mMap.addMarker(new MarkerOptions().position(start).title("My vehicle").icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin)));
 
@@ -441,6 +536,29 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
         alert.show();
     }
 
+    private void showFinishRideDialog(RideNoStatusDTO ride){
+        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(getActivity());
+        alert.setTitle("Your ride is over");
+        alert.setMessage("Do you want to leave a review?");
+
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Intent intent = new Intent(getActivity(), LeaveReviewForRideActivity.class);
+                intent.putExtra("ride", ride);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        alert.setNeutralButton("Maybe later",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intentHistory = new Intent(getActivity(), PassengerRideHistoryActivity.class);
+                        startActivity(intentHistory);
+                    }
+                });
+        alert.show();
+    }
+
     public void setTimer() {
         timerReal = new Timer();
         TimerTask task = new TimerUpdateTask();
@@ -471,5 +589,6 @@ public class PassengerCurrRideFragment extends Fragment implements OnMapReadyCal
         super.onDestroy();
         timerReal.cancel();
         timerReal.purge();
+        stompUtils.disconnectStomp();
     }
 }

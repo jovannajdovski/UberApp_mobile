@@ -111,6 +111,29 @@ public class RideService extends Service {
                             Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
                         }
                     });
+                }
+                else if(method.equals("endRide")){
+                    final Ride[] ride = new Ride[1];
+                    Integer rideId=intent.getIntExtra("rideId",-1);
+                    Call<Ride> call = ControllerUtils.rideController.endRide(rideId, "Bearer "+ LoggedUser.getToken());
+                    call.enqueue(new Callback<Ride>() {
+                        @Override
+                        public void onResponse(Call<Ride> call, Response<Ride> response) {
+                            if (response.code() == 200){
+                                ride[0] =response.body();
+                                Intent ints = new Intent ("endRide");
+                                ints.putExtra("ride", ride[0]);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
+                            }else{
+                                Log.d("REZZZZZ","Meesage recieved: "+response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Ride> call, Throwable t) {
+                            Log.d("REZZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
                 } else if(method.equals("startRide")){
                     final Ride[] ride = new Ride[1];
                     Integer rideId=intent.getIntExtra("rideId",-1);

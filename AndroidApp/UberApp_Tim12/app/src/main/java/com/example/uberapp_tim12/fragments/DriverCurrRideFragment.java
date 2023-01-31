@@ -1,5 +1,6 @@
 package com.example.uberapp_tim12.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,7 +35,10 @@ import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.activities.ChatActivity;
 import com.example.uberapp_tim12.adapters.ChatListAdapter;
 import com.example.uberapp_tim12.adapters.CustomAdapter;
+import com.example.uberapp_tim12.dto.ChatMessageDTO;
 import com.example.uberapp_tim12.dto.DriverDetailsDTO;
+import com.example.uberapp_tim12.dto.LocationDTO;
+import com.example.uberapp_tim12.dto.MessageDTO;
 import com.example.uberapp_tim12.dto.MessageListDTO;
 import com.example.uberapp_tim12.dto.PanicDTO;
 import com.example.uberapp_tim12.dto.PassengerDetailsDTO;
@@ -42,12 +46,16 @@ import com.example.uberapp_tim12.dto.RideFullDTO;
 import com.example.uberapp_tim12.dto.RideIdListDTO;
 import com.example.uberapp_tim12.dto.RidesListDTO;
 import com.example.uberapp_tim12.dto.UserRideDTO;
+import com.example.uberapp_tim12.model.Ride;
 import com.example.uberapp_tim12.model_mock.ChatItem;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.service.DriverService;
 import com.example.uberapp_tim12.service.PanicService;
 import com.example.uberapp_tim12.service.PassengerService;
+import com.example.uberapp_tim12.service.RideService;
 import com.example.uberapp_tim12.service.UserService;
+import com.example.uberapp_tim12.web_socket.STOMPUtils;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -64,6 +72,8 @@ import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -80,6 +90,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 
 public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener {
 
@@ -92,6 +105,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
     private CountDownTimer countDownTimer;
     private int stepPassed;
     private CameraUpdate cu;
+    private Gson mGson = new GsonBuilder().create();
 
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
 
@@ -207,14 +221,64 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
     };
 
+    public BroadcastReceiver finishRideReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Ride ride = (Ride) intent.getSerializableExtra("ride");
+            sendSocketForFinishRide(ride.getId());
+
+        }
+    };
+
+    @SuppressLint("CheckResult")
+    private void sendSocketForFinishRide(Integer rideId){
+        STOMPUtils stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.send("api/socket-subscriber/finish-ride/"+rideId)
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+        stompUtils.disconnectStomp();
+
+        FragmentManager manager = getParentFragmentManager();
+        DriverMapFragment mapFragment = new DriverMapFragment();
+        manager.beginTransaction().replace(R.id.driverMainContent,
+                mapFragment,
+                mapFragment.getTag()).commit();
+    }
+
     public BroadcastReceiver panicReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             PanicDTO panicDTO = (PanicDTO) intent.getSerializableExtra("panicDTO");
+            sendSocketForPanic(panicDTO.getReason());
 
         }
     };
+
+    @SuppressLint("CheckResult")
+    private void sendSocketForPanic(String reason){
+        STOMPUtils stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        Integer fromId = LoggedUser.getUserId();
+        stompUtils.stompClient.send("api/socket-subscriber/send/panic/"+fromId+"/"+rideId, reason)
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+        stompUtils.disconnectStomp();
+    }
 
     private void initPassengers() {
         mDataset = new String[passengers.size()];
@@ -238,6 +302,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         mMapFragment.getMapAsync(this);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(bReceiver, new IntentFilter("activeRideDriver"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(finishRideReceiver, new IntentFilter("endRide"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(passengerReceiver, new IntentFilter("passengerDetails"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(panicReceiver, new IntentFilter("panicRideDetails"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(chatReceiver, new IntentFilter("rideChat"));
@@ -250,6 +315,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(passengerReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(panicReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(chatReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(finishRideReceiver);
     }
 
     @Override
@@ -284,15 +350,15 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager manager = getParentFragmentManager();
-                DriverMapFragment mapFragment = new DriverMapFragment();
-                manager.beginTransaction().replace(R.id.driverMainContent,
-                        mapFragment,
-                        mapFragment.getTag()).commit();
+                Intent intentFinish = new Intent(getActivity(), RideService.class);
+                intentFinish.putExtra("endpoint", "endRide");
+                intentFinish.putExtra("rideId", activeRide.getId());
+                Log.d("PASSSS", "poslao");
+                getActivity().startService(intentFinish);
             }
         });
 
-        Button chatButton=(Button) view.findViewById(R.id.chatButton);
+        LinearLayout chatButton=(LinearLayout) view.findViewById(R.id.chatButton);
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -371,7 +437,7 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
     public void drawRoute() {
         mMap.addMarker(new MarkerOptions().position(start).title("Start point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
-        mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_marker)));
+        mMap.addMarker(new MarkerOptions().position(end).title("End point").icon(BitmapDescriptorFactory.fromResource(R.drawable.finish_marker)));
 
         //Define list to get all latlng for the route
         path = new ArrayList();
@@ -455,7 +521,44 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
 
         routeDraw = true;
 //        if(currentLocation==null) currentLocation=start;
-        simulateRide();
+        rideMarker = mMap.addMarker(new MarkerOptions().position(start).title("My vehicle").icon(BitmapDescriptorFactory.fromResource(R.drawable.reserved_car_pin)));
+
+        registerSocketForCurrentLocation(rideId);
+    }
+
+    @SuppressLint("CheckResult")
+    private void registerSocketForCurrentLocation(Integer rideId) {
+        STOMPUtils stompUtils = new STOMPUtils();
+        stompUtils.connectStomp();
+
+        stompUtils.stompClient.topic("api/socket-publisher/" + "vehicle/current-location/" + rideId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(topicMessage -> {
+                    Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
+                    LocationDTO locationDTO = mGson.fromJson(topicMessage.getPayload(), LocationDTO.class);
+                    setCurrentLocation(locationDTO);
+
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error on subscribe topic", throwable);
+                });
+        stompUtils.stompClient.send("api/socket-subscriber/vehicle/" + rideId + "/current-location")
+                .compose(stompUtils.applySchedulers())
+                .subscribe(() -> {
+                    Log.d("RIDECHAT", "STOMP echo send successfully");
+                }, throwable -> {
+                    Log.e("RIDECHAT", "Error send STOMP echo", throwable);
+                });
+
+    }
+
+    public void setCurrentLocation(LocationDTO locationDTO)
+    {
+        if(locationDTO.getAddress().equals("finish"))
+            rideMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.active_car_pin));
+        else
+            rideMarker.setPosition(new LatLng(locationDTO.getLatitude(),locationDTO.getLongitude()));
+
     }
 
     public void simulateRide(){

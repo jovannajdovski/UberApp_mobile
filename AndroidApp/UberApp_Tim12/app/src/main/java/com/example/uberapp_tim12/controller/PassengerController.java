@@ -62,5 +62,12 @@ public interface PassengerController {
     Call<PassengerDetailsDTO> registerPassenger(@Body PassengerRegistrationDTO passengerRegistrationDTO);
 
     @GET("passenger/{id}/ride")
-    Call<RidePageList> getPassengerRides(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size, @Query("sort") String sort, @Query("from") String from, @Query("to") String to, @Header("Authorization") String token);
+    Call<RidePageList> getPassengerRides(@Path("id") Integer id, @Query("page") Integer page,
+                                         @Query("size") Integer size, @Query("sort") String sort,
+                                         @Query("from") String from, @Query("to") String to,
+                                         @Header("Authorization") String token);
+
+    @GET("passenger/{id}/ride/finished")
+    Call<RidePageList> getPassengerFinishedRides(@Path("id") Integer id, @Query("page") Integer page,
+                                                 @Query("size") Integer size, @Query("sort") String sort, @Header("Authorization") String token);
 }
