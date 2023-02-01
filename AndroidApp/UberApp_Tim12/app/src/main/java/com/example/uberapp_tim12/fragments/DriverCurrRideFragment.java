@@ -706,8 +706,6 @@ public class DriverCurrRideFragment extends Fragment implements OnMapReadyCallba
         super.onDestroy();
         timerReal.cancel();
         timerReal.purge();
-        timerSimulation.cancel();
-        timerSimulation.purge();
     }
 }
 

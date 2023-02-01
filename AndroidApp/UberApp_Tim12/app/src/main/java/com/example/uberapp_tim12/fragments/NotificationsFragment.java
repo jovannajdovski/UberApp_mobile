@@ -59,25 +59,26 @@ public class NotificationsFragment extends ListFragment {
 
     }
 
-    List<Button> acceptButtons=new ArrayList<>();
-    List<Button> rejectButtons=new ArrayList<>();
-    List<RelativeLayout> layouts= new ArrayList<>();
+    List<Button> acceptButtons = new ArrayList<>();
+    List<Button> rejectButtons = new ArrayList<>();
+    List<RelativeLayout> layouts = new ArrayList<>();
     Integer remainedPendingRides;
     FrameLayout frameLayout;
 
 
-    private ArrayList<NotificationItem> notificationItems=new ArrayList<>();
+    private ArrayList<NotificationItem> notificationItems = new ArrayList<>();
     private View view;
     private View blackBackground;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prepareNotificationsList();
-        Intent intent=new Intent(getActivity(), RideService.class);
+        Intent intent = new Intent(getActivity(), RideService.class);
         intent.putExtra("endpoint", "getPendingRidesForDriver");
         Log.d("PASSSSSS", "STARTSERVICE\t\tPASSS");
         getActivity().startService(intent);
-        NotificationsListAdapter adapter=new NotificationsListAdapter(getActivity(),notificationItems);
+        NotificationsListAdapter adapter = new NotificationsListAdapter(getActivity(), notificationItems);
         setListAdapter(adapter);
         registerSocketForNewRide(LoggedUser.getUserId());
     }
@@ -88,12 +89,11 @@ public class NotificationsFragment extends ListFragment {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         view = inflater.inflate(R.layout.fragment_notifications, container, false);
-        blackBackground=view.findViewById(R.id.black_background);
+        blackBackground = view.findViewById(R.id.black_background);
 
 //        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
         return view;
     }
-
 
 
     @Override
@@ -112,13 +112,13 @@ public class NotificationsFragment extends ListFragment {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(acceptRideReceiver, new IntentFilter("acceptRide"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(rejectRideReceiver, new IntentFilter("rejectRide"));
     }
-    private void prepareNotificationsList()
-    {
+
+    private void prepareNotificationsList() {
         //ako je ulogovan vozac
-            //ako ima voznja koja je pending moze da se klikne na tu notifikaciju i onda se otvara dialog sa informacijama i dugmadima
-            //ako je voznja accepted i trenutno vreme je vece od vremena pocekta voznje, onda se pojavljuje dugme start
+        //ako ima voznja koja je pending moze da se klikne na tu notifikaciju i onda se otvara dialog sa informacijama i dugmadima
+        //ako je voznja accepted i trenutno vreme je vece od vremena pocekta voznje, onda se pojavljuje dugme start
         //ako je ulogovan putnik
-            //ako ima voznja na koju je pozvan stize mu obavestenje o njoj
+        //ako ima voznja na koju je pozvan stize mu obavestenje o njoj
         notificationItems.add(new NotificationItem(
                 "Kralja Aleksandra 7 - Preradoviceva 40",
                 "13.11.2022. 14:00",
@@ -155,35 +155,34 @@ public class NotificationsFragment extends ListFragment {
                 "Your ride is in 5 minutes",
                 "13:55"));
     }
-    private RelativeLayout createAcceptanceRideDialog(Ride ride)
-    {
-        View blackBackground=view.findViewById(R.id.black_background);
+
+    private RelativeLayout createAcceptanceRideDialog(Ride ride) {
+        View blackBackground = view.findViewById(R.id.black_background);
         blackBackground.setVisibility(View.VISIBLE);
 
         LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        RelativeLayout layout=(RelativeLayout) vi.inflate(R.layout.acceptance_ride_layout,null);
-        TextView departure=layout.findViewById(R.id.new_ride_departure);
-        TextView destination=layout.findViewById(R.id.new_ride_destination);
-        TextView cost=layout.findViewById(R.id.new_ride_cost);
-        TextView time=layout.findViewById(R.id.new_ride_time);
+        RelativeLayout layout = (RelativeLayout) vi.inflate(R.layout.acceptance_ride_layout, null);
+        TextView departure = layout.findViewById(R.id.new_ride_departure);
+        TextView destination = layout.findViewById(R.id.new_ride_destination);
+        TextView cost = layout.findViewById(R.id.new_ride_cost);
+        TextView time = layout.findViewById(R.id.new_ride_time);
         departure.setText(ride.getLocations().iterator().next().getDeparture().getAddress());
         destination.setText(ride.getLocations().iterator().next().getDestination().getAddress());
         cost.setText(String.valueOf(ride.getTotalCost()));
-        String dateTime=ride.getStartTime();
-        time.setText(dateTime.substring(dateTime.indexOf('T')+1,dateTime.indexOf('T')+6));
-
+        String dateTime = ride.getStartTime();
+        time.setText(dateTime.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('T') + 6));
 
 
         return layout;
     }
-    private void setListeners(RelativeLayout layout, Ride ride)
-    {
-        Intent intent=new Intent(getActivity(), RideService.class);
 
-        Button acceptButton=layout.findViewById(R.id.new_ride_accept_button);
-        Button rejectButton=layout.findViewById(R.id.new_ride_reject_button);
+    private void setListeners(RelativeLayout layout, Ride ride) {
+        Intent intent = new Intent(getActivity(), RideService.class);
 
-        EditText rejectReason=layout.findViewById(R.id.new_ride_rejection_reason);
+        Button acceptButton = layout.findViewById(R.id.new_ride_accept_button);
+        Button rejectButton = layout.findViewById(R.id.new_ride_reject_button);
+
+        EditText rejectReason = layout.findViewById(R.id.new_ride_rejection_reason);
 
         acceptButtons.add(acceptButton);
         rejectButtons.add(rejectButton);
@@ -191,7 +190,7 @@ public class NotificationsFragment extends ListFragment {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("PASSS","Kliknut ".concat(ride.getId().toString()));
+                Log.d("PASSS", "Kliknut ".concat(ride.getId().toString()));
 
                 Log.d("PASSS", "acceptClick");
                 intent.putExtra("rideId", ride.getId());
@@ -202,11 +201,8 @@ public class NotificationsFragment extends ListFragment {
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("PASSS","Kliknut ".concat(ride.getId().toString()));
-                acceptButtons.remove(0);
-                rejectButtons.remove(0);
                 Log.d("PASSS", "rejectClick");
-                ReasonDTO reasonDTO=new ReasonDTO(rejectReason.getText().toString());
+                ReasonDTO reasonDTO = new ReasonDTO(rejectReason.getText().toString());
                 intent.putExtra("reasonDTO", reasonDTO);
                 intent.putExtra("rideId", ride.getId());
                 intent.putExtra("endpoint", "rejectRide");
@@ -214,25 +210,27 @@ public class NotificationsFragment extends ListFragment {
             }
         });
     }
+
     private STOMPUtils stompUtils;
     private Gson mGson = new GsonBuilder().create();
+
     @SuppressLint("CheckResult")
-    private void registerSocketForNewRide(Integer userId){
+    private void registerSocketForNewRide(Integer userId) {
         stompUtils = new STOMPUtils();
         stompUtils.connectStomp();
 
-        stompUtils.stompClient.topic("api/socket-publisher/" +"new-ride/"+userId)
+        stompUtils.stompClient.topic("api/socket-publisher/" + "new-ride/" + userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
                     Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
                     Ride ride = mGson.fromJson(topicMessage.getPayload(), Ride.class);
 
-                    frameLayout=view.findViewById(R.id.acceptance_ride_layout);
-                    RelativeLayout layout=createAcceptanceRideDialog(ride);
+                    frameLayout = view.findViewById(R.id.acceptance_ride_layout);
+                    RelativeLayout layout = createAcceptanceRideDialog(ride);
                     layouts.add(layout);
                     frameLayout.addView(layout);
-                    Log.d("PASSS","Napravljen ".concat(ride.getId().toString()));
+                    Log.d("PASSS", "Napravljen ".concat(ride.getId().toString()));
                     setListeners(layout, ride);
 
                 }, throwable -> {
@@ -240,77 +238,77 @@ public class NotificationsFragment extends ListFragment {
                 });
     }
 
-    public BroadcastReceiver pendingRidesReceiver = new BroadcastReceiver(){
+    public BroadcastReceiver pendingRidesReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("PASSSSSSSSS","lalalalaalla");
-            RidesListDTO ridesListDTO=intent.getParcelableExtra("pendingRidesDTO");
-            Log.d("PASSSSSSSSS",ridesListDTO.toString());
-            frameLayout=view.findViewById(R.id.acceptance_ride_layout);
-            remainedPendingRides=ridesListDTO.getTotalCount();
+            Log.d("PASSSSSSSSS", "lalalalaalla");
+            RidesListDTO ridesListDTO = intent.getParcelableExtra("pendingRidesDTO");
+            Log.d("PASSSSSSSSS", ridesListDTO.toString());
+            frameLayout = view.findViewById(R.id.acceptance_ride_layout);
+            remainedPendingRides = ridesListDTO.getTotalCount();
             //RelativeLayout layout;
             Ride ride;
-            for(int i=ridesListDTO.getTotalCount()-1; i>=0;i--)
-            {
-                ride=ridesListDTO.getRides().get(i);
-                RelativeLayout layout=createAcceptanceRideDialog(ride);
+            for (int i = ridesListDTO.getTotalCount() - 1; i >= 0; i--) {
+                ride = ridesListDTO.getRides().get(i);
+                RelativeLayout layout = createAcceptanceRideDialog(ride);
                 layouts.add(layout);
                 frameLayout.addView(layout);
-                Log.d("PASSS","Napravljen ".concat(ride.getId().toString()));
+                Log.d("PASSS", "Napravljen ".concat(ride.getId().toString()));
                 setListeners(layout, ride);
             }
         }
     };
-    public BroadcastReceiver acceptRideReceiver = new BroadcastReceiver(){
+    public BroadcastReceiver acceptRideReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             acceptButtons.remove(0);
             rejectButtons.remove(0);
             Log.d("PASSS", "ACCEPTED");
-            Ride ride= (Ride) intent.getSerializableExtra("ride");
+            Ride ride = (Ride) intent.getSerializableExtra("ride");
             Log.d("PASSSid", String.valueOf(ride.getId()));
-            RelativeLayout layout1=layouts.remove(layouts.size()-1);
+            RelativeLayout layout1 = layouts.remove(layouts.size() - 1);
             Log.d("PASSS layout", String.valueOf(layouts.size()));
             layout1.setVisibility(View.GONE);
             //frameLayout.removeView(layout1);
-            if(layouts.size()==0)
+            if (layouts.size() == 0)
                 blackBackground.setVisibility(View.GONE);
-            Intent createChatIntent=new Intent(getActivity(), UserService.class);
+            Intent createChatIntent = new Intent(getActivity(), UserService.class);
             createChatIntent.putExtra("endpoint", "multipleSendMessage");
-            SendingMessageDTO sendingMessageDTO=new SendingMessageDTO("Ride is accepted",ride.getId());
-            MultipleSendingMessageDTO multipleSendingMessageDTO=new MultipleSendingMessageDTO(sendingMessageDTO, new ArrayList<>());
-            for(UserRideDTO passenger: ride.getPassengers())
-            {
+            SendingMessageDTO sendingMessageDTO = new SendingMessageDTO("Ride is accepted", ride.getId());
+            MultipleSendingMessageDTO multipleSendingMessageDTO = new MultipleSendingMessageDTO(sendingMessageDTO, new ArrayList<>());
+            for (UserRideDTO passenger : ride.getPassengers()) {
                 multipleSendingMessageDTO.getUserIds().add(passenger.getId());
             }
             Gson gson = new Gson();
-            String obj=gson.toJson(multipleSendingMessageDTO);
+            String obj = gson.toJson(multipleSendingMessageDTO);
             Log.d("PASSS", obj);
             createChatIntent.putExtra("multipleMessageDTO", multipleSendingMessageDTO);
             getActivity().startService(createChatIntent);
         }
     };
-    public BroadcastReceiver rejectRideReceiver = new BroadcastReceiver(){
+    public BroadcastReceiver rejectRideReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            acceptButtons.remove(0);
-            rejectButtons.remove(0);
-            Log.d("PASSS", "REJECTED");
-            Ride ride= (Ride) intent.getSerializableExtra("ride");
-            Log.d("PASSSid", String.valueOf(ride.getId()));
-            Log.d("PASSS layout", String.valueOf(layouts.size()));
-            RelativeLayout layout1=layouts.remove(layouts.size()-1);
+            if (intent.getStringExtra("found").equals("true")) {
+                acceptButtons.remove(0);
+                rejectButtons.remove(0);
+                Log.d("PASSS", "REJECTED");
+                Ride ride = (Ride) intent.getSerializableExtra("ride");
+                Log.d("PASSSid", String.valueOf(ride.getId()));
+                Log.d("PASSS layout", String.valueOf(layouts.size()));
+                RelativeLayout layout1 = layouts.remove(layouts.size() - 1);
 
-            layout1.setVisibility(View.GONE);
-            //frameLayout.removeView(layout1);
-            if(layouts.size()==0)
-                blackBackground.setVisibility(View.GONE);
-
+                layout1.setVisibility(View.GONE);
+                //frameLayout.removeView(layout1);
+                if (layouts.size() == 0)
+                    blackBackground.setVisibility(View.GONE);
+            }
         }
     };
+
     @Override
     public void onDestroy() {
         super.onDestroy();

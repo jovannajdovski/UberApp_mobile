@@ -121,6 +121,12 @@ public class DriverAccountActivity extends AppCompatActivity {
         profilePictureLayout.setOnClickListener(view ->
                 showImagePicker());
 
+        MaterialCardView profilePasswordLayout = findViewById(R.id.password_change);
+        profilePasswordLayout.setOnClickListener(view -> {
+            Intent intent = new Intent(DriverAccountActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
+        });
+
         MaterialCardView profileNameLayout = findViewById(R.id.profile_name);
         profileNameLayout.setOnClickListener(view ->
                 createDialog("Name", profileName.getText().toString(), ValidationType.allLetters));
@@ -190,15 +196,6 @@ public class DriverAccountActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 SnackbarUtil.show(findViewById(R.id.driver_account),
                         "Something went wrong!");
-            }
-        });
-
-        MaterialCardView profilePasswordLayout = findViewById(R.id.password_change);
-        profilePasswordLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DriverAccountActivity.this, ChangePasswordActivity.class);
-                startActivity(intent);
             }
         });
     }

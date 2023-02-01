@@ -215,7 +215,6 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
                 Toast.makeText(DriverMainActivity.this, "ONLINE", Toast.LENGTH_SHORT).show();
                 ongoingWorkHours=ongoingWorkHoursTemp;
             }
-            driverMapFragment.findActiveDrivers();
         }
     };
     public BroadcastReceiver endShiftReceiver = new BroadcastReceiver(){

@@ -267,7 +267,7 @@ public class DriverMapFragment extends Fragment implements LocationListener, OnM
 //        if (location != null) {
 //            addMarker(location);
 //        }
-
+        findActiveDrivers();
     }
     public void findActiveDrivers(){
         Intent intent=new Intent(getActivity(), DriverService.class);
