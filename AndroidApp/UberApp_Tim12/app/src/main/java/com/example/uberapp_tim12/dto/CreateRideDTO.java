@@ -16,8 +16,19 @@ public class CreateRideDTO implements Serializable {
     private VehicleCategory vehicleType;
     private boolean babyTransport;
     private boolean petTransport;
-
     private String scheduledTime;
+
+    public CreateRideDTO(Set<PathDTO> locations, Set<UserRideDTO> passengers, VehicleCategory vehicleType, boolean babyTransport, boolean petTransport, String scheduledTime) {
+        this.locations = locations;
+        this.passengers = passengers;
+        this.vehicleType = vehicleType;
+        this.babyTransport = babyTransport;
+        this.petTransport = petTransport;
+        this.scheduledTime = scheduledTime;
+    }
+
+    public CreateRideDTO() {
+    }
 
     public Set<PathDTO> getLocations() {
         return locations;

@@ -178,7 +178,6 @@ public class OverviewFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("PASSSSSSSSS","lalalalaalla");
             RideFullDTO ride= (RideFullDTO) intent.getSerializableExtra("ride");
             if(ride==null)
             {
@@ -186,6 +185,8 @@ public class OverviewFragment extends Fragment {
                 grid.setVisibility(View.GONE);
                 friendsTitle.setText("");
                 Toast.makeText(getActivity(),intent.getStringExtra("responseMessage"),Toast.LENGTH_SHORT).show();
+                stompUtils = new STOMPUtils();
+                stompUtils.connectStomp();
             }
             else{
 

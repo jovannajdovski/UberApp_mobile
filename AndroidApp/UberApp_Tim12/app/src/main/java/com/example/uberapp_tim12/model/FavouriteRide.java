@@ -2,6 +2,7 @@ package com.example.uberapp_tim12.model;
 
 import com.example.uberapp_tim12.dto.PathDTO;
 import com.example.uberapp_tim12.dto.UserEmailDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
 
 import java.util.List;
 
@@ -9,12 +10,12 @@ public class FavouriteRide {
     private Integer id;
     private String favoriteName;
     private List<PathDTO> locations;
-    private List<UserEmailDTO> passengers;
+    private List<UserRideDTO> passengers;
     private VehicleCategory vehicleType;
     private boolean babyTransport;
     private boolean petTransport;
 
-    public FavouriteRide(Integer id, String favoriteName, List<PathDTO> locations, List<UserEmailDTO> passengers, VehicleCategory vehicleType, boolean babyTransport, boolean petTransport) {
+    public FavouriteRide(Integer id, String favoriteName, List<PathDTO> locations, List<UserRideDTO> passengers, VehicleCategory vehicleType, boolean babyTransport, boolean petTransport) {
         this.id = id;
         this.favoriteName = favoriteName;
         this.locations = locations;
@@ -48,11 +49,11 @@ public class FavouriteRide {
         this.locations = locations;
     }
 
-    public List<UserEmailDTO> getPassengers() {
+    public List<UserRideDTO> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<UserEmailDTO> passengers) {
+    public void setPassengers(List<UserRideDTO> passengers) {
         this.passengers = passengers;
     }
 

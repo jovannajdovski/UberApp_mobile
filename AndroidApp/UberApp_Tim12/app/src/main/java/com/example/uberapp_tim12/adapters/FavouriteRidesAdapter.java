@@ -1,6 +1,7 @@
 package com.example.uberapp_tim12.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +12,28 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.uberapp_tim12.R;
+import com.example.uberapp_tim12.activities.PassengerMainActivity;
 import com.example.uberapp_tim12.controller.ControllerUtils;
 import com.example.uberapp_tim12.controller.RideController;
+import com.example.uberapp_tim12.dto.CreateRideDTO;
+import com.example.uberapp_tim12.dto.UserEmailDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.holder.FavouriteRideHolder;
 import com.example.uberapp_tim12.model.FavouriteRide;
 import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.tools.SnackbarUtil;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FavouriteRidesAdapter extends RecyclerView.Adapter<FavouriteRideHolder>{
+public class FavouriteRidesAdapter extends RecyclerView.Adapter<FavouriteRideHolder> {
     Context context;
     List<FavouriteRide> items;
 
@@ -50,8 +58,10 @@ public class FavouriteRidesAdapter extends RecyclerView.Adapter<FavouriteRideHol
         if (items.get(position).getPassengers().size() == 1)
             holder.passengers.setText(R.string.only_you);
         else
-            holder.passengers.setText("You and " + items.get(position).getPassengers().size() +
+            holder.passengers.setText("You and " + (items.get(position).getPassengers().size() - 1) +
                     " others");
+
+        holder.rideAgain.setOnClickListener(view -> showStartRideDialog(items.get(holder.getBindingAdapterPosition())));
 
         holder.dropDownButton.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(context, holder.dropDownButton);
@@ -80,6 +90,36 @@ public class FavouriteRidesAdapter extends RecyclerView.Adapter<FavouriteRideHol
     }
 
 
+    private void showStartRideDialog(FavouriteRide favourite) {
+        new MaterialAlertDialogBuilder(context)
+                .setTitle("Start ride")
+                .setMessage("Are you sure you want to start ride?")
+                .setPositiveButton(context.getResources().getString(R.string.confirm),
+                        (dialogInterface, i) -> {
+                            startRide(favourite);
+                        })
+                .setNegativeButton(context.getResources().getString(R.string.cancel),
+                        (dialogInterface, i) -> {
+                        })
+                .show();
+    }
+
+    private void startRide(FavouriteRide favourite) {
+        CreateRideDTO createRideDTO =
+                new CreateRideDTO(
+                    new HashSet<>(favourite.getLocations()),
+                    new HashSet<>(favourite.getPassengers()),
+                    favourite.getVehicleType(),
+                    favourite.isBabyTransport(),
+                    favourite.isPetTransport(),
+                        LocalDateTime.now().toString()
+                );
+        Intent intent = new Intent(context, PassengerMainActivity.class);
+        intent.setAction("changeToDetails");
+        intent.putExtra("rideDTO", createRideDTO);
+        context.startActivity(intent);
+    }
+
     private void showDeleteConfirmationDialog(FavouriteRideHolder holder, Integer itemId, View view) {
         new MaterialAlertDialogBuilder(context)
                 .setTitle("Remove favourite route")
@@ -89,7 +129,8 @@ public class FavouriteRidesAdapter extends RecyclerView.Adapter<FavouriteRideHol
                             deleteItem(holder, itemId, view);
                         })
                 .setNegativeButton(context.getResources().getString(R.string.cancel),
-                        (dialogInterface, i) -> {})
+                        (dialogInterface, i) -> {
+                        })
                 .show();
     }
 

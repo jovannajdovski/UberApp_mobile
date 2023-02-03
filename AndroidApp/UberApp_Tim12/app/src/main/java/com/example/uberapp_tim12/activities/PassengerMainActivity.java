@@ -23,6 +23,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.uberapp_tim12.R;
 import com.example.uberapp_tim12.dto.CreateRideDTO;
+import com.example.uberapp_tim12.dto.UserRideDTO;
 import com.example.uberapp_tim12.fragments.ConfirmationFragment;
 import com.example.uberapp_tim12.fragments.DrawRouteFragment;
 import com.example.uberapp_tim12.fragments.DriverCurrRideFragment;
@@ -36,6 +37,7 @@ import com.example.uberapp_tim12.fragments.PassengerCurrRideFragment;
 
 import com.example.uberapp_tim12.model_mock.NavDrawerItem;
 import com.example.uberapp_tim12.model_mock.User;
+import com.example.uberapp_tim12.security.LoggedUser;
 import com.example.uberapp_tim12.service.CurrentRideService;
 import com.example.uberapp_tim12.tools.FragmentTransition;
 import com.example.uberapp_tim12.tools.UserMockup;
@@ -44,7 +46,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.shuhart.stepview.StepView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class PassengerMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
@@ -73,10 +77,6 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.black, this.getTheme()));
-
-       // FragmentTransition.passengerTo(MapFragment.newInstance(),this,false);
-       // FragmentTransition.passengerTo(DrawRouteFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
-        //FragmentTransition.passengerTo(PassengerCurrRideFragment.newInstance(new LatLng(41.385064,2.173403), new LatLng(40.416775,-3.70379)), this, false);
 
 
         stepView=findViewById(R.id.step_view);
@@ -108,34 +108,35 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
         navDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-//        navDrawerLayout.setDrawerShadow(R.drawable.shadow, GravityCompat.START);
-
-
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setIcon(R.drawable.ic_launcher_foreground);
-//        actionBar.setTitle(R.string.app_name);
-//        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
-//        actionBar.setHomeButtonEnabled(true);
-
-        String offer = getIntent().getStringExtra("offer");
-        if (offer==null){
+        Intent intent = getIntent();
+        if ("changeToDetails".equals(intent.getAction())) {
             mapFragment=new MapFragment(null,null, null, null);
             manager=getSupportFragmentManager();
-            manager.beginTransaction()
-                    .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
+            CreateRideDTO dto = (CreateRideDTO) intent.getSerializableExtra("rideDTO");
+            List<String> passengers = new ArrayList<>();
+            for (UserRideDTO userRide: dto.getPassengers()) {
+                if (!userRide.getEmail().equals(LoggedUser.getUsername()))
+                    passengers.add(userRide.getEmail());
+            }
+            changeFragment(4, dto, passengers);
         } else {
-            String start = getIntent().getStringExtra("start");
-            String end = getIntent().getStringExtra("end");
-            LatLng startPoint = new LatLng(getIntent().getDoubleExtra("startLat",0),getIntent().getDoubleExtra("startLon",0));
-            LatLng endPoint = new LatLng(getIntent().getDoubleExtra("endLat",0),getIntent().getDoubleExtra("endLon",0));
-            mapFragment=new MapFragment(start, end, startPoint, endPoint);
-            manager=getSupportFragmentManager();
-            manager.beginTransaction()
-                    .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
+            String offer = getIntent().getStringExtra("offer");
+            if (offer==null){
+                mapFragment=new MapFragment(null,null, null, null);
+                manager=getSupportFragmentManager();
+                manager.beginTransaction()
+                        .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
+            } else {
+                String start = getIntent().getStringExtra("start");
+                String end = getIntent().getStringExtra("end");
+                LatLng startPoint = new LatLng(getIntent().getDoubleExtra("startLat",0),getIntent().getDoubleExtra("startLon",0));
+                LatLng endPoint = new LatLng(getIntent().getDoubleExtra("endLat",0),getIntent().getDoubleExtra("endLon",0));
+                mapFragment=new MapFragment(start, end, startPoint, endPoint);
+                manager=getSupportFragmentManager();
+                manager.beginTransaction()
+                        .replace(R.id.passengerMainContent,mapFragment,mapFragment.getTag()).commit();
+            }
         }
-
-
 
     }
 
