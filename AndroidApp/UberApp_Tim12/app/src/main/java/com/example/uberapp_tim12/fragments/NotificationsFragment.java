@@ -76,7 +76,6 @@ public class NotificationsFragment extends ListFragment {
         prepareNotificationsList();
         Intent intent = new Intent(getActivity(), RideService.class);
         intent.putExtra("endpoint", "getPendingRidesForDriver");
-        Log.d("PASSSSSS", "STARTSERVICE\t\tPASSS");
         getActivity().startService(intent);
         NotificationsListAdapter adapter = new NotificationsListAdapter(getActivity(), notificationItems);
         setListAdapter(adapter);
@@ -92,6 +91,7 @@ public class NotificationsFragment extends ListFragment {
         blackBackground = view.findViewById(R.id.black_background);
 
 //        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
         return view;
     }
 
@@ -107,7 +107,6 @@ public class NotificationsFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("PASSSSSS", "RESUME\t\tPASSS");
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(pendingRidesReceiver, new IntentFilter("pendingRides"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(acceptRideReceiver, new IntentFilter("acceptRide"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(rejectRideReceiver, new IntentFilter("rejectRide"));
@@ -186,13 +185,9 @@ public class NotificationsFragment extends ListFragment {
 
         acceptButtons.add(acceptButton);
         rejectButtons.add(rejectButton);
-        Log.d("PASSS", "nasao dugmad");
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("PASSS", "Kliknut ".concat(ride.getId().toString()));
-
-                Log.d("PASSS", "acceptClick");
                 intent.putExtra("rideId", ride.getId());
                 intent.putExtra("endpoint", "acceptRide");
                 getActivity().startService(intent);
@@ -201,7 +196,6 @@ public class NotificationsFragment extends ListFragment {
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("PASSS", "rejectClick");
                 ReasonDTO reasonDTO = new ReasonDTO(rejectReason.getText().toString());
                 intent.putExtra("reasonDTO", reasonDTO);
                 intent.putExtra("rideId", ride.getId());
@@ -223,18 +217,15 @@ public class NotificationsFragment extends ListFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
-                    Log.d("RIDECHAT", "Received " + topicMessage.getPayload());
                     Ride ride = mGson.fromJson(topicMessage.getPayload(), Ride.class);
 
                     frameLayout = view.findViewById(R.id.acceptance_ride_layout);
                     RelativeLayout layout = createAcceptanceRideDialog(ride);
                     layouts.add(layout);
                     frameLayout.addView(layout);
-                    Log.d("PASSS", "Napravljen ".concat(ride.getId().toString()));
                     setListeners(layout, ride);
 
                 }, throwable -> {
-                    Log.e("RIDECHAT", "Error on subscribe topic", throwable);
                 });
     }
 
@@ -295,10 +286,7 @@ public class NotificationsFragment extends ListFragment {
             if (intent.getStringExtra("found").equals("true")) {
                 acceptButtons.remove(0);
                 rejectButtons.remove(0);
-                Log.d("PASSS", "REJECTED");
                 Ride ride = (Ride) intent.getSerializableExtra("ride");
-                Log.d("PASSSid", String.valueOf(ride.getId()));
-                Log.d("PASSS layout", String.valueOf(layouts.size()));
                 RelativeLayout layout1 = layouts.remove(layouts.size() - 1);
 
                 layout1.setVisibility(View.GONE);

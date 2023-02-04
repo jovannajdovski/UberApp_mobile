@@ -202,11 +202,9 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationV
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("PASSSSSSSSSSSS", "onReceive pass");
             WorkHoursDTO ongoingWorkHoursTemp=intent.getParcelableExtra("workHoursDTO");
             if(ongoingWorkHoursTemp==null) {
                 if(intent.getStringExtra("message").equals("Work time exceeded")) {
-                    Log.d("PASSS", "Usao");
                     switchOffWhenIsNotPossible = true;
                     sw.setChecked(false);
                 }

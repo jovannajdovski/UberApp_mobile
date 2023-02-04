@@ -161,7 +161,9 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("PASSSSSSSSS","lalalalaalla");
+            if (intent.getSerializableExtra("messageDTO") == null)
+                return;
+
             MessageDTO messageDTO= (MessageDTO) intent.getSerializableExtra("messageDTO");
             chatItem.getMessages().add(messageDTO);
 

@@ -47,7 +47,6 @@ public class RideService extends Service {
                         @Override
                         public void onResponse(Call<RidesListDTO> call, Response<RidesListDTO> response) {
                             if (response.code() == 200){
-                                Log.d("REZZ", "usao");
                                 ridesListDTOS[0]=response.body();
                                 Intent ints = new Intent ("pendingRides");
                                 ints.putExtra("pendingRidesDTO", ridesListDTOS[0]);
@@ -71,7 +70,6 @@ public class RideService extends Service {
                         public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {
                             Intent ints = new Intent ("acceptedRides");
                             if (response.code() == 200){
-                                Log.d("REZZ", "usao");
                                 ridesListDTOS[0]=response.body();
                                 ints.putExtra("found", "true");
                                 ints.putExtra("ridesList", ridesListDTOS[0]);

@@ -183,7 +183,7 @@ public class PassengerService extends Service {
                     Intent ints = new Intent("finishedRides");
                     final RidePageList[] ridesListDTOS = new RidePageList[1];
                     Call<RidePageList> call = ControllerUtils.passengerController.getPassengerFinishedRides(LoggedUser.getUserId(),
-                            0, 100, "startTime,asc", "Bearer " + LoggedUser.getToken());
+                            0, 100, "startTime,desc", "Bearer " + LoggedUser.getToken());
                     call.enqueue(new Callback<RidePageList>() {
                         @Override
                         public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {

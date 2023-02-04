@@ -105,19 +105,14 @@ public class DriverService extends Service {
                 else if(method.equals("startShift"))
                 {
                     final WorkHoursDTO[] workHoursDTOS = new WorkHoursDTO[1];
-                    Log.d("PASSSSStart", "ista metoda");
                     StartTimeDTO timeDTO=new StartTimeDTO(LocalDateTime.now().toString());
-                    Log.d("PASSSSStart",timeDTO.getDateTime());
                     Call<WorkHoursDTO> call = ControllerUtils.driverController.startShift(LoggedUser.getUserId(),timeDTO,"Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<WorkHoursDTO>() {
                         @Override
                         public void onResponse(Call<WorkHoursDTO> call, Response<WorkHoursDTO> response) {
                             Intent ints = new Intent ("startShift");
                             if (response.code() == 200){
-                                Log.d("PASSSSStart", "POCINJE SMENU");
                                 workHoursDTOS[0]=response.body();
-                                Log.d("PASSSSStart", workHoursDTOS[0].toString());
-                                Log.d("PASSSSStart", workHoursDTOS[0].getId().toString());
 
                                 ints.putExtra("workHoursDTO", workHoursDTOS[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
@@ -209,7 +204,7 @@ public class DriverService extends Service {
                     Intent ints = new Intent ("finishedRides");
                     final RidePageList[] ridesListDTOS=new RidePageList[1];
                     Call<RidePageList> call = ControllerUtils.driverController.getDriverFinishedRides(LoggedUser.getUserId(),
-                            0, 100, "startTime,asc", "Bearer "+ LoggedUser.getToken() );
+                            0, 100, "startTime,desc", "Bearer "+ LoggedUser.getToken() );
                     call.enqueue(new Callback<RidePageList>() {
                         @Override
                         public void onResponse(Call<RidePageList> call, Response<RidePageList> response) {

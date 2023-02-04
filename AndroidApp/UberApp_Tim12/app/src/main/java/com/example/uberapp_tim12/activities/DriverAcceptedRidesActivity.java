@@ -70,7 +70,6 @@ public class DriverAcceptedRidesActivity extends AppCompatActivity {
         Intent intentRide = new Intent(this, RideService.class);
         intentRide.putExtra("endpoint", "getAcceptedRidesForDriver");
         this.startService(intentRide);
-
     }
 
     public BroadcastReceiver acceptedRidesReceiver = new BroadcastReceiver() {

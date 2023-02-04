@@ -186,18 +186,14 @@ public class UserService extends Service {
                 {
                     final MessageDTO[] messageDTO = new MessageDTO[1];
                     int id=intent.getIntExtra("receiverId", 0);
-                    Log.d("PASSS", String.valueOf(id));
                     SendingMessageDTO sendingMessageDTO=intent.getParcelableExtra("messageDTO");
-                    Log.d("PASSS", sendingMessageDTO.getMessage());
                     Call<MessageDTO> call = ControllerUtils.userController.sendMessage(id, sendingMessageDTO, "Bearer "+ LoggedUser.getToken());
                     call.enqueue(new Callback<MessageDTO>() {
                         @Override
                         public void onResponse(Call<MessageDTO> call, Response<MessageDTO> response) {
                             Intent ints = new Intent ("sendMessage");
                             if (response.code() == 200){
-                                Log.d("PASSS", "200");
                                 messageDTO[0] =response.body();
-                                Log.d("PASSS", messageDTO[0].toString());
                                 ints.putExtra("messageDTO", messageDTO[0]);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(ints);
                             } else if (response.code() == 400){
